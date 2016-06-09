@@ -6,7 +6,7 @@ import sprites.pickups.*;
 
 @:expose class Settings {
 
-  public static var time_limit = 4; // seconds
+  public static var time_limit = 40; // seconds
 
   public static var hero_1 = {
     skin : Player.DEFAULT_SKIN_1,

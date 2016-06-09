@@ -18,7 +18,6 @@ class PlayState extends FlxState
 {
   private var map:Map;
   private var player_1:Player;
-  private var player_2:Player;
   private var spawn_engine:Spawn;
   private var pickups:List<Pickup>;
   private var enemies:List<Enemy>;
@@ -26,7 +25,6 @@ class PlayState extends FlxState
   public var survival_type:Bool; // true? only one life
   private var timer_text:FlxText;
   private var p1score:FlxText;
-  private var p2score:FlxText;
 
 	override public function create():Void
 	{
@@ -47,7 +45,6 @@ class PlayState extends FlxState
     timer.start(Settings.time_limit, function(t){
       FlxG.switchState(new EndState(
             player_1,
-            player_2,
             survival_type ?
               EndState.EndType.SURVIVED :
               EndState.EndType.TIME_OUT
@@ -57,10 +54,6 @@ class PlayState extends FlxState
     p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
     p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     add(p1score);
-
-    p2score = new FlxText( 4 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
-    p2score.setFormat( "Arial", 18, Main.FONT_RED, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add(p2score);
 
     timer_text = new FlxText( Main.STAGE_WIDTH / 2 , 10, Std.string(Std.int( timer.time )));
     timer_text.setFormat( "Arial", 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
@@ -119,17 +112,12 @@ class PlayState extends FlxState
       add(player_1);
     }
 
-    if( Spawn.hero_1_setting != null ){
-      player_2 = new Player(this,2,Spawn.hero_2_setting.x,Spawn.hero_2_setting.y);
-      add(player_2);
-    }
-
   }
 
   private inline function pickup_collision():Void
   {
     for( pickup in pickups ){
-      for( hero in [player_1,player_2] ){
+      for( hero in [player_1] ){
         if( FlxG.collide(hero, pickup) ){
           remove(pickup);
           pickups.remove(pickup);
@@ -153,7 +141,7 @@ class PlayState extends FlxState
   private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
-      for( hero in [player_1,player_2] ){
+      for( hero in [player_1] ){
         if( FlxG.collide(hero, enemy) ){
           hero.die();
           survival_check();
@@ -164,10 +152,10 @@ class PlayState extends FlxState
 
   private inline function survival_check():Void
   {
-    if( Lambda.filter([player_1,player_2], function(p){
+    if( Lambda.filter([player_1], function(p){
       return p.alive;
     }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, player_2, EndState.EndType.NO_SURVIVORS));
+      FlxG.switchState(new EndState(player_1, EndState.EndType.NO_SURVIVORS));
     }
   }
 
@@ -176,7 +164,7 @@ class PlayState extends FlxState
     if( Lambda.filter(pickups, function(p){
       return Type.getClass(p) == sprites.pickups.Gem;
     }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, player_2, EndState.EndType.FINISH));
+      FlxG.switchState(new EndState(player_1, EndState.EndType.FINISH));
     }
   }
 
@@ -184,7 +172,6 @@ class PlayState extends FlxState
 	{
     map = null;
     player_1 = null;
-    player_2 = null;
     spawn_engine = null;
     pickups = null;
     enemies = null;
@@ -193,16 +180,14 @@ class PlayState extends FlxState
     survival_type = null;
     timer_text = null;
     p1score = null;
-    p2score = null;
     super.destroy();
 	}
 
   override public function update(elapsed:Float):Void
   {
     timer_text.text = Std.string(Std.int(timer.timeLeft));
-    if( player_1 != null && player_2 != null ){
+    if( player_1 != null ){
       p1score.text = Std.string(player_1.points);
-      p2score.text = Std.string(player_2.points);
     }
     super.update(elapsed);
 
