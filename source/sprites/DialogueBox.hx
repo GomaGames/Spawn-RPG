@@ -30,6 +30,7 @@ class DialogueBox extends FlxSprite{
 
     group.add(bg);
     group.add(dialogue);
+    group.immovable = true;
     state.add(group);
   }
 }
