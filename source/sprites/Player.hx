@@ -13,6 +13,7 @@ class PlayerInput {
   public static var down:FlxKey = FlxKey.DOWN;
   public static var left:FlxKey = FlxKey.LEFT;
   public static var right:FlxKey = FlxKey.RIGHT;
+  public static var inspect:FlxKey = FlxKey.ENTER;
 }
 
 class Player extends FlxSprite {
@@ -58,8 +59,17 @@ class Player extends FlxSprite {
   override public function update(elapsed:Float):Void
   {
     movement();
+    inspect();
+
     super.update(elapsed);
   }
+
+  private inline function inspect():Void
+    {
+      if(FlxG.keys.anyPressed([PlayerInput.inspect])) {
+        var dialogueBox = new DialogueBox(this.state, 'blah');
+      }
+    }
 
   private inline function movement():Void
   {
