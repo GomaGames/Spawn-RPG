@@ -25,7 +25,7 @@ class PlayState extends FlxState
   public var survival_type:Bool; // true? only one life
   private var timer_text:FlxText;
   private var p1score:FlxText;
-  private var inspect_person:FlxSprite;
+  public var inspect_person:FlxSprite;
   public var inspected:Bool;
   public var paused:Bool;
 

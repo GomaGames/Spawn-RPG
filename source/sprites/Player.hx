@@ -68,11 +68,11 @@ class Player extends FlxSprite {
     {
       if(this.state.inspected) {
         if(FlxG.keys.anyPressed([PlayerInput.inspect])) {
-          var dialogueBox = new DialogueBox(this.state, 'blah');
-          this.state.paused = true;
+          var dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.inspect_person.x, this.state.inspect_person.y);
+          this.state.paused = !this.state.paused;
         }
       }
-    }
+    } 
 
   private inline function movement():Void
   {
