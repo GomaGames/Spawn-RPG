@@ -27,6 +27,7 @@ class PlayState extends FlxState
   private var p1score:FlxText;
   private var inspect_person:FlxSprite;
   public var inspected:Bool;
+  public var paused:Bool;
 
 	override public function create():Void
 	{
@@ -34,6 +35,7 @@ class PlayState extends FlxState
     enemies = new List<Enemy>();
     survival_type = true;
     inspected = false;
+    paused = false;
 		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
@@ -203,18 +205,20 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    timer_text.text = Std.string(Std.int(timer.timeLeft));
-    if( player_1 != null ){
-      p1score.text = Std.string(player_1.points);
+    if(!paused) {
+      timer_text.text = Std.string(Std.int(timer.timeLeft));
+      if( player_1 != null ){
+        p1score.text = Std.string(player_1.points);
+      }
+      super.update(elapsed);
+
+      pickup_collision();
+
+      touch_enemy();
+
+      touch_test();
+
+      FlxG.collide();
     }
-    super.update(elapsed);
-
-    pickup_collision();
-
-    touch_enemy();
-
-    touch_test();
-
-    FlxG.collide();
   }
 }
