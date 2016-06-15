@@ -66,8 +66,10 @@ class Player extends FlxSprite {
 
   private inline function inspect():Void
     {
-      if(FlxG.keys.anyPressed([PlayerInput.inspect])) {
-        var dialogueBox = new DialogueBox(this.state, 'blah');
+      if(this.state.inspected) {
+        if(FlxG.keys.anyPressed([PlayerInput.inspect])) {
+          var dialogueBox = new DialogueBox(this.state, 'blah');
+        }
       }
     }
 

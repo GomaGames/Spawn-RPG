@@ -25,14 +25,15 @@ class PlayState extends FlxState
   public var survival_type:Bool; // true? only one life
   private var timer_text:FlxText;
   private var p1score:FlxText;
-  // public var wall_touched:Bool;
+  private var inspect_person:FlxSprite;
+  public var inspected:Bool;
 
 	override public function create():Void
 	{
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     survival_type = true;
-    // wall_touched = false;
+    inspected = false;
 		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
@@ -77,6 +78,11 @@ class PlayState extends FlxState
       wall.updateHitbox();
       add( wall );
     }
+
+    inspect_person = new FlxSprite(400, 50, "assets/images/04.png");
+    inspect_person.scale.set(.5,.5);
+    inspect_person.immovable = true;
+    add(inspect_person);
 
     // pickups
     for( pickup in Spawn.pickups ){
@@ -152,16 +158,14 @@ class PlayState extends FlxState
     }
   }
 
-  // private inline function touch_wall():Void
-  // {
-  //   for( wall in Spawn.walls ){
-  //     for( hero in [player_1] ){
-  //       if( FlxG.collide(hero, wall) ){
-  //         wall_touched = true;
-  //       }
-  //     }
-  //   }
-  // }
+  private inline function touch_test():Void
+  {
+    for( hero in [player_1] ){
+      if( FlxG.collide(hero, inspect_person) ){
+        inspected = true;
+      }
+    }
+  }
 
   private inline function survival_check():Void
   {
@@ -193,7 +197,7 @@ class PlayState extends FlxState
     survival_type = null;
     timer_text = null;
     p1score = null;
-    // wall_touched = false;
+    inspected = false;
     super.destroy();
 	}
 
@@ -209,7 +213,7 @@ class PlayState extends FlxState
 
     touch_enemy();
 
-    // touch_wall();
+    touch_test();
 
     FlxG.collide();
   }
