@@ -35,4 +35,9 @@ class DialogueBox extends FlxSprite{
     group.immovable = true;
     state.add(group);
   }
+
+  // public inline function endDialogue():Void
+  // {
+  //   this.destroy();
+  // }
 }

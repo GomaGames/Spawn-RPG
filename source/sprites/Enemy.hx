@@ -12,9 +12,11 @@ class Enemy extends FlxSprite {
   public static inline var LEFT = "left";
   public static inline var RIGHT = "right";
   public var speed:Int;
+  private var state:PlayState;
 
-  public function new(x:Int, y:Int, speed:Int, skin:String, ?direction:String ){
+  public function new(state:PlayState, x:Int, y:Int, speed:Int, skin:String, ?direction:String ){
     this.speed = speed;
+    this.state = state;
     super(x, y, skin);
     this.scale.set(.5,.5);
     this.updateHitbox();
@@ -35,8 +37,10 @@ class Enemy extends FlxSprite {
 
   public override function update(_:Float):Void
   {
-    this.flipX = this.velocity.x > 0;
-    super.update(_);
+    if(!this.state.paused) {
+      this.flipX = this.velocity.x > 0;
+      super.update(_);
+    }
   }
 
 }

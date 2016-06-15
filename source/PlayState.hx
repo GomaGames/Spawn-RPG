@@ -111,7 +111,7 @@ class PlayState extends FlxState
 
     // enemies
     for( enemy in Spawn.enemies ){
-      var new_enemy = new Enemy(enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
+      var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
       enemies.add(new_enemy);
       add(new_enemy);
     }
@@ -205,20 +205,18 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    if(!paused) {
-      timer_text.text = Std.string(Std.int(timer.timeLeft));
-      if( player_1 != null ){
-        p1score.text = Std.string(player_1.points);
-      }
-      super.update(elapsed);
-
-      pickup_collision();
-
-      touch_enemy();
-
-      touch_test();
-
-      FlxG.collide();
+    timer_text.text = Std.string(Std.int(timer.timeLeft));
+    if( player_1 != null ){
+      p1score.text = Std.string(player_1.points);
     }
+    super.update(elapsed);
+
+    pickup_collision();
+
+    touch_enemy();
+
+    touch_test();
+
+    FlxG.collide();
   }
 }
