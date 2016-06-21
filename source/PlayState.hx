@@ -8,7 +8,6 @@ import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
 import sprites.Map;
 import sprites.Player;
 import sprites.Enemy;
@@ -21,9 +20,7 @@ class PlayState extends FlxState
   private var spawn_engine:Spawn;
   private var pickups:List<Pickup>;
   private var enemies:List<Enemy>;
-  private var timer:FlxTimer;
   public var survival_type:Bool; // true? only one life
-  private var timer_text:FlxText;
   private var p1score:FlxText;
   public var inspect_person:FlxSprite;
   public var inspected:Bool;
@@ -46,23 +43,9 @@ class PlayState extends FlxState
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
 
-    timer = new FlxTimer();
-    timer.start(Settings.time_limit, function(t){
-      FlxG.switchState(new EndState(
-            player_1,
-            survival_type ?
-              EndState.EndType.SURVIVED :
-              EndState.EndType.TIME_OUT
-            ));
-    });
-
     p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
     p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     add(p1score);
-
-    timer_text = new FlxText( Main.STAGE_WIDTH / 2 , 10, Std.string(Std.int( timer.time )));
-    timer_text.setFormat( "Arial", 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add(timer_text);
 
 #if neko
     Spawn.dev();
@@ -194,10 +177,7 @@ class PlayState extends FlxState
     spawn_engine = null;
     pickups = null;
     enemies = null;
-    timer.cancel();
-    timer = null;
     survival_type = null;
-    timer_text = null;
     p1score = null;
     inspected = false;
     super.destroy();
@@ -205,7 +185,6 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    timer_text.text = Std.string(Std.int(timer.timeLeft));
     if( player_1 != null ){
       p1score.text = Std.string(player_1.points);
     }
