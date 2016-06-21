@@ -7,13 +7,10 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
-import flixel.util.FlxTimer;
 
 class MenuState extends FlxState
 {
   private var ready_text:FlxText; // don't allow rapid continue while holding buttons
-  private var countdown_timer:FlxTimer;
-  private var countdown_seconds:Int = 3;
 
 	override public function create():Void
 	{
@@ -32,24 +29,10 @@ class MenuState extends FlxState
 
 	}
 
-  private inline function start_countdown():Void
-  {
-    countdown_timer = new FlxTimer();
-    countdown_timer.start(countdown_seconds, function(t){
-      FlxG.switchState( new PlayState() );
-    });
-  }
-
 	override public function update(elapsed:Float):Void
 	{
-    if( countdown_timer == null &&
-      ( FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed )
-      ){
-      start_countdown();
-    }
-
-    if( countdown_timer != null ){
-      ready_text.text = Std.string(Std.int(countdown_timer.timeLeft));
+    if( FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed ){
+      FlxG.switchState( new PlayState() );
     }
 
 		super.update(elapsed);
