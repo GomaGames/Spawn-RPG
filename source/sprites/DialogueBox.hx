@@ -11,7 +11,7 @@ class DialogueBox extends FlxSprite{
 
   private var state:PlayState;
   private var dialogue:String;
-  private var group: flixel.group.FlxSpriteGroup;
+  private var group:flixel.group.FlxSpriteGroup;
   private static inline var padding = 20;
 
   public function new(state:PlayState, input:String, x:Float, y:Float) {
@@ -36,8 +36,8 @@ class DialogueBox extends FlxSprite{
     state.add(group);
   }
 
-  // public inline function endDialogue():Void
-  // {
-  //   this.destroy();
-  // }
+  public inline function endDialogue():Void
+  {
+    // this.destroy();
+  }
 }

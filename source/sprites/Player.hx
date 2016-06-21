@@ -15,6 +15,7 @@ class PlayerInput {
   public static var right:FlxKey = FlxKey.RIGHT;
   public static var inspect:FlxKey = FlxKey.ENTER;
   public static var endInspect:FlxKey = FlxKey.SHIFT;
+  public static var interact:FlxKey = FlxKey.SPACE;
 }
 
 class Player extends FlxSprite {
@@ -64,6 +65,7 @@ class Player extends FlxSprite {
       movement();
     }
     inspect();
+    interact();
 
     super.update(elapsed);
   }
@@ -78,7 +80,14 @@ class Player extends FlxSprite {
       }
       if(this.state.paused && FlxG.keys.anyPressed([PlayerInput.endInspect])) {
         this.state.paused = false;
-        // dialogue.endDialogue();
+        dialogue.endDialogue();
+      }
+    } 
+
+  private inline function interact():Void 
+    {
+      if(FlxG.keys.anyPressed([PlayerInput.interact])) {
+        trace('interact');
       }
     } 
 

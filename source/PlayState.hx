@@ -143,7 +143,7 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function touch_test():Void
+  private inline function touch_test():Void //for inspecting
   {
     for( hero in [player_1] ){
       if( FlxG.collide(hero, inspect_person) ){
@@ -195,6 +195,8 @@ class PlayState extends FlxState
     touch_enemy();
 
     touch_test();
+
+    // trace(inspected);
 
     FlxG.collide();
   }
