@@ -11,6 +11,7 @@ import flixel.util.FlxColor;
 import sprites.Map;
 import sprites.Player;
 import sprites.Enemy;
+import sprites.DialogueBox;
 import sprites.pickups.Pickup;
 
 class PlayState extends FlxState
@@ -22,8 +23,8 @@ class PlayState extends FlxState
   private var enemies:List<Enemy>;
   public var survival_type:Bool; // true? only one life
   private var p1score:FlxText;
-  public var inspect_person:FlxSprite;
-  public var inspected:Bool;
+  public var interact_person:FlxSprite;
+  public var interacted:Bool;
   public var paused:Bool;
 
 	override public function create():Void
@@ -31,7 +32,7 @@ class PlayState extends FlxState
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     survival_type = true;
-    inspected = false;
+    interacted = false;
     paused = false;
 		super.create();
     map = new Map(this);
@@ -64,10 +65,10 @@ class PlayState extends FlxState
       add( wall );
     }
 
-    inspect_person = new FlxSprite(400, 50, "assets/images/04.png");
-    inspect_person.scale.set(.5,.5);
-    inspect_person.immovable = true;
-    add(inspect_person);
+    interact_person = new FlxSprite(400, 50, "assets/images/04.png");
+    interact_person.scale.set(.5,.5);
+    interact_person.immovable = true;
+    add(interact_person);
 
     // pickups
     for( pickup in Spawn.pickups ){
@@ -143,11 +144,11 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function touch_test():Void //for inspecting
+  private inline function touch_test():Void //for interacting
   {
     for( hero in [player_1] ){
-      if( FlxG.collide(hero, inspect_person) ){
-        inspected = true;
+      if( FlxG.collide(hero, interact_person) ){
+        interacted = true;
       }
     }
   }
@@ -179,7 +180,7 @@ class PlayState extends FlxState
     enemies = null;
     survival_type = null;
     p1score = null;
-    inspected = false;
+    interacted = false;
     super.destroy();
 	}
 
@@ -196,7 +197,7 @@ class PlayState extends FlxState
 
     touch_test();
 
-    // trace(inspected);
+    // trace(interacted);
 
     FlxG.collide();
   }

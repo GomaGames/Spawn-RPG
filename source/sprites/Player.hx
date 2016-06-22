@@ -13,9 +13,9 @@ class PlayerInput {
   public static var down:FlxKey = FlxKey.DOWN;
   public static var left:FlxKey = FlxKey.LEFT;
   public static var right:FlxKey = FlxKey.RIGHT;
-  public static var inspect:FlxKey = FlxKey.ENTER;
-  public static var endInspect:FlxKey = FlxKey.SHIFT;
-  public static var interact:FlxKey = FlxKey.SPACE;
+  public static var interact:FlxKey = FlxKey.ENTER;
+  public static var endInteract:FlxKey = FlxKey.SHIFT;
+  public static var attack:FlxKey = FlxKey.SPACE;
 }
 
 class Player extends FlxSprite {
@@ -36,7 +36,7 @@ class Player extends FlxSprite {
   private var settings:{ skin:String, speed:Int };
   private var walkRot:Float;
   private var walkHopY:Float;
-  private var dialogue:DialogueBox;
+  public var dialogueBox:DialogueBox;
 
   public function new(state:PlayState, player_num:Int, x:Int, y:Int) {
     settings = player_num == 1 ? Settings.hero_1 : Settings.hero_2;
@@ -64,30 +64,30 @@ class Player extends FlxSprite {
     if(!this.state.paused) {
       movement();
     }
-    inspect();
     interact();
+    attack();
 
     super.update(elapsed);
   }
 
-  private inline function inspect():Void
+  public inline function interact():Void
     {
-      if(this.state.inspected) {
-        if(FlxG.keys.anyPressed([PlayerInput.inspect])) {
-          var dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.inspect_person.x, this.state.inspect_person.y);
+      if(this.state.interacted) {
+        if(FlxG.keys.anyPressed([PlayerInput.interact])) {
+          dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
           this.state.paused = true;
         }
       }
-      if(this.state.paused && FlxG.keys.anyPressed([PlayerInput.endInspect])) {
+      if(this.state.paused && FlxG.keys.anyPressed([PlayerInput.endInteract])) {
         this.state.paused = false;
-        dialogue.endDialogue();
+        dialogueBox.end_dialogue();
       }
     } 
 
-  private inline function interact():Void 
+  private inline function attack():Void 
     {
-      if(FlxG.keys.anyPressed([PlayerInput.interact])) {
-        trace('interact');
+      if(FlxG.keys.anyPressed([PlayerInput.attack])) {
+        trace('attacking');
       }
     } 
 
