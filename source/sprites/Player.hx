@@ -36,6 +36,7 @@ class Player extends FlxSprite{
   private var walkRot:Float;
   private var walkHopY:Float;
   public var dialogueBox:DialogueBox;
+  public var inventory:Array<Dynamic>;
 
   public function new(state:PlayState, player_num:Int, x:Int, y:Int) {
     settings = player_num == 1 ? Settings.hero_1 : Settings.hero_2;
@@ -48,6 +49,7 @@ class Player extends FlxSprite{
     this.centerOffsets();
     this.centerOrigin();
 
+    this.inventory = [];
     this.spawn_position = FlxPoint.weak(x, y);
     this.player_num = player_num;
     this.speed = settings.speed;
@@ -82,6 +84,13 @@ class Player extends FlxSprite{
           });
           // dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
           this.state.paused = true;
+        }
+      }
+      else if(this.state.collected != null) {
+        if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+          this.state.collected.collect(function() {
+            trace('item added to inventory');
+          });
         }
       }
     } 

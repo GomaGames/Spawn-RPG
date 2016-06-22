@@ -15,6 +15,7 @@ import sprites.DialogueBox;
 import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
+import sprites.CollectableSprite;
 
 class PlayState extends FlxState
 {
@@ -27,16 +28,20 @@ class PlayState extends FlxState
   public var survival_type:Bool; // true? only one life
   private var p1score:FlxText;
   public var interacted:InteractableSprite;
+  public var collected:CollectableSprite;
   public var paused:Bool;
   private var interactableSprites:List<InteractableSprite>;
+  private var collectables:List<CollectableSprite>;
 
 	override public function create():Void
 	{
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     interactableSprites = new List<InteractableSprite>();
+    collectables = new List<CollectableSprite>();
     survival_type = true;
     interacted = null;
+    collected = null;
     paused = false;
 		super.create();
     map = new Map(this);
@@ -106,6 +111,13 @@ class PlayState extends FlxState
       add(new_sprite);
     }
 
+    // collectable sprites
+    for( sprite in Spawn.collectables ) {
+      var new_sprite = new CollectableSprite(sprite.x, sprite.y, sprite.graphic);
+      collectables.add(new_sprite);
+      add(new_sprite);
+    }
+
     // object
     for( object in Spawn.objects ){
       // var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
@@ -166,6 +178,16 @@ class PlayState extends FlxState
     }
   }
 
+  private inline function item_pickup():Void //for interacting
+  {
+    for(sprite in collectables) {
+      if( FlxG.collide(player_1, sprite) ){
+        collected = sprite;
+        player_1.inventory.push(sprite);
+      }
+    }
+  }
+
   private inline function survival_check():Void
   {
     if( Lambda.filter([player_1], function(p){
@@ -194,6 +216,7 @@ class PlayState extends FlxState
     survival_type = null;
     p1score = null;
     interacted = null;
+    collected = null;
     super.destroy();
 	}
 
@@ -209,6 +232,8 @@ class PlayState extends FlxState
     interact_collision();
 
     touch_enemy();
+
+    item_pickup();
 
     FlxG.collide();
   }

@@ -43,6 +43,12 @@ typedef InteractableSprite = {
   graphic: String
 }
 
+typedef CollectableSprite = {
+  x : Int,
+  y : Int,
+  graphic: String
+}
+
 @:expose class Spawn {
 
   public static inline var DEFAULT_WALL_SKIN = "assets/images/17.png";
@@ -56,6 +62,7 @@ typedef InteractableSprite = {
   public static var enemies = new List<Enemy>();
   public static var interactableSprites = new List<InteractableSprite>();
   public static var objects = new List<Object>();
+  public static var collectables = new List<CollectableSprite>();
 
   public static inline function hero_1(x:Int, y:Int):Void
   {
@@ -141,6 +148,15 @@ typedef InteractableSprite = {
     });
   }
 
+  public static inline function collectableSprite(x:Int, y:Int, graphic:String):Void
+  {
+    collectables.add({
+      x : x,
+      y : y,
+      graphic: graphic
+    });
+  }
+
   public static inline function object(x:Int, y:Int, ?skin:String):Object
   {
     var newObj = new Object(x, y, skin);
@@ -187,6 +203,7 @@ typedef InteractableSprite = {
       //   }
       // };
       interactableSprite( 400, 50, "assets/images/04.png");
+      collectableSprite( 300, 200, "assets/images/37.png");
 
       // myObj.interact = function(){
       //   dialogue('something else');
