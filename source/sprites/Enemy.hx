@@ -3,7 +3,7 @@ package sprites;
 import flixel.FlxSprite;
 using flixel.util.FlxSpriteUtil;
 
-class Enemy extends FlxSprite implements IInteractable{
+class Enemy extends FlxSprite {
 
   public static inline var DEFAULT_SKIN = "assets/images/12.png";
   public static inline var DEFAULT_SPEED = 100;

@@ -36,6 +36,12 @@ typedef Enemy = {
   speed : Int
 }
 
+typedef InteractableSprite = {
+  x : Int,
+  y : Int,
+  graphic: String
+}
+
 @:expose class Spawn {
 
   public static inline var DEFAULT_WALL_SKIN = "assets/images/17.png";
@@ -47,6 +53,8 @@ typedef Enemy = {
   public static var pickups = new List<PlacePickup>();
   public static var walls = new List<Wall>();
   public static var enemies = new List<Enemy>();
+  public static var interactableSprites = new List<InteractableSprite>();
+
 
   public static inline function hero_1(x:Int, y:Int):Void
   {
@@ -123,6 +131,15 @@ typedef Enemy = {
     });
   }
 
+  public static inline function interactableSprite(x:Int, y:Int, graphic:String):Void
+  {
+    interactableSprites.add({
+      x : x,
+      y : y,
+      graphic: graphic
+    });
+  }
+
 #if neko
   private static var diddev:Bool = false;
   public static inline function dev():Void
@@ -145,6 +162,7 @@ typedef Enemy = {
       enemy( 500, 450 , "left");
       enemy( 400, 450 );
       diddev = true;
+      interactableSprite( 400, 50, "assets/images/04.png");
     }
   }
 #end

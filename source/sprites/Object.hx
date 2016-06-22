@@ -1,8 +1,6 @@
 package sprites;
 
-import flixel.FlxSprite;
-
-class Object extends FlxSprite implements IInteractable {
+class Object extends InteractableSprite {
 
   public static inline var DEFAULT_SKIN = "assets/images/44.png";
 
@@ -12,9 +10,5 @@ class Object extends FlxSprite implements IInteractable {
     this.updateHitbox();
     this.immovable = true;
   }
-
-  public function interact(cb:Void->Void):Void
-  {
-    cb();
-  }
+ 
 }

@@ -13,6 +13,7 @@ import sprites.Player;
 import sprites.Enemy;
 import sprites.DialogueBox;
 import sprites.pickups.Pickup;
+import sprites.InteractableSprite;
 
 class PlayState extends FlxState
 {
@@ -23,16 +24,17 @@ class PlayState extends FlxState
   private var enemies:List<Enemy>;
   public var survival_type:Bool; // true? only one life
   private var p1score:FlxText;
-  public var interact_person:FlxSprite;
-  public var interacted:Bool;
+  public var interacted:InteractableSprite;
   public var paused:Bool;
+  private var interactableSprites:List<InteractableSprite>;
 
 	override public function create():Void
 	{
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
+    interactableSprites = new List<InteractableSprite>();
     survival_type = true;
-    interacted = false;
+    interacted = null;
     paused = false;
 		super.create();
     map = new Map(this);
@@ -65,11 +67,6 @@ class PlayState extends FlxState
       add( wall );
     }
 
-    interact_person = new FlxSprite(400, 50, "assets/images/04.png");
-    interact_person.scale.set(.5,.5);
-    interact_person.immovable = true;
-    add(interact_person);
-
     // pickups
     for( pickup in Spawn.pickups ){
       var new_pickup:Pickup = switch(pickup.type){
@@ -98,6 +95,13 @@ class PlayState extends FlxState
       var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
       enemies.add(new_enemy);
       add(new_enemy);
+    }
+
+    // interactable sprites
+    for( sprite in Spawn.interactableSprites ) {
+      var new_sprite = new InteractableSprite(sprite.x, sprite.y, sprite.graphic);
+      interactableSprites.add(new_sprite);
+      add(new_sprite);
     }
 
     // heros
@@ -132,7 +136,7 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function touch_enemy():Void
+  private inline function interact_collision():Void
   {
     for( enemy in enemies ){
       for( hero in [player_1] ){
@@ -146,9 +150,9 @@ class PlayState extends FlxState
 
   private inline function touch_test():Void //for interacting
   {
-    for( hero in [player_1] ){
-      if( FlxG.collide(hero, interact_person) ){
-        interacted = true;
+    for(sprite in interactableSprites) {
+      if( FlxG.collide(player_1, sprite) ){
+        interacted = sprite;
       }
     }
   }
@@ -180,7 +184,7 @@ class PlayState extends FlxState
     enemies = null;
     survival_type = null;
     p1score = null;
-    interacted = false;
+    interacted = null;
     super.destroy();
 	}
 
@@ -193,7 +197,7 @@ class PlayState extends FlxState
 
     pickup_collision();
 
-    touch_enemy();
+    interact_collision();
 
     touch_test();
 
