@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxSprite;
+import sprites.Object;
 
 enum PickupType{
   GEM;
@@ -47,6 +48,7 @@ typedef Enemy = {
   public static var pickups = new List<PlacePickup>();
   public static var walls = new List<Wall>();
   public static var enemies = new List<Enemy>();
+  public static var objects = new List<Object>();
 
   public static inline function hero_1(x:Int, y:Int):Void
   {
@@ -123,27 +125,65 @@ typedef Enemy = {
     });
   }
 
+  public static inline function object(x:Int, y:Int, ?skin:String):Object
+  {
+    var newObj = new Object(x, y, skin);
+
+    objects.add(newObj);
+
+    return newObj;
+  }
+
 #if neko
   private static var diddev:Bool = false;
   public static inline function dev():Void
   {
     if( !diddev ){
       hero_1( 0, 50 );
-      hero_2( 400, 50 );
-      wall( 120, 240 );
-      wall( 160, 200 );
-      freeze( 200, 200 );
-      speed( 160, 100 );
-      slow( 160, 300 );
-      gem( 200, 100 );
-      gem( 200, 400 );
-      enemy( 650, 500 , "down");
-      wall( 650, 600 );
-      wall( 240, 0 );
-      enemy( 500, 550 , "right");
-      enemy( 600, 500 , "up");
-      enemy( 500, 450 , "left");
-      enemy( 400, 450 );
+      // hero_2( 400, 50 );
+      // wall( 120, 240 );
+      // wall( 160, 200 );
+      // freeze( 200, 200 );
+      // speed( 160, 100 );
+      // slow( 160, 300 );
+      // gem( 200, 100 );
+      // gem( 200, 400 );
+      // enemy( 650, 500 , "down");
+      // wall( 650, 600 );
+      // wall( 240, 0 );
+      // enemy( 500, 550 , "right");
+      // enemy( 600, 500 , "up");
+      // enemy( 500, 450 , "left");
+      // enemy( 400, 450 );
+
+      var quest_1_complete = false;
+      var quest_2_complete = false;
+      // new in RPG version
+      var myObj = object(300, 50, 'assets/images/17.png');
+      myObj.y = 300;
+      // myObj.interact = function(){
+      //   if(player.items.has('scroll')){
+      //     quest_1_complete = true;
+      //     dialogue('hello wall');
+      //   }else{
+
+      //     dialogue('hello wall');
+      //   }
+      // };
+
+
+      // myObj.interact = function(){
+      //   dialogue('something else');
+      // };
+
+
+      // victory_condition = function(){
+      //   return quest_1_complete && quest_2_complete;
+      // };
+
+
+
+      // need this for dev, just leave it, make sure it's always here
       diddev = true;
     }
   }

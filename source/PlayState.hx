@@ -12,6 +12,7 @@ import sprites.Map;
 import sprites.Player;
 import sprites.Enemy;
 import sprites.DialogueBox;
+import sprites.Object;
 import sprites.pickups.Pickup;
 
 class PlayState extends FlxState
@@ -21,6 +22,7 @@ class PlayState extends FlxState
   private var spawn_engine:Spawn;
   private var pickups:List<Pickup>;
   private var enemies:List<Enemy>;
+  private var object:List<Object>;
   public var survival_type:Bool; // true? only one life
   private var p1score:FlxText;
   public var interact_person:FlxSprite;
@@ -98,6 +100,13 @@ class PlayState extends FlxState
       var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
       enemies.add(new_enemy);
       add(new_enemy);
+    }
+
+    // object
+    for( object in Spawn.objects ){
+      // var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
+      Spawn.objects.add(object);
+      add(object);
     }
 
     // heros
