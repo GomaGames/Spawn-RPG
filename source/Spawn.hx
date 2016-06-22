@@ -55,7 +55,6 @@ typedef InteractableSprite = {
   public static var walls = new List<Wall>();
   public static var enemies = new List<Enemy>();
   public static var interactableSprites = new List<InteractableSprite>();
-
   public static var objects = new List<Object>();
 
   public static inline function hero_1(x:Int, y:Int):Void
@@ -188,7 +187,6 @@ typedef InteractableSprite = {
       //   }
       // };
       interactableSprite( 400, 50, "assets/images/04.png");
-
 
       // myObj.interact = function(){
       //   dialogue('something else');
