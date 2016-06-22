@@ -18,7 +18,7 @@ class PlayerInput {
   public static var attack:FlxKey = FlxKey.SPACE;
 }
 
-class Player extends FlxSprite {
+class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
   public static inline var DEFAULT_SKIN_1 = "assets/images/01.png";
