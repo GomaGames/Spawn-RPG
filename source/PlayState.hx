@@ -12,6 +12,7 @@ import sprites.Map;
 import sprites.Player;
 import sprites.Enemy;
 import sprites.DialogueBox;
+import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
 
@@ -22,6 +23,7 @@ class PlayState extends FlxState
   private var spawn_engine:Spawn;
   private var pickups:List<Pickup>;
   private var enemies:List<Enemy>;
+  private var object:List<Object>;
   public var survival_type:Bool; // true? only one life
   private var p1score:FlxText;
   public var interacted:InteractableSprite;
@@ -104,6 +106,13 @@ class PlayState extends FlxState
       add(new_sprite);
     }
 
+    // object
+    for( object in Spawn.objects ){
+      // var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
+      Spawn.objects.add(object);
+      add(object);
+    }
+
     // heros
     if( Spawn.hero_1_setting != null ){
       player_1 = new Player(this,1,Spawn.hero_1_setting.x,Spawn.hero_1_setting.y);
@@ -136,7 +145,7 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function interact_collision():Void
+  private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
       for( hero in [player_1] ){
@@ -148,7 +157,7 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function touch_test():Void //for interacting
+  private inline function interact_collision():Void //for interacting
   {
     for(sprite in interactableSprites) {
       if( FlxG.collide(player_1, sprite) ){
@@ -199,9 +208,7 @@ class PlayState extends FlxState
 
     interact_collision();
 
-    touch_test();
-
-    // trace(interacted);
+    touch_enemy();
 
     FlxG.collide();
   }
