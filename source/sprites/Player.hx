@@ -14,7 +14,6 @@ class PlayerInput {
   public static var left:FlxKey = FlxKey.LEFT;
   public static var right:FlxKey = FlxKey.RIGHT;
   public static var interact:FlxKey = FlxKey.ENTER;
-  public static var endInteract:FlxKey = FlxKey.SHIFT;
   public static var attack:FlxKey = FlxKey.SPACE;
 }
 
@@ -72,15 +71,15 @@ class Player extends FlxSprite{
 
   public inline function interact():Void
     {
-      if(this.state.interacted) {
-        if(FlxG.keys.anyPressed([PlayerInput.interact])) {
+      if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+        dialogueBox.end_dialogue();
+        this.state.paused = false;
+      }
+      else if(!this.state.paused && this.state.interacted) {
+        if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
           dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
           this.state.paused = true;
         }
-      }
-      if(this.state.paused && FlxG.keys.anyPressed([PlayerInput.endInteract])) {
-        this.state.paused = false;
-        dialogueBox.end_dialogue();
       }
     } 
 

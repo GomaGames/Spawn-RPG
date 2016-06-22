@@ -43,6 +43,7 @@ class DialogueBox extends FlxSprite{
 
   public inline function end_dialogue():Void
   {
+    state.remove(group);
     this.destroy();
   }
 }
