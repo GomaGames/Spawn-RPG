@@ -15,6 +15,7 @@ import sprites.DialogueBox;
 import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
+import flixel.math.FlxRect;
 
 class PlayState extends FlxState
 {
@@ -40,7 +41,7 @@ class PlayState extends FlxState
     paused = false;
 		super.create();
     map = new Map(this);
-    map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
+    map.makeGraphic( 20000, 20000, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
     Map.drawTopBar( this, map );
 
@@ -56,6 +57,10 @@ class PlayState extends FlxState
     Spawn.dev();
 #end
     spawnAll();
+
+    FlxG.camera.follow(player_1, TOPDOWN, 1);
+    // FlxG.camera.setScrollBoundsRect(0, 0, 200, 200);
+    // FlxG.worldBounds = new FlxRect(0, 0, map.width, map.height); Cannot access field or identifier worldBounds for writing??
 	}
 
   private inline function spawnAll():Void
