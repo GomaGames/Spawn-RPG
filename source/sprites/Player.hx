@@ -92,6 +92,7 @@ class Player extends FlxSprite{
         this.state.interacted.interact();
         // dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
         this.state.paused = true;
+        this.state.interacted = null;
       }
     }
   }

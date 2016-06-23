@@ -106,21 +106,13 @@ class PlayState extends FlxState
         interacted = sprite;
         trace('interacting');
       }
-      if( FlxObject.separate(player_1, sprite) ) {
-        interacted = null;
-        trace('not interacting');
-      }
     }
   }
 
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
-<<<<<<< HEAD
-      if( FlxG.collide(player_1, sprite, FlxObject.separate) ){
-=======
       if( FlxG.collide(player, sprite) ){
->>>>>>> bf88c9e54020e8b5ac136a8bdef82b0b6d816347
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
       }
@@ -160,9 +152,6 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    // if( player != null ){
-    //   p1score.text = Std.string(player.points);
-    // }
     super.update(elapsed);
 
     pickup_collision();
