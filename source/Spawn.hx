@@ -127,6 +127,17 @@ enum PickupType{
     return new_obj;
   }
 
+  /*
+     if x is null, set to center of the screen
+     if y is null, set to 20% from top of screen
+  */
+  public static inline function message(message:String, ?x:Int, ?y:Int):Void
+  {
+    if(x == null) x = 200; // #TODO
+    if(y == null) y = 200; // #TODO
+    state.show_dialogue(message, x, y);
+  }
+
 #if neko
   private static var diddev:Bool = false;
   public static inline function dev():Void
