@@ -20,24 +20,27 @@ import sprites.CollectableSprite;
 class PlayState extends FlxState
 {
   private var map:Map;
-  private var player_1:Player;
-  private var spawn_engine:Spawn;
-  private var pickups:List<Pickup>;
-  private var enemies:List<Enemy>;
-  private var object:List<Object>;
+  public var player:Player;
+  public var pickups:List<Pickup>;
+  public var enemies:List<Enemy>;
+  public var objects:List<Object>;
   public var survival_type:Bool; // true? only one life
-  private var p1score:FlxText;
   public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
   public var paused:Bool;
-  private var interactableSprites:List<InteractableSprite>;
-  private var collectables:List<CollectableSprite>;
+  public var interactableSprites:List<InteractableSprite>;
+  public var collectables:List<CollectableSprite>;
   public var collected_asset:String;
 
+  public function new(){
+    Spawn.state = this;
+    super();
+  }
 	override public function create():Void
 	{
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
+    objects = new List<Object>();
     interactableSprites = new List<InteractableSprite>();
     collectables = new List<CollectableSprite>();
     survival_type = true;
@@ -61,111 +64,35 @@ class PlayState extends FlxState
 #if neko
     Spawn.dev();
 #end
-    spawnAll();
 	}
-
-  private inline function spawnAll():Void
-  {
-    // walls
-    for( wall in Spawn.walls ){
-      var wall = new FlxSprite(wall.x, wall.y, wall.skin);
-      wall.immovable = true;
-      wall.scale.set(.5,.5);
-      wall.updateHitbox();
-      add( wall );
-    }
-
-    // pickups
-    for( pickup in Spawn.pickups ){
-      var new_pickup:Pickup = switch(pickup.type){
-
-        case GEM:
-          survival_type = false;
-          new sprites.pickups.Gem(pickup.x, pickup.y, pickup.skin, pickup.points);
-
-        case FREEZE:
-          new sprites.pickups.Freeze(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-        case SLOW:
-          new sprites.pickups.Slow(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-        case SPEED:
-          new sprites.pickups.Speed(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-      }
-
-      pickups.add(new_pickup);
-      add(new_pickup);
-    }
-
-    // enemies
-    for( enemy in Spawn.enemies ){
-      var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
-      enemies.add(new_enemy);
-      add(new_enemy);
-    }
-
-    // interactable sprites
-    for( sprite in Spawn.interactableSprites ) {
-      var new_sprite = new InteractableSprite(sprite.x, sprite.y, sprite.graphic);
-      interactableSprites.add(new_sprite);
-      add(new_sprite);
-    }
-
-    // collectable sprites
-    for( sprite in Spawn.collectables ) {
-      var new_sprite = new CollectableSprite(sprite.x, sprite.y, sprite.graphic);
-      collectables.add(new_sprite);
-      add(new_sprite);
-    }
-
-    // object
-    for( object in Spawn.objects ){
-      // var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
-      Spawn.objects.add(object);
-      add(object);
-    }
-
-    // heros
-    if( Spawn.hero_1_setting != null ){
-      player_1 = new Player(this,1,Spawn.hero_1_setting.x,Spawn.hero_1_setting.y);
-      add(player_1);
-    }
-
-  }
 
   private inline function pickup_collision():Void
   {
     for( pickup in pickups ){
-      for( hero in [player_1] ){
-        if( FlxG.collide(hero, pickup) ){
-          remove(pickup);
-          pickups.remove(pickup);
-          switch(Type.getClass(pickup)){
-            case sprites.pickups.Speed:
-              hero.speed_boost(pickup.DURATION);
-            case sprites.pickups.Slow:
-              hero.slow_down(pickup.DURATION);
-            case sprites.pickups.Freeze:
-              hero.freeze(pickup.DURATION);
-            case sprites.pickups.Gem:
-              hero.score(pickup.POINTS);
-              victory_check();
-          }
+      if( FlxG.collide(player, pickup) ){
+        remove(pickup);
+        pickups.remove(pickup);
+        switch(Type.getClass(pickup)){
+          case sprites.pickups.Speed:
+            player.speed_boost(pickup.DURATION);
+          case sprites.pickups.Slow:
+            player.slow_down(pickup.DURATION);
+          case sprites.pickups.Freeze:
+            player.freeze(pickup.DURATION);
+          case sprites.pickups.Gem:
+            player.score(pickup.POINTS);
+            // victory_check();
         }
       }
-
     }
   }
 
   private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
-      for( hero in [player_1] ){
-        if( FlxG.collide(hero, enemy) ){
-          hero.die();
-          survival_check();
-        }
+      if( FlxG.collide(player, enemy) ){
+        player.die();
+        survival_check();
       }
     }
   }
@@ -173,7 +100,7 @@ class PlayState extends FlxState
   private inline function interact_collision():Void //for interacting
   {
     for(sprite in interactableSprites) {
-      if( FlxG.collide(player_1, sprite) ){
+      if( FlxG.collide(player, sprite) ){
         interacted = sprite;
       }
     }
@@ -182,7 +109,7 @@ class PlayState extends FlxState
   private inline function item_pickup():Void //for interacting
   {
     for(sprite in collectables) {
-      if( FlxG.collide(player_1, sprite) ){
+      if( FlxG.collide(player, sprite) ){
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
       }
@@ -191,31 +118,30 @@ class PlayState extends FlxState
 
   private inline function survival_check():Void
   {
-    if( Lambda.filter([player_1], function(p){
-      return p.alive;
-    }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, EndState.EndType.NO_SURVIVORS));
+    if( !player.alive ){
+      FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
     }
   }
 
-  private inline function victory_check():Void
-  {
-    if( Lambda.filter(pickups, function(p){
-      return Type.getClass(p) == sprites.pickups.Gem;
-    }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, EndState.EndType.FINISH));
-    }
-  }
+  // private inline function victory_check():Void
+  // {
+  //   if( Lambda.filter(pickups, function(p){
+  //     return Type.getClass(p) == sprites.pickups.Gem;
+  //   }).length == 0 ){
+  //     FlxG.switchState(new EndState(player, EndState.EndType.FINISH));
+  //   }
+  // }
 
   override public function destroy():Void
 	{
     map = null;
-    player_1 = null;
-    spawn_engine = null;
+    player = null;
     pickups = null;
     enemies = null;
+    objects = null;
+    interactableSprites = null;
+    collectables = null;
     survival_type = null;
-    p1score = null;
     interacted = null;
     collected = null;
     super.destroy();
@@ -223,8 +149,8 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    // if( player_1 != null ){
-    //   p1score.text = Std.string(player_1.points);
+    // if( player != null ){
+    //   p1score.text = Std.string(player.points);
     // }
     super.update(elapsed);
 
