@@ -23,14 +23,16 @@ enum PickupType{
   public static var state:PlayState;
 
   // only allow if hero is not spawned yet
-  public static inline function hero(x:Int, y:Int):Void
+  public static inline function hero(x:Int, y:Int):Player
   {
     if(state.player == null){
-      var newPlayer = new Player(state,x,y);
-      state.player = newPlayer;
-      state.add(newPlayer);
+      var new_player = new Player(state,x,y);
+      state.player = new_player;
+      state.add(new_player);
+      return new_player;
     }else{
       trace("WARNING: hero is already spawned!");
+      return state.player;
     }
   }
 
@@ -131,7 +133,7 @@ enum PickupType{
   {
     if( !diddev ){
       var wall_skin = "assets/images/17.png";
-      hero( 0, 50 );
+      var player = hero( 0, 50 );
       object(120, 240, wall_skin);
       object(160, 200, wall_skin);
       object(650, 600, wall_skin);
@@ -151,16 +153,20 @@ enum PickupType{
       var quest_2_complete = false;
 
       // new in RPG version
+      var sword1 = collectableSprite( 300, 200, "assets/images/37.png");
+      var sword2 = collectableSprite( 50, 100, "assets/images/37.png");
 
       var enemyBomb = interactableSprite(300, 50, 'assets/images/09.png');
       enemyBomb.y = 300;
       enemyBomb.interact = function(){
-        e1.despawn();
-        e2.despawn();
-        e3.despawn();
-        e4.despawn();
-        e5.despawn();
-        enemyBomb.despawn();
+        if(player.hasItem(sword1) || player.hasItem(sword2)){
+          e1.despawn();
+          e2.despawn();
+          e3.despawn();
+          e4.despawn();
+          e5.despawn();
+          enemyBomb.despawn();
+        }
       }
 
       // myObj.interact = function(){
@@ -173,9 +179,7 @@ enum PickupType{
       //   }
       // };
       interactableSprite( 400, 50, "assets/images/04.png");
-      collectableSprite( 300, 200, "assets/images/37.png");
       collectableSprite( 100, 50, "assets/images/16.png");
-      collectableSprite( 50, 100, "assets/images/37.png");
 
       // myObj.interact = function(){
       //   dialogue('something else');
