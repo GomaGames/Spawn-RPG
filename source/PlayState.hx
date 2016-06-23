@@ -21,6 +21,7 @@ import flixel.FlxObject;
 class PlayState extends FlxState
 {
   private var map:Map;
+  public var dialogue_box:DialogueBox;
   public var player:Player;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
@@ -67,6 +68,11 @@ class PlayState extends FlxState
     Spawn.dev();
 #end
 	}
+
+  public inline function show_dialogue(message:String, x:Int, y:Int):Void
+  {
+    dialogue_box = new DialogueBox(this, message, x, y);
+  }
 
   private inline function pickup_collision():Void
   {
