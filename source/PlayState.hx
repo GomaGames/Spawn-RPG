@@ -16,28 +16,41 @@ import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
 import flixel.math.FlxRect;
+import sprites.CollectableSprite;
+import flixel.FlxObject;
+import flixel.math.FlxPoint;
 
 class PlayState extends FlxState
 {
   private var map:Map;
-  private var player_1:Player;
-  private var spawn_engine:Spawn;
-  private var pickups:List<Pickup>;
-  private var enemies:List<Enemy>;
-  private var object:List<Object>;
-  public var survival_type:Bool; // true? only one life
-  private var p1score:FlxText;
-  public var interacted:InteractableSprite;
-  public var paused:Bool;
-  private var interactableSprites:List<InteractableSprite>;
+  public var dialogue_box:DialogueBox;
+  public var player:Player;
+  public var pickups:List<Pickup>;
+  public var enemies:List<Enemy>;
+  public var objects:List<Object>;
+  public var interactableSprites:List<InteractableSprite>;
+  public var collectables:List<CollectableSprite>;
 
+  public var paused:Bool;
+  public var survival_type:Bool; // true? only one life
+  public var interacted:InteractableSprite;
+  public var collected:CollectableSprite;
+  public var collected_asset:String;
+
+  public function new(){
+    Spawn.state = this;
+    super();
+  }
 	override public function create():Void
 	{
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
+    objects = new List<Object>();
     interactableSprites = new List<InteractableSprite>();
+    collectables = new List<CollectableSprite>();
     survival_type = true;
     interacted = null;
+    collected = null;
     paused = false;
 		super.create();
     map = new Map(this);
@@ -49,164 +62,109 @@ class PlayState extends FlxState
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
 
-    p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
-    p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add(p1score);
+    // p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
+    // p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    // add(p1score);
 
 #if neko
     Spawn.dev();
 #end
-    spawnAll();
 
-    FlxG.camera.follow(player_1, TOPDOWN, 1);
+    FlxG.camera.follow(player, TOPDOWN, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, 200, 200);
     // FlxG.worldBounds = new FlxRect(0, 0, map.width, map.height); Cannot access field or identifier worldBounds for writing??
 	}
 
-  private inline function spawnAll():Void
+  public inline function show_dialogue(message:String, x:Int, y:Int):Void
   {
-    // walls
-    for( wall in Spawn.walls ){
-      var wall = new FlxSprite(wall.x, wall.y, wall.skin);
-      wall.immovable = true;
-      wall.scale.set(.5,.5);
-      wall.updateHitbox();
-      add( wall );
-    }
-
-    // pickups
-    for( pickup in Spawn.pickups ){
-      var new_pickup:Pickup = switch(pickup.type){
-
-        case GEM:
-          survival_type = false;
-          new sprites.pickups.Gem(pickup.x, pickup.y, pickup.skin, pickup.points);
-
-        case FREEZE:
-          new sprites.pickups.Freeze(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-        case SLOW:
-          new sprites.pickups.Slow(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-        case SPEED:
-          new sprites.pickups.Speed(pickup.x, pickup.y, pickup.skin, pickup.duration);
-
-      }
-
-      pickups.add(new_pickup);
-      add(new_pickup);
-    }
-
-    // enemies
-    for( enemy in Spawn.enemies ){
-      var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
-      enemies.add(new_enemy);
-      add(new_enemy);
-    }
-
-    // interactable sprites
-    for( sprite in Spawn.interactableSprites ) {
-      var new_sprite = new InteractableSprite(sprite.x, sprite.y, sprite.graphic);
-      interactableSprites.add(new_sprite);
-      add(new_sprite);
-    }
-
-    // object
-    for( object in Spawn.objects ){
-      // var new_enemy = new Enemy(this, enemy.x, enemy.y, enemy.speed, enemy.skin, enemy.direction);
-      Spawn.objects.add(object);
-      add(object);
-    }
-
-    // heros
-    if( Spawn.hero_1_setting != null ){
-      player_1 = new Player(this,1,Spawn.hero_1_setting.x,Spawn.hero_1_setting.y);
-      add(player_1);
-    }
-
+    dialogue_box = new DialogueBox(this, message, x, y);
   }
 
   private inline function pickup_collision():Void
   {
     for( pickup in pickups ){
-      for( hero in [player_1] ){
-        if( FlxG.collide(hero, pickup) ){
-          remove(pickup);
-          pickups.remove(pickup);
-          switch(Type.getClass(pickup)){
-            case sprites.pickups.Speed:
-              hero.speed_boost(pickup.DURATION);
-            case sprites.pickups.Slow:
-              hero.slow_down(pickup.DURATION);
-            case sprites.pickups.Freeze:
-              hero.freeze(pickup.DURATION);
-            case sprites.pickups.Gem:
-              hero.score(pickup.POINTS);
-              victory_check();
-          }
+      if( FlxG.collide(player, pickup) ){
+        remove(pickup);
+        pickups.remove(pickup);
+        switch(Type.getClass(pickup)){
+          case sprites.pickups.Speed:
+            player.speed_boost(pickup.DURATION);
+          case sprites.pickups.Slow:
+            player.slow_down(pickup.DURATION);
+          case sprites.pickups.Freeze:
+            player.freeze(pickup.DURATION);
+          case sprites.pickups.Gem:
+            player.score(pickup.POINTS);
+            // victory_check();
         }
       }
-
     }
   }
 
   private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
-      for( hero in [player_1] ){
-        if( FlxG.collide(hero, enemy) ){
-          hero.die();
-          survival_check();
-        }
+      if( FlxG.collide(player, enemy) ){
+        player.die();
+        survival_check();
       }
     }
   }
 
-  private inline function interact_collision():Void //for interacting
+  private inline function interact_collision():Void
   {
     for(sprite in interactableSprites) {
-      if( FlxG.collide(player_1, sprite) ){
+      if( FlxG.collide(player, sprite) ){
         interacted = sprite;
+        trace('interacting');
+      }
+    }
+  }
+
+  private inline function item_pickup():Void
+  {
+    for(sprite in collectables) {
+      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);  
+      if(player.pixelsOverlapPoint(spritePosition)){
+        collected = sprite;
+        collected_asset = sprite.graphic.assetsKey;
       }
     }
   }
 
   private inline function survival_check():Void
   {
-    if( Lambda.filter([player_1], function(p){
-      return p.alive;
-    }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, EndState.EndType.NO_SURVIVORS));
+    if( !player.alive ){
+      FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
     }
   }
 
-  private inline function victory_check():Void
-  {
-    if( Lambda.filter(pickups, function(p){
-      return Type.getClass(p) == sprites.pickups.Gem;
-    }).length == 0 ){
-      FlxG.switchState(new EndState(player_1, EndState.EndType.FINISH));
-    }
-  }
+  // private inline function victory_check():Void
+  // {
+  //   if( Lambda.filter(pickups, function(p){
+  //     return Type.getClass(p) == sprites.pickups.Gem;
+  //   }).length == 0 ){
+  //     FlxG.switchState(new EndState(player, EndState.EndType.FINISH));
+  //   }
+  // }
 
   override public function destroy():Void
 	{
     map = null;
-    player_1 = null;
-    spawn_engine = null;
+    player = null;
     pickups = null;
     enemies = null;
+    objects = null;
+    interactableSprites = null;
+    collectables = null;
     survival_type = null;
-    p1score = null;
     interacted = null;
+    collected = null;
     super.destroy();
 	}
 
   override public function update(elapsed:Float):Void
   {
-    if( player_1 != null ){
-      p1score.text = Std.string(player_1.points);
-    }
     super.update(elapsed);
 
     pickup_collision();
@@ -214,6 +172,8 @@ class PlayState extends FlxState
     interact_collision();
 
     touch_enemy();
+
+    item_pickup();
 
     FlxG.collide();
   }

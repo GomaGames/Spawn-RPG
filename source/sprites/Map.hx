@@ -40,11 +40,8 @@ class Map extends FlxSprite {
     topBar.makeGraphic(Main.STAGE_WIDTH, GRID_SIZE, TOPBAR_GREY);
     topBar.immovable = true;
     state.add( topBar );
-    var hero1Text = new FlxText( 2 * ( Main.STAGE_WIDTH / GRID_LINES_X ), 10, "Hero 1");
-    var hero2Text = new FlxText( Main.STAGE_WIDTH - 4 * ( Main.STAGE_WIDTH / GRID_LINES_X ), 10, "Hero 2");
-    hero1Text.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    hero2Text.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    state.add( hero1Text );
-    state.add( hero2Text );
+    var inventoryText = new FlxText( 2 * ( Main.STAGE_WIDTH / GRID_LINES_X ), 10, "Inventory");
+    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    state.add( inventoryText );
   }
 }

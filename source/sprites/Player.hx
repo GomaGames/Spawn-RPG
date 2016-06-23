@@ -6,6 +6,13 @@ import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxPoint;
 import flixel.util.FlxTimer;
+import flixel.group.FlxSpriteGroup;
+import flixel.addons.ui.FlxUI9SliceSprite;
+import flash.geom.Rectangle;
+import flixel.text.FlxText;
+import sprites.Map;
+
+using Lambda;
 
 class PlayerInput {
   // map Int-> Player number
@@ -20,26 +27,24 @@ class PlayerInput {
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
-  public static inline var DEFAULT_SKIN_1 = "assets/images/01.png";
-  public static inline var DEFAULT_SKIN_2 = "assets/images/04.png";
+  public static inline var DEFAULT_SKIN = "assets/images/01.png";
   public static inline var DEFAULT_SPEED = 200;
 
   public var points:Int;
 
   private var state:PlayState;
-  private var player_num:Int;
   private var graphic_path:String;
   private var attacking:Bool;
+  private var base_speed:Int;
   private var speed:Int;
   private var spawn_position:FlxPoint;
-  private var settings:{ skin:String, speed:Int };
   private var walkRot:Float;
   private var walkHopY:Float;
-  public var dialogueBox:DialogueBox;
+  public var inventory:List<CollectableSprite>;
+  public var inventoryDisplay:flixel.group.FlxSpriteGroup;
 
-  public function new(state:PlayState, player_num:Int, x:Int, y:Int) {
-    settings = player_num == 1 ? Settings.hero_1 : Settings.hero_2;
-    super(x, y, settings.skin);
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
+    super(x, y, skin);
 
     this.scale.set(.5,.5);
     this.updateHitbox();
@@ -48,9 +53,14 @@ class Player extends FlxSprite{
     this.centerOffsets();
     this.centerOrigin();
 
+    this.inventoryDisplay = new FlxSpriteGroup(80,0);
+    this.inventoryDisplay.color = 0xffffff;
+    state.add(this.inventoryDisplay);
+
+    this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
-    this.player_num = player_num;
-    this.speed = settings.speed;
+    this.base_speed = DEFAULT_SPEED;
+    this.speed = DEFAULT_SPEED;
     this.drag = FlxPoint.weak(this.speed*10, this.speed*10);
     this.points = 0;
     this.walkRot = 0;
@@ -65,33 +75,58 @@ class Player extends FlxSprite{
     }
     interact();
     attack();
+    collect_item();
 
     super.update(elapsed);
   }
 
   public inline function interact():Void
-    {
-      if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        // dialogueBox.end_dialogue();
-        this.state.paused = false;
+  {
+    if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+      this.state.paused = false;
+      // remove dialogue box
+      if(this.state.dialogue_box != null){
+        this.state.dialogue_box.close();
       }
-      else if(!this.state.paused && this.state.interacted != null) {
-        if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-          this.state.interacted.interact(function() {
-            trace('interacted');
-          });
-          // dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
-          this.state.paused = true;
-        }
+    } else if(!this.state.paused && this.state.interacted != null) {
+      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+        this.state.interacted.interact();
+        this.state.paused = true;
+        this.state.interacted = null;
       }
-    } 
+    }
+  }
 
-  private inline function attack():Void 
-    {
-      if(FlxG.keys.anyPressed([PlayerInput.attack])) {
-        trace('attacking');
+  public inline function collect_item():Void
+  {
+    if(this.state.collected != null) {
+      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+        var item = this.state.collected;
+        item.y = this.inventoryDisplay.y;
+        for(i in 0...this.inventory.length) {
+          item.x = this.inventoryDisplay.x + 24*(i+1);
+        }
+        item.scale.set(.3,.3);
+        item.immovable = true;
+        this.inventory.push(item);
+        this.inventoryDisplay.add(item);
+        this.state.collected = null;
+        trace('item added to inventory');
       }
-    } 
+    }
+  }
+
+  public inline function hasItem(inventory_item:CollectableSprite):Bool
+  {
+    return this.inventory.has(inventory_item);
+  }
+
+  private inline function attack():Void
+  {
+    if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
+      trace('attacking');
+    }
+  }
 
   private inline function movement():Void
   {
@@ -148,17 +183,17 @@ class Player extends FlxSprite{
 
   public inline function speed_boost(duration:Float):Void
   {
-    this.speed = settings.speed * 2;
+    this.speed = base_speed * 2;
     new FlxTimer().start(duration, function(timer){
-      this.speed = settings.speed;
+      this.speed = base_speed;
     });
   }
 
   public inline function slow_down(duration:Float):Void
   {
-    this.speed = Std.int(settings.speed / 2);
+    this.speed = Std.int(base_speed / 2);
     new FlxTimer().start(duration, function(timer){
-      this.speed = settings.speed;
+      this.speed = base_speed;
     });
   }
 
@@ -168,7 +203,7 @@ class Player extends FlxSprite{
     this.acceleration.set(0,0);
     this.speed = 0;
     new FlxTimer().start(duration, function(timer){
-      this.speed = settings.speed;
+      this.speed = base_speed;
     });
   }
 
