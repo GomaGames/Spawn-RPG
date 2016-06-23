@@ -16,6 +16,7 @@ import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
 import sprites.CollectableSprite;
+import flixel.FlxObject;
 
 class PlayState extends FlxState
 {
@@ -170,19 +171,24 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function interact_collision():Void //for interacting
+  private inline function interact_collision():Void
   {
     for(sprite in interactableSprites) {
       if( FlxG.collide(player_1, sprite) ){
         interacted = sprite;
+        trace('interacting');
+      }
+      if( FlxObject.separate(player_1, sprite) ) {
+        interacted = null;
+        trace('not interacting');
       }
     }
   }
 
-  private inline function item_pickup():Void //for interacting
+  private inline function item_pickup():Void
   {
     for(sprite in collectables) {
-      if( FlxG.collide(player_1, sprite) ){
+      if( FlxG.collide(player_1, sprite, FlxObject.separate) ){
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
       }
