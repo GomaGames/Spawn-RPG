@@ -83,15 +83,15 @@ class Player extends FlxSprite{
 
   public inline function interact():Void
   {
-    if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-      // dialogueBox.end_dialogue();
-      this.state.paused = false;
-    }
-    else if(!this.state.paused && this.state.interacted != null) {
+    // if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+    //   // dialogueBox.end_dialogue();
+    //   this.state.paused = false;
+    // }
+    if(this.state.interacted != null) {
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
         this.state.interacted.interact();
         // dialogueBox = new DialogueBox(this.state, 'Hello, Hero!\nlook how awesome this dialogue box is!', this.state.interact_person.x, this.state.interact_person.y);
-        this.state.paused = true;
+        // this.state.paused = true;
         this.state.interacted = null;
       }
     }

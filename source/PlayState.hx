@@ -17,6 +17,7 @@ import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
 import sprites.CollectableSprite;
 import flixel.FlxObject;
+import flixel.math.FlxPoint;
 
 class PlayState extends FlxState
 {
@@ -112,7 +113,8 @@ class PlayState extends FlxState
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
-      if( FlxG.collide(player, sprite) ){
+      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);  
+      if(player.pixelsOverlapPoint(spritePosition)){
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
       }

@@ -9,6 +9,7 @@ class CollectableSprite extends InteractableSprite implements IDespawnableSprite
     this.scale.set(.5,.5);
     this.updateHitbox();
     this.immovable = true;
+    this.solid = false;
   }
 
   public override function despawn(){
