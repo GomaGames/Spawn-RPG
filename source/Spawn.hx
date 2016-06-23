@@ -37,6 +37,7 @@ enum PickupType{
   public static inline function freeze(x:Int, y:Int, ?duration:Int, ?skin:String):Freeze
   {
     var new_pickup = new Freeze(
+      state,
       x,
       y + TOPBAR_Y_OFFSET,
       skin != null ? skin : Settings.freeze.default_skin,
@@ -49,6 +50,7 @@ enum PickupType{
   public static inline function speed(x:Int, y:Int, ?duration:Int, ?skin:String):Speed
   {
     var new_pickup = new Speed(
+      state,
       x,
       y + TOPBAR_Y_OFFSET,
       skin != null ? skin : Settings.speed.default_skin,
@@ -62,6 +64,7 @@ enum PickupType{
   public static inline function slow(x:Int, y:Int, ?duration:Int, ?skin:String):Slow
   {
     var new_pickup = new Slow(
+      state,
       x,
       y + TOPBAR_Y_OFFSET,
       skin != null ? skin : Settings.slow.default_skin,
@@ -74,6 +77,7 @@ enum PickupType{
   public static inline function gem(x:Int, y:Int, ?points:Int, ?skin:String):Gem
   {
     var new_pickup = new Gem(
+      state,
       x,
       y + TOPBAR_Y_OFFSET,
       skin != null ? skin : Settings.gem.default_skin,
@@ -99,7 +103,7 @@ enum PickupType{
 
   public static inline function interactableSprite(x:Int, y:Int, graphic:String):InteractableSprite
   {
-    var new_sprite = new InteractableSprite(x, y + TOPBAR_Y_OFFSET, graphic);
+    var new_sprite = new InteractableSprite(state, x, y + TOPBAR_Y_OFFSET, graphic);
     state.interactableSprites.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -107,7 +111,7 @@ enum PickupType{
 
   public static inline function collectableSprite(x:Int, y:Int, graphic:String):CollectableSprite
   {
-    var new_sprite = new CollectableSprite(x, y + TOPBAR_Y_OFFSET, graphic);
+    var new_sprite = new CollectableSprite(state, x, y + TOPBAR_Y_OFFSET, graphic);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -115,7 +119,7 @@ enum PickupType{
 
   public static inline function object(x:Int, y:Int, ?skin:String):Object
   {
-    var new_obj = new Object(x, y + TOPBAR_Y_OFFSET, skin);
+    var new_obj = new Object(state, x, y + TOPBAR_Y_OFFSET, skin);
     state.objects.add(new_obj);
     state.add(new_obj);
     return new_obj;
@@ -137,11 +141,18 @@ enum PickupType{
       slow( 160, 300 );
       gem( 200, 100 );
       gem( 200, 400 );
-      enemy( 650, 500 , "down");
-      enemy( 500, 550 , "right");
-      enemy( 600, 500 , "up");
-      enemy( 500, 450 , "left");
-      enemy( 400, 450 );
+      var e1 = enemy( 650, 500 , "down");
+      var e2 = enemy( 500, 550 , "right");
+      var e3 = enemy( 600, 500 , "up");
+      var e4 = enemy( 500, 450 , "left");
+      var e5 = enemy( 400, 450 );
+
+      var tmpTimer = new haxe.Timer(3000);
+      tmpTimer.run = function(){
+        e1.despawn();
+        e2.despawn();
+        e3.despawn();
+      }
 
       var quest_1_complete = false;
       var quest_2_complete = false;
