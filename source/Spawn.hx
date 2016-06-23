@@ -143,7 +143,7 @@ enum PickupType{
   public static inline function dev():Void
   {
     if( !diddev ){
-      var wall_skin = "assets/images/17.png";
+      var wall_skin = "assets/images/terrain-wall-stone.png";
       var player = hero( 0, 50 );
       object(120, 240, wall_skin);
       object(160, 200, wall_skin);
@@ -164,19 +164,19 @@ enum PickupType{
       var quest_2_complete = false;
 
       // new in RPG version
-      collectableSprite( 200, 5, "assets/images/16.png");
-      var sword1 = collectableSprite( 300, 200, "assets/images/37.png");
-      var sword2 = collectableSprite( 50, 100, "assets/images/37.png");
-      var girl = interactableSprite( 400, 50, "assets/images/04.png");
+      collectableSprite( 200, 5, "assets/images/item-gray-egg.png");
+      var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-idle.png");
+      var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
+      var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
       girl.interact = function(){
         girl.talk('hello Hero!');
       }
-      var messageFlag = interactableSprite( 100, 50, "assets/images/40.png");
+      var messageFlag = interactableSprite( 100, 50, "assets/images/object-flag-orange.png");
       messageFlag.interact = function(){
         message('bring the sword to the red square.');
       }
 
-      var enemyBomb = interactableSprite(300, 50, 'assets/images/09.png');
+      var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-rock-cube-orange.png');
       enemyBomb.y = 300;
       enemyBomb.interact = function(){
         if(player.hasItem(sword1) || player.hasItem(sword2)){

@@ -5,7 +5,7 @@ using flixel.util.FlxSpriteUtil;
 
 class Enemy extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/12.png";
+  public static inline var DEFAULT_SKIN = "assets/images/creature-robot-blue.png";
   public static inline var DEFAULT_SPEED = 100;
   public static inline var UP = "up";
   public static inline var DOWN = "down";
