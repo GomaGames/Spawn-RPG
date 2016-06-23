@@ -147,18 +147,22 @@ enum PickupType{
       var e4 = enemy( 500, 450 , "left");
       var e5 = enemy( 400, 450 );
 
-      var tmpTimer = new haxe.Timer(3000);
-      tmpTimer.run = function(){
+      var quest_1_complete = false;
+      var quest_2_complete = false;
+
+      // new in RPG version
+
+      var enemyBomb = interactableSprite(300, 50, 'assets/images/09.png');
+      enemyBomb.y = 300;
+      enemyBomb.interact = function(){
         e1.despawn();
         e2.despawn();
         e3.despawn();
+        e4.despawn();
+        e5.despawn();
+        enemyBomb.despawn();
       }
 
-      var quest_1_complete = false;
-      var quest_2_complete = false;
-      // new in RPG version
-      var myObj = object(300, 50, 'assets/images/17.png');
-      myObj.y = 300;
       // myObj.interact = function(){
       //   if(player.items.has('scroll')){
       //     quest_1_complete = true;

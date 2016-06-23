@@ -14,10 +14,7 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
     this.updateHitbox();
   }
 
-  public function interact(cb:Void->Void):Void
-  {
-    cb();
-  }
+  public dynamic function interact():Void{ }
 
   public function despawn(){
     this.state.interactableSprites.remove(this);
