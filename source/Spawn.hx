@@ -164,8 +164,17 @@ enum PickupType{
       var quest_2_complete = false;
 
       // new in RPG version
+      collectableSprite( 200, 5, "assets/images/16.png");
       var sword1 = collectableSprite( 300, 200, "assets/images/37.png");
       var sword2 = collectableSprite( 50, 100, "assets/images/37.png");
+      var girl = interactableSprite( 400, 50, "assets/images/04.png");
+      girl.interact = function(){
+        girl.talk('hello Hero!');
+      }
+      var messageFlag = interactableSprite( 100, 50, "assets/images/40.png");
+      messageFlag.interact = function(){
+        message('bring the sword to the red square.');
+      }
 
       var enemyBomb = interactableSprite(300, 50, 'assets/images/09.png');
       enemyBomb.y = 300;
@@ -189,8 +198,6 @@ enum PickupType{
       //     dialogue('hello wall');
       //   }
       // };
-      interactableSprite( 400, 50, "assets/images/04.png");
-      collectableSprite( 100, 50, "assets/images/16.png");
 
       // myObj.interact = function(){
       //   dialogue('something else');
