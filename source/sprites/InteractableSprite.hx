@@ -16,6 +16,11 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   public dynamic function interact():Void{ }
 
+  public function talk(message:String):Void
+  {
+    this.state.show_dialogue(message, Std.int(this.x), Std.int(this.y));
+  }
+
   public function despawn(){
     this.state.interactableSprites.remove(this);
     this.destroy();
