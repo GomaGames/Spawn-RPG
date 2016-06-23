@@ -11,12 +11,6 @@ class CollectableSprite extends InteractableSprite implements IDespawnableSprite
     this.immovable = true;
   }
 
-  public function collect(cb:Void->Void):Void
-  {
-    cb();
-    this.despawn();
-  }
-
   public override function despawn(){
     this.state.collectables.remove(this);
     this.destroy();
