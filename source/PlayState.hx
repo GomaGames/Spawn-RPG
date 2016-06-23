@@ -43,6 +43,8 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+    FlxG.camera.setScale(2, 2);
+    FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     objects = new List<Object>();
@@ -54,7 +56,7 @@ class PlayState extends FlxState
     paused = false;
 		super.create();
     map = new Map(this);
-    map.makeGraphic( 20000, 20000, Main.BACKGROUND_GREY );
+    map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
     Map.drawTopBar( this, map );
 
@@ -62,17 +64,12 @@ class PlayState extends FlxState
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
 
-    // p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
-    // p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    // add(p1score);
-
 #if neko
     Spawn.dev();
 #end
-
+    
     FlxG.camera.follow(player, TOPDOWN, 1);
-    // FlxG.camera.setScrollBoundsRect(0, 0, 200, 200);
-    // FlxG.worldBounds = new FlxRect(0, 0, map.width, map.height); Cannot access field or identifier worldBounds for writing??
+    // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
 	}
 
   public inline function show_dialogue(message:String, x:Int, y:Int):Void

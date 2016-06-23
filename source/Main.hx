@@ -6,8 +6,8 @@ import openfl.display.Sprite;
 import flixel.util.FlxColor;
 class Main extends Sprite
 {
-  public static inline var STAGE_WIDTH = 920;
-  public static inline var STAGE_HEIGHT = 680;
+  public static inline var STAGE_WIDTH = 1840;
+  public static inline var STAGE_HEIGHT = 1360;
   public static var BACKGROUND_GREY:FlxColor = FlxColor.fromString('#333333');
   public static var FONT_GREY:FlxColor = FlxColor.fromString('#6d6e70');
   public static var FONT_RED:FlxColor = FlxColor.fromString('#e76924');
@@ -21,6 +21,7 @@ class Main extends Sprite
     // addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, EndState, null, null, null, true));
 		addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, TitleState, null, null, null, true));
     FlxG.camera.antialiasing = true;
+    FlxG.camera.setScale(2, 2);
 
   }
 }
