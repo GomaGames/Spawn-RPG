@@ -8,22 +8,9 @@ import sprites.pickups.*;
 
   public static var time_limit = 40; // seconds
 
-  public static var hero_1 = {
-    skin : Player.DEFAULT_SKIN_1,
-    speed : Player.DEFAULT_SPEED
-  };
-  public static var hero_2 = {
-    skin : Player.DEFAULT_SKIN_1,
-    speed : Player.DEFAULT_SPEED
-  };
-
   public static var enemy = {
     default_skin : Enemy.DEFAULT_SKIN,
     default_speed : Enemy.DEFAULT_SPEED
-  }
-
-  public static var wall = {
-    default_skin : Spawn.DEFAULT_WALL_SKIN
   }
 
   public static var gem = {
