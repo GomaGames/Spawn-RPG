@@ -24,12 +24,13 @@ class PlayState extends FlxState
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
   public var objects:List<Object>;
+  public var interactableSprites:List<InteractableSprite>;
+  public var collectables:List<CollectableSprite>;
+
+  public var paused:Bool;
   public var survival_type:Bool; // true? only one life
   public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
-  public var paused:Bool;
-  public var interactableSprites:List<InteractableSprite>;
-  public var collectables:List<CollectableSprite>;
   public var collected_asset:String;
 
   public function new(){

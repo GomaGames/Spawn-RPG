@@ -3,7 +3,7 @@ package sprites;
 import flixel.FlxSprite;
 using flixel.util.FlxSpriteUtil;
 
-class Enemy extends FlxSprite {
+class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public static inline var DEFAULT_SKIN = "assets/images/12.png";
   public static inline var DEFAULT_SPEED = 100;
@@ -38,6 +38,11 @@ class Enemy extends FlxSprite {
   public function interact(cb:Void->Void):Void
   {
     cb();
+  }
+
+  public function despawn(){
+    this.state.enemies.remove(this);
+    this.destroy();
   }
 
   public override function update(_:Float):Void
