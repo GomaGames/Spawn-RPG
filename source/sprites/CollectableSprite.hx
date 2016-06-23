@@ -1,20 +1,19 @@
 package sprites;
 
-class CollectableSprite extends InteractableSprite {
+class CollectableSprite extends InteractableSprite implements IDespawnableSprite{
 
   public static inline var DEFAULT_SKIN = "assets/images/37.png";
 
-  public function new(x:Int, y:Int, graphic:String){
-    super(x, y, graphic);
+  public function new(state:PlayState, x:Int, y:Int, graphic:String){
+    super(state, x, y, graphic);
     this.scale.set(.5,.5);
     this.updateHitbox();
     this.immovable = true;
   }
 
-  public function collect(cb:Void->Void):Void
-  {
+  public override function despawn(){
+    this.state.collectables.remove(this);
     this.destroy();
-    cb();
   }
- 
+
 }
