@@ -32,6 +32,7 @@ class PlayState extends FlxState
   public var paused:Bool;
   private var interactableSprites:List<InteractableSprite>;
   private var collectables:List<CollectableSprite>;
+  public var collected_asset:String;
 
 	override public function create():Void
 	{
@@ -53,9 +54,9 @@ class PlayState extends FlxState
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
 
-    p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
-    p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add(p1score);
+    // p1score = new FlxText( Main.STAGE_WIDTH - 2 * ( Main.STAGE_WIDTH / Map.GRID_LINES_X ) , 10, '0');
+    // p1score.setFormat( "Arial", 18, Main.FONT_BLUE, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    // add(p1score);
 
 #if neko
     Spawn.dev();
@@ -183,7 +184,7 @@ class PlayState extends FlxState
     for(sprite in collectables) {
       if( FlxG.collide(player_1, sprite) ){
         collected = sprite;
-        player_1.inventory.push(sprite);
+        collected_asset = sprite.graphic.assetsKey;
       }
     }
   }
@@ -222,9 +223,9 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    if( player_1 != null ){
-      p1score.text = Std.string(player_1.points);
-    }
+    // if( player_1 != null ){
+    //   p1score.text = Std.string(player_1.points);
+    // }
     super.update(elapsed);
 
     pickup_collision();

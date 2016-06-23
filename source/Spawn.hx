@@ -204,6 +204,8 @@ typedef CollectableSprite = {
       // };
       interactableSprite( 400, 50, "assets/images/04.png");
       collectableSprite( 300, 200, "assets/images/37.png");
+      collectableSprite( 100, 50, "assets/images/16.png");
+      collectableSprite( 50, 100, "assets/images/37.png");
 
       // myObj.interact = function(){
       //   dialogue('something else');
