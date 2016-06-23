@@ -12,6 +12,8 @@ import flash.geom.Rectangle;
 import flixel.text.FlxText;
 import sprites.Map;
 
+using Lambda;
+
 class PlayerInput {
   // map Int-> Player number
   public static var up:FlxKey = FlxKey.UP;
@@ -39,7 +41,7 @@ class Player extends FlxSprite{
   private var walkRot:Float;
   private var walkHopY:Float;
   public var dialogueBox:DialogueBox;
-  public var inventory:Array<Dynamic>;
+  public var inventory:List<CollectableSprite>;
   public var inventoryDisplay:flixel.group.FlxSpriteGroup;
 
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
@@ -52,11 +54,11 @@ class Player extends FlxSprite{
     this.centerOffsets();
     this.centerOrigin();
 
-    this.inventoryDisplay = new FlxSpriteGroup(80,-20);
+    this.inventoryDisplay = new FlxSpriteGroup(80,0);
     this.inventoryDisplay.color = 0xffffff;
     state.add(this.inventoryDisplay);
 
-    this.inventory = [];
+    this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
     this.base_speed = DEFAULT_SPEED;
     this.speed = DEFAULT_SPEED;
@@ -98,20 +100,24 @@ class Player extends FlxSprite{
   {
     if(this.state.collected != null) {
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        this.state.collected.collect(function() {
-          var item = new FlxSprite(this.inventoryDisplay.x, 0, this.state.collected_asset);
-          for(i in 0...this.inventory.length) {
-            item.x = this.inventoryDisplay.x + 24*(i+1);
-          }
-          item.scale.set(.3,.3);
-          this.updateHitbox();
-          item.immovable = true;
-          this.inventory.push(item);
-          this.inventoryDisplay.add(item);
-          trace('item added to inventory');
-        });
+        var item = this.state.collected;
+        item.y = this.inventoryDisplay.y;
+        for(i in 0...this.inventory.length) {
+          item.x = this.inventoryDisplay.x + 24*(i+1);
+        }
+        item.scale.set(.3,.3);
+        item.immovable = true;
+        this.inventory.push(item);
+        this.inventoryDisplay.add(item);
+        this.state.collected = null;
+        trace('item added to inventory');
       }
     }
+  }
+
+  public inline function hasItem(inventory_item:CollectableSprite):Bool
+  {
+    return this.inventory.has(inventory_item);
   }
 
   private inline function attack():Void
