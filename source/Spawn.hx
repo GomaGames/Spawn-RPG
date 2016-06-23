@@ -23,14 +23,16 @@ enum PickupType{
   public static var state:PlayState;
 
   // only allow if hero is not spawned yet
-  public static inline function hero(x:Int, y:Int):Void
+  public static inline function hero(x:Int, y:Int):Player
   {
     if(state.player == null){
-      var newPlayer = new Player(state,x,y);
-      state.player = newPlayer;
-      state.add(newPlayer);
+      var new_player = new Player(state,x,y);
+      state.player = new_player;
+      state.add(new_player);
+      return new_player;
     }else{
       trace("WARNING: hero is already spawned!");
+      return state.player;
     }
   }
 
