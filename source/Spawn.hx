@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxSprite;
 import sprites.Player;
 import sprites.Enemy;
@@ -136,6 +137,11 @@ enum PickupType{
     if(x == null) x = 200; // #TODO
     if(y == null) y = 200; // #TODO
     state.show_dialogue(message, x, y);
+  }
+
+  public static inline function gameWin():Void
+  {
+    FlxG.switchState(new EndState(state.player, EndState.EndType.FINISH));
   }
 
 #if neko
