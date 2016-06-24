@@ -162,15 +162,36 @@ enum PickupType{
 
       var quest_1_complete = false;
       var quest_2_complete = false;
+      function completeQuest(number){
+        if(number == 1){
+          quest_1_complete = true;
+          message("Quest 1 complete!");
+        }else if(number == 2){
+          quest_2_complete = true;
+          message("Quest 2 complete!");
+        }
+        if(quest_1_complete && quest_2_complete){
+          gameWin();
+        }
+      }
 
       // new in RPG version
       collectableSprite( 200, 5, "assets/images/item-gray-egg.png");
       var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-idle.png");
       var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
       var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
+      var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){
-        girl.talk('hello Hero!');
+        if(!player.hasItem(mirror)){
+          girl.talk("Killer robots? Do I LOOK dumb?");
+        } else {
+          player.giveItem(mirror, girl);
+          girl.talk("Wow, the girl in this picture looks so clueless.");
+          completeQuest(1);
+          girl.talk("If you give the red blockhead guy a sword, he'll kill all the robots.");
+        }
       }
+
       var messageFlag = interactableSprite( 100, 50, "assets/images/object-flag-orange.png");
       messageFlag.interact = function(){
         message('bring the sword to the red square.');
@@ -186,28 +207,9 @@ enum PickupType{
           e4.despawn();
           e5.despawn();
           enemyBomb.despawn();
+          completeQuest(2);
         }
       }
-
-      // myObj.interact = function(){
-      //   if(player.items.has('scroll')){
-      //     quest_1_complete = true;
-      //     dialogue('hello wall');
-      //   }else{
-
-      //     dialogue('hello wall');
-      //   }
-      // };
-
-      // myObj.interact = function(){
-      //   dialogue('something else');
-      // };
-
-
-      // victory_condition = function(){
-      //   return quest_1_complete && quest_2_complete;
-      // };
-
 
 
       // need this for dev, just leave it, make sure it's always here

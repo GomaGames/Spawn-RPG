@@ -121,6 +121,18 @@ class Player extends FlxSprite{
     return this.inventory.has(inventory_item);
   }
 
+  public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
+  {
+    if(this.hasItem(inventory_item)){
+      this.inventory.remove(inventory_item);
+      receiver.receiveItem(inventory_item);
+      return true;
+    } else {
+      trace("WARNING: Player cannot giveItem that is not in player's inventory.");
+      return false;
+    }
+  }
+
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
