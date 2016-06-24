@@ -23,7 +23,7 @@ class DialogueBox extends FlxSprite{
     var dialogue = new FlxText();
     dialogue.text = input;
     var _slice:Array<Int> = [10,10,40,40];
-    var _graphic:String = "assets/images/tile_blue_square_button.png";
+    var _graphic:String = "assets/images/tile-blue-square-button.png";
     var bg = new FlxUI9SliceSprite(0, 0, _graphic, new Rectangle(0,0,dialogue.width+padding,dialogue.height+padding), _slice);
     group = new FlxSpriteGroup(this.x+15, this.y-15);
 
