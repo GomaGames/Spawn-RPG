@@ -10,6 +10,7 @@ import flixel.util.FlxColor;
 
 class MenuState extends FlxState
 {
+  private var titleImage:FlxSprite;
   private var ready_text:FlxText; // don't allow rapid continue while holding buttons
 
 	override public function create():Void
@@ -17,7 +18,7 @@ class MenuState extends FlxState
 		super.create();
     bgColor = Main.BACKGROUND_GREY;
 
-    var titleImage = new FlxSprite();
+    titleImage = new FlxSprite();
     titleImage.loadGraphic( AssetPaths.INSTRUCTION_SCREEN );
     titleImage.scale.set(0.5, 0.5);
     titleImage.screenCenter();
@@ -36,5 +37,12 @@ class MenuState extends FlxState
     }
 
 		super.update(elapsed);
+	}
+
+  override public function destroy():Void
+	{
+    titleImage = null;
+    ready_text = null;
+    super.destroy();
 	}
 }

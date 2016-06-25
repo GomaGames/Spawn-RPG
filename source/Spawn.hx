@@ -21,6 +21,8 @@ enum PickupType{
 
   public static var state:PlayState;
 
+  public static var intro:String;
+
   public static dynamic function game():Void{}
 
   // only allow if hero is not spawned yet
@@ -145,10 +147,16 @@ enum PickupType{
   }
 
 #if neko
+  public static inline function dev_intro():Void
+  {
+    intro = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+  }
+
   private static var diddev:Bool = false;
   public static inline function dev():Void
   {
     if( !diddev ){
+
       var wall_skin = "assets/images/terrain-wall-stone.png";
       var player = hero( 0, 50 );
       object(120, 240, wall_skin);
