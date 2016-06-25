@@ -53,6 +53,8 @@ class Player extends FlxSprite{
   private var walkHopY:Float;
   public var inventory:List<CollectableSprite>;
   public var inventoryDisplay:flixel.group.FlxSpriteGroup;
+  public var healthDisplay:flixel.group.FlxSpriteGroup;
+  public var healthText:FlxText;
 
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
@@ -71,6 +73,16 @@ class Player extends FlxSprite{
     state.add(this.inventoryDisplay);
 
     this.health = 3;
+    this.healthDisplay = new FlxSpriteGroup(500, 0);
+    healthText = new FlxText(30,0);
+    var heart = new FlxSprite(0,0,'assets/images/item-heart.png');
+    heart.scale.set(0.3,0.3);
+    heart.updateHitbox();
+    this.healthDisplay.add(heart);
+    healthText.text = Std.string(this.health) + " / 3";
+    this.healthDisplay.add(healthText);
+    state.add(this.healthDisplay);
+
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
     this.base_speed = DEFAULT_SPEED;
