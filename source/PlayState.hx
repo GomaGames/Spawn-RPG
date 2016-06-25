@@ -79,6 +79,8 @@ class PlayState extends FlxState
 
 #if neko
     Spawn.dev();
+#else
+    Spawn.game();
 #end
     FlxG.camera.follow(player, LOCKON, 1);
 	}
@@ -132,7 +134,7 @@ class PlayState extends FlxState
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
-      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);  
+      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);
       if(player.pixelsOverlapPoint(spritePosition)){
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
