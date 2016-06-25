@@ -19,9 +19,9 @@ enum PickupType{
 
 @:expose class Spawn {
 
-  private static inline var TOPBAR_Y_OFFSET = 40; // pixels from top
-
   public static var state:PlayState;
+
+  public static dynamic function game():Void{}
 
   // only allow if hero is not spawned yet
   public static inline function hero(x:Int, y:Int):Player
@@ -42,7 +42,7 @@ enum PickupType{
     var new_pickup = new Freeze(
       state,
       x,
-      y + TOPBAR_Y_OFFSET,
+      y,
       skin != null ? skin : Settings.freeze.default_skin,
       duration != null ? duration : Settings.freeze.default_duration);
     state.pickups.add(new_pickup);
@@ -55,7 +55,7 @@ enum PickupType{
     var new_pickup = new Speed(
       state,
       x,
-      y + TOPBAR_Y_OFFSET,
+      y,
       skin != null ? skin : Settings.speed.default_skin,
       duration != null ? duration : Settings.speed.default_duration);
     state.pickups.add(new_pickup);
@@ -69,7 +69,7 @@ enum PickupType{
     var new_pickup = new Slow(
       state,
       x,
-      y + TOPBAR_Y_OFFSET,
+      y,
       skin != null ? skin : Settings.slow.default_skin,
       duration != null ? duration : Settings.slow.default_duration);
     state.pickups.add(new_pickup);
@@ -82,7 +82,7 @@ enum PickupType{
     var new_pickup = new Gem(
       state,
       x,
-      y + TOPBAR_Y_OFFSET,
+      y,
       skin != null ? skin : Settings.gem.default_skin,
       points != null ? points : Settings.gem.default_points);
     state.pickups.add(new_pickup);
@@ -95,7 +95,7 @@ enum PickupType{
     var new_enemy = new Enemy(
       state,
       x,
-      y + TOPBAR_Y_OFFSET,
+      y,
       speed != null ? speed : Settings.enemy.default_speed,
       skin != null ? skin : Settings.enemy.default_skin,
       direction);
@@ -106,7 +106,7 @@ enum PickupType{
 
   public static inline function interactableSprite(x:Int, y:Int, graphic:String):InteractableSprite
   {
-    var new_sprite = new InteractableSprite(state, x, y + TOPBAR_Y_OFFSET, graphic);
+    var new_sprite = new InteractableSprite(state, x, y, graphic);
     state.interactableSprites.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -114,7 +114,7 @@ enum PickupType{
 
   public static inline function collectableSprite(x:Int, y:Int, graphic:String):CollectableSprite
   {
-    var new_sprite = new CollectableSprite(state, x, y + TOPBAR_Y_OFFSET, graphic);
+    var new_sprite = new CollectableSprite(state, x, y, graphic);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -122,7 +122,7 @@ enum PickupType{
 
   public static inline function object(x:Int, y:Int, ?skin:String):Object
   {
-    var new_obj = new Object(state, x, y + TOPBAR_Y_OFFSET, skin);
+    var new_obj = new Object(state, x, y, skin);
     state.objects.add(new_obj);
     state.add(new_obj);
     return new_obj;
