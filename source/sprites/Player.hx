@@ -52,11 +52,21 @@ class Player extends FlxSprite{
   private var walkRot:Float;
   private var walkHopY:Float;
   public var inventory:List<CollectableSprite>;
-  public var healthDisplay:flixel.group.FlxSpriteGroup;
-  public var healthText:FlxText;
+
+  public var life(get,set):Int;
+  private var _life:Int;
+  private inline function set_life(val:Int):Int{
+    this._life = val;
+    this.state.hud.life = val;
+    return this._life;
+  }
+  private inline function get_life():Int{
+    return this._life;
+  }
 
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
+    this.state = state;
 
     this.scale.set(.5,.5);
     this.updateHitbox();
@@ -67,20 +77,7 @@ class Player extends FlxSprite{
     this.attacking = false;
     this.current_direction = Direction.DOWN;
 
-    this.inventoryDisplay = new FlxSpriteGroup(80,0);
-    this.inventoryDisplay.color = 0xffffff;
-    state.add(this.inventoryDisplay);
-
-    this.health = 3;
-    this.healthDisplay = new FlxSpriteGroup(500, 0);
-    healthText = new FlxText(30,0);
-    var heart = new FlxSprite(0,0,'assets/images/item-heart.png');
-    heart.scale.set(0.3,0.3);
-    heart.updateHitbox();
-    this.healthDisplay.add(heart);
-    healthText.text = Std.string(this.health) + " / 3";
-    this.healthDisplay.add(healthText);
-    state.add(this.healthDisplay);
+    this.life = 3;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
@@ -90,7 +87,6 @@ class Player extends FlxSprite{
     this.points = 0;
     this.walkRot = 0;
     this.walkHopY = 0;
-    this.state = state;
 
     weapon = new FlxSprite();
     weapon.loadGraphic( "assets/images/item-sword-idle.png" );
@@ -163,7 +159,7 @@ class Player extends FlxSprite{
       if(this.state.dialogue_box != null){
         this.state.dialogue_box.close();
       }
-    } 
+    }
   }
 
   public inline function collect_item():Void
@@ -304,7 +300,7 @@ Bool
 
   public inline function die():Void
   {
-    if( this.health == 0 ){
+    if( this.life == 0 ){
       this.alive = false;
       this.destroy();
     }
