@@ -112,6 +112,8 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( FlxG.collide(player, enemy) ){
+        player.health = player.health- 1;
+        trace('health: ', player.health);
         player.die();
         survival_check();
       }
