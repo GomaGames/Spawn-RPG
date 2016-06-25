@@ -19,9 +19,17 @@ import flixel.math.FlxRect;
 import sprites.CollectableSprite;
 import flixel.FlxObject;
 import flixel.math.FlxPoint;
+import flash.Lib;
+import flixel.FlxCamera;
 
 class PlayState extends FlxState
 {
+  // Demo arena boundaries
+  static var LEVEL_MIN_X;
+  static var LEVEL_MAX_X;
+  static var LEVEL_MIN_Y;
+  static var LEVEL_MAX_Y;
+
   private var map:Map;
   public var dialogue_box:DialogueBox;
   public var player:Player;
@@ -43,6 +51,11 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+    LEVEL_MIN_X = -Lib.current.stage.stageWidth / 2;
+    LEVEL_MAX_X = Lib.current.stage.stageWidth * 1.5;
+    LEVEL_MIN_Y = -Lib.current.stage.stageHeight / 2;
+    LEVEL_MAX_Y = Lib.current.stage.stageHeight * 1.5;
+
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
@@ -58,7 +71,16 @@ class PlayState extends FlxState
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
-    Map.drawTopBar( this, map );
+    // Map.drawTopBar( this, map );
+
+
+    var topBar = new FlxSprite(0,0);
+    topBar.makeGraphic(Main.STAGE_WIDTH, 40, FlxColor.WHITE);
+    topBar.immovable = true;
+    add( topBar );
+    var inventoryText = new FlxText( 2 * ( Main.STAGE_WIDTH / 24 ), 10, "Inventory");
+    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    add( inventoryText );
 
     bgColor = Main.BACKGROUND_GREY;
     add(map);
@@ -67,9 +89,13 @@ class PlayState extends FlxState
 #if neko
     Spawn.dev();
 #end
-    
-    FlxG.camera.follow(player, TOPDOWN, 1);
+    // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), false);
+    FlxG.camera.follow(player, LOCKON, 1);
+    // FlxG.camera.follow(player, TOPDOWN, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
+    var topBarCam = new FlxCamera(0, 0,Main.STAGE_WIDTH, 40); 
+    topBarCam.follow(topBar);
+    FlxG.cameras.add(topBarCam);
 	}
 
   public inline function show_dialogue(message:String, x:Int, y:Int):Void
