@@ -53,11 +53,7 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
-    LEVEL_MIN_X = -Lib.current.stage.stageWidth / 2;
-    LEVEL_MAX_X = Lib.current.stage.stageWidth * 1.5;
-    LEVEL_MIN_Y = -Lib.current.stage.stageHeight / 2;
-    LEVEL_MAX_Y = Lib.current.stage.stageHeight * 1.5;
-
+    FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
