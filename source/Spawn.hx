@@ -21,6 +21,8 @@ enum PickupType{
 
   public static var state:PlayState;
 
+  public static dynamic function game():Void{}
+
   // only allow if hero is not spawned yet
   public static inline function hero(x:Int, y:Int):Player
   {

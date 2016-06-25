@@ -91,9 +91,11 @@ class PlayState extends FlxState
 
 #if neko
     Spawn.dev();
+#else
+    Spawn.game();
 #end
     // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
-    FlxG.camera.follow(player, LOCKON, 1);
+    FlxG.camera.follow(player, TOPDOWN, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
     var topBarCam = new FlxCamera(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT, 2);
     topBarCam.bgColor = FlxColor.TRANSPARENT;
