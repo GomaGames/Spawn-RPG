@@ -20,9 +20,13 @@ html5:
 	lime build -minify -yui html5
 	rm -rf public/{assets,flixel,lib,SpawnHeroRPG.js}
 	cp -a export/$@/bin/{assets,flixel,lib,SpawnHeroRPG.js} public/
+	ln -s public SpawnHeroRPG
+	zip -r -X SpawnHeroRPG.zip SpawnHeroRPG/*
+	rm SpawnHeroRPG
 
 html5-debug:
 	lime build -debug html5
+
 
 clean:
 	rm -rf export/*
