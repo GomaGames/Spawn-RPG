@@ -24,7 +24,7 @@ class HUD extends FlxSpriteGroup
     super(-10000,-10000);
 
     background = new FlxSprite(); // background is needed for camera to follow
-    background.makeGraphic(Std.int(Main.STAGE_WIDTH/2), Std.int(Main.STAGE_HEIGHT/2), FlxColor.TRANSPARENT);
+    background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, FlxColor.TRANSPARENT);
     top_bar_bg = new FlxSprite(0, -100);
     top_bar_bg.makeGraphic(Main.STAGE_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
     var inventoryText = new FlxText(10,-82,"Inventory");

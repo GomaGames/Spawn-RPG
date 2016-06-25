@@ -6,6 +6,8 @@ import openfl.display.Sprite;
 import flixel.util.FlxColor;
 class Main extends Sprite
 {
+  public static inline var VIEWPORT_WIDTH = 920;
+  public static inline var VIEWPORT_HEIGHT = 680;
   public static inline var STAGE_WIDTH = 1840;
   public static inline var STAGE_HEIGHT = 1360;
   public static var BACKGROUND_GREY:FlxColor = FlxColor.fromString('#333333');
