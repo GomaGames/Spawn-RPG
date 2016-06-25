@@ -204,6 +204,7 @@ class PlayState extends FlxState
 
     item_pickup();
 
+
     FlxG.collide();
   }
 }
