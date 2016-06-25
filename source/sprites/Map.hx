@@ -8,9 +8,9 @@ import flixel.text.FlxText;
 
 class Map extends FlxSprite {
   public static inline var GRID_SIZE:Int = 40;
-  public static inline var GRID_LINES_X:Int = 24;
-  public static inline var GRID_LINES_Y:Int = 16;
-  public static inline var TOP_BAR_BUFFER:Int = 40;
+  public static var GRID_LINES_X:Int = Std.int(Settings.world_size.width / GRID_SIZE) + 1;
+  public static var GRID_LINES_Y:Int = Std.int(Settings.world_size.height / GRID_SIZE) + 1;
+  public static inline var TOP_BAR_BUFFER:Int = GRID_SIZE;
 
   public static var TOPBAR_GREY:FlxColor = FlxColor.fromString('#212121');
   public static var LINES_GREY:FlxColor = FlxColor.fromString('#6d6e70');
