@@ -10,6 +10,9 @@ import flixel.group.FlxSpriteGroup;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flash.geom.Rectangle;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import flixel.text.FlxText;
 import sprites.Map;
 
 using Lambda;
@@ -24,6 +27,12 @@ class PlayerInput {
   public static var attack:FlxKey = FlxKey.SPACE;
 }
 
+enum Direction {
+  UP;
+  DOWN;
+  LEFT;
+  RIGHT;
+}
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
@@ -34,9 +43,11 @@ class Player extends FlxSprite{
 
   private var state:PlayState;
   private var graphic_path:String;
+  private var current_direction:Direction;
   private var attacking:Bool;
   private var base_speed:Int;
   private var speed:Int;
+  private var weapon:FlxSprite;
   private var spawn_position:FlxPoint;
   private var walkRot:Float;
   private var walkHopY:Float;
@@ -52,6 +63,8 @@ class Player extends FlxSprite{
     this.width /= 4;
     this.centerOffsets();
     this.centerOrigin();
+    this.attacking = false;
+    this.current_direction = Direction.DOWN;
 
     this.inventoryDisplay = new FlxSpriteGroup(80,0);
     this.inventoryDisplay.color = 0xffffff;
@@ -66,6 +79,18 @@ class Player extends FlxSprite{
     this.walkRot = 0;
     this.walkHopY = 0;
     this.state = state;
+
+    weapon = new FlxSprite();
+    weapon.loadGraphic( "assets/images/item-sword-idle.png" );
+    weapon.x = this.x;
+    weapon.y = this.y - 20;
+    weapon.solid = false;
+    weapon.allowCollisions = 0x0000;
+    weapon.scale.set(0.5, 0.5);
+    weapon.height /= 3;
+    weapon.width /= 3;
+    weapon.updateHitbox();
+    state.add( weapon );
   }
 
   override public function update(elapsed:Float):Void
@@ -76,8 +101,41 @@ class Player extends FlxSprite{
     interact();
     attack();
     collect_item();
+    update_weapon();
 
     super.update(elapsed);
+  }
+
+
+  private inline function update_weapon():Void
+  {
+    if( this.attacking ){
+      var x_inc:Int = 0;
+      var y_inc:Int = 0;
+      switch( this.current_direction ){
+        case UP:
+          x_inc = -Std.int(this.width);
+          y_inc = -50;
+        case DOWN:
+          x_inc = -Std.int(this.width);
+          y_inc = 20;
+        case LEFT:
+          x_inc = -50;
+          y_inc = -Std.int(this.height);
+        case RIGHT:
+          x_inc = 20;
+          y_inc = -Std.int(this.height);
+        default: null;
+      }
+      var weapon_tween = FlxTween.tween(weapon, { x: this.x + x_inc, y: this.y + y_inc }, 0.3, { ease: FlxEase.elasticOut });
+      weapon_tween.start();
+
+    } else {
+      weapon.centerOffsets();
+      weapon.centerOrigin();
+      weapon.x = this.x - this.width;
+      weapon.y = this.y - this.height;
+    }
   }
 
   public inline function interact():Void
@@ -115,8 +173,8 @@ class Player extends FlxSprite{
       }
     }
   }
-
-  public inline function hasItem(inventory_item:CollectableSprite):Bool
+  public inline function hasItem(inventory_item:CollectableSprite):
+Bool
   {
     return this.inventory.has(inventory_item);
   }
@@ -136,6 +194,13 @@ class Player extends FlxSprite{
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
+      weapon.reset(this.x,this.y);
+      this.attacking = true;
+      var time = new FlxTimer();
+      time.start(0.1,function(timer){
+        this.attacking = false;
+        // weapon.kill();
+      },3);
       trace('attacking');
     }
   }
@@ -149,19 +214,23 @@ class Player extends FlxSprite{
     if(!this.attacking){
       if (FlxG.keys.anyPressed([PlayerInput.up])){
         // this.acceleration.y = -GG.hero_speed;
+        this.current_direction = Direction.UP;
         this.acceleration.y = -this.speed *10;
         moving_v = true;
       }
       if (FlxG.keys.anyPressed([PlayerInput.down])){
+        this.current_direction = Direction.DOWN;
         this.acceleration.y = this.speed *10;
         moving_v = true;
       }
       if (FlxG.keys.anyPressed([PlayerInput.left])){
         // this.acceleration.y = -GG.hero_speed;
+        this.current_direction = Direction.LEFT;
         this.acceleration.x = -this.speed *10;
         moving_h = true;
       }
       if (FlxG.keys.anyPressed([PlayerInput.right])){
+        this.current_direction = Direction.RIGHT;
         this.acceleration.x = this.speed *10;
         moving_h = true;
       }
