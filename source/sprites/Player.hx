@@ -41,12 +41,10 @@ class Player extends FlxSprite{
   private var walkRot:Float;
   private var walkHopY:Float;
   public var inventory:List<CollectableSprite>;
-  public var inventoryDisplay:flixel.group.FlxSpriteGroup;
 
-  public function new(state:PlayState, inventoryDisplay:FlxSpriteGroup, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
 
-    this.inventoryDisplay = inventoryDisplay;
     this.scale.set(.5,.5);
     this.updateHitbox();
     this.height /= 4;
@@ -99,14 +97,12 @@ class Player extends FlxSprite{
     if(this.state.collected != null) {
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
         var item = this.state.collected;
-        item.y = this.inventoryDisplay.y;
-        for(i in 0...this.inventory.length) {
-          item.x = this.inventoryDisplay.x + 24*(i+1);
-        }
-        item.scale.set(.3,.3);
         item.immovable = true;
         this.inventory.push(item);
-        this.inventoryDisplay.add(item);
+        this.state.collectables.remove(item);
+        this.state.remove(item);
+        this.state.hud.addInventoryItem(item.clone());
+
         this.state.collected = null;
         trace('item added to inventory');
       }

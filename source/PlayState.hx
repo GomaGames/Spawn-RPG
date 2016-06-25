@@ -75,14 +75,14 @@ class PlayState extends FlxState
     Map.drawGridLines( this, map );
     // Map.drawTopBar( this, map );
 
-    hud = new HUD(10000, -10000);
-    
+    hud = new HUD(-10000, -10000);
+
     add(hud);
     // var topBar = new FlxSprite();
     // topBar.makeGraphic(Main.STAGE_WIDTH, 40, FlxColor.WHITE);
     // topBar.immovable = true;
     // add( topBar );
-    
+
     // add( inventoryText );
 
     bgColor = Main.BACKGROUND_GREY;
@@ -95,7 +95,9 @@ class PlayState extends FlxState
     // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
     FlxG.camera.follow(player, LOCKON, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-    var topBarCam = new FlxCamera(0, 0,Main.STAGE_WIDTH, Main.STAGE_HEIGHT); 
+    var topBarCam = new FlxCamera(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT, 2);
+    topBarCam.bgColor = FlxColor.TRANSPARENT;
+
     topBarCam.follow(hud);
     FlxG.cameras.add(topBarCam);
 	}
@@ -149,7 +151,7 @@ class PlayState extends FlxState
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
-      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);  
+      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);
       if(player.pixelsOverlapPoint(spritePosition)){
         collected = sprite;
         collected_asset = sprite.graphic.assetsKey;
