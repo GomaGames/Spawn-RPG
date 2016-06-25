@@ -37,19 +37,18 @@ class HUD extends FlxSpriteGroup
     var inventoryText = new FlxText(10,-82,"Inventory");
     inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
     inventoryDisplay = new FlxSpriteGroup(110, -114);
-    lifeDisplay = new FlxSpriteGroup(200, -114);
-    lifeText = new FlxText(200,-82);
-    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
+    lifeDisplay = new FlxSpriteGroup(760, -114);
+    lifeText = new FlxText(60,28);
+    lifeText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
     var heart = new FlxSprite(0,0,'assets/images/item-heart.png');
     heart.scale.set(0.25,0.25);
     lifeDisplay.add(heart);
-    // lifeDisplay.add(lifeText);
+    lifeDisplay.add(lifeText);
     add(background);
     add(top_bar_bg);
     add(inventoryText);
     add(inventoryDisplay);
     add(lifeDisplay);
-    add(lifeText);
   }
 
   public inline function addInventoryItem(spriteClone:FlxSprite):Void
