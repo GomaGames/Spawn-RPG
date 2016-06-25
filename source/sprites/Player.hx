@@ -43,19 +43,16 @@ class Player extends FlxSprite{
   public var inventory:List<CollectableSprite>;
   public var inventoryDisplay:flixel.group.FlxSpriteGroup;
 
-  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
+  public function new(state:PlayState, inventoryDisplay:FlxSpriteGroup, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
 
+    this.inventoryDisplay = inventoryDisplay;
     this.scale.set(.5,.5);
     this.updateHitbox();
     this.height /= 4;
     this.width /= 4;
     this.centerOffsets();
     this.centerOrigin();
-
-    this.inventoryDisplay = new FlxSpriteGroup(80,0);
-    this.inventoryDisplay.color = 0xffffff;
-    state.add(this.inventoryDisplay);
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);

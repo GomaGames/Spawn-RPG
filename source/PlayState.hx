@@ -21,6 +21,7 @@ import flixel.FlxObject;
 import flixel.math.FlxPoint;
 import flash.Lib;
 import flixel.FlxCamera;
+// import HUD;
 
 class PlayState extends FlxState
 {
@@ -44,6 +45,7 @@ class PlayState extends FlxState
   public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
   public var collected_asset:String;
+  public var hud:HUD;
 
   public function new(){
     Spawn.state = this;
@@ -71,7 +73,17 @@ class PlayState extends FlxState
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
-    Map.drawTopBar( this, map );
+    // Map.drawTopBar( this, map );
+
+    hud = new HUD(10000, -10000);
+    
+    add(hud);
+    // var topBar = new FlxSprite();
+    // topBar.makeGraphic(Main.STAGE_WIDTH, 40, FlxColor.WHITE);
+    // topBar.immovable = true;
+    // add( topBar );
+    
+    // add( inventoryText );
 
     bgColor = Main.BACKGROUND_GREY;
     add(map);
@@ -80,7 +92,12 @@ class PlayState extends FlxState
 #if neko
     Spawn.dev();
 #end
+    // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
     FlxG.camera.follow(player, LOCKON, 1);
+    // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
+    var topBarCam = new FlxCamera(0, 0,Main.STAGE_WIDTH, Main.STAGE_HEIGHT); 
+    topBarCam.follow(hud);
+    FlxG.cameras.add(topBarCam);
 	}
 
   public inline function show_dialogue(message:String, x:Int, y:Int):Void

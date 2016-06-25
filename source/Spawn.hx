@@ -25,7 +25,7 @@ enum PickupType{
   public static inline function hero(x:Int, y:Int):Player
   {
     if(state.player == null){
-      var new_player = new Player(state,x,y);
+      var new_player = new Player(state,state.hud.inventoryDisplay,x,y);
       state.player = new_player;
       state.add(new_player);
       return new_player;
