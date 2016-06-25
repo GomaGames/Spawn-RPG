@@ -21,7 +21,6 @@ import flixel.FlxObject;
 import flixel.math.FlxPoint;
 import flash.Lib;
 import flixel.FlxCamera;
-// import HUD;
 
 class PlayState extends FlxState
 {
@@ -103,6 +102,7 @@ class PlayState extends FlxState
   public inline function show_dialogue(message:String, x:Int, y:Int):Void
   {
     dialogue_box = new DialogueBox(this, message, x, y);
+    paused = true;
   }
 
   private inline function pickup_collision():Void
@@ -199,7 +199,6 @@ class PlayState extends FlxState
     touch_enemy();
 
     item_pickup();
-
 
     FlxG.collide();
   }

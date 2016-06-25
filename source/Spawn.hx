@@ -187,6 +187,7 @@ enum PickupType{
       var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
       var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
+      interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){
         if(!player.hasItem(mirror)){
           girl.talk("Killer robots? Do I LOOK dumb?");
