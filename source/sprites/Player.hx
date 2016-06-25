@@ -140,19 +140,18 @@ class Player extends FlxSprite{
 
   public inline function interact():Void
   {
-    if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-      this.state.paused = false;
+    if(this.state.interacted != null) {
+      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+        this.state.interacted.interact();
+        this.state.interacted = null;
+      }
+    }
+    else if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
       // remove dialogue box
       if(this.state.dialogue_box != null){
         this.state.dialogue_box.close();
       }
-    } else if(!this.state.paused && this.state.interacted != null) {
-      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        this.state.interacted.interact();
-        this.state.paused = true;
-        this.state.interacted = null;
-      }
-    }
+    } 
   }
 
   public inline function collect_item():Void

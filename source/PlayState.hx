@@ -44,6 +44,7 @@ class PlayState extends FlxState
   public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
   public var collected_asset:String;
+
   public function new(){
     Spawn.state = this;
     super();
@@ -83,6 +84,7 @@ class PlayState extends FlxState
   public inline function show_dialogue(message:String, x:Int, y:Int):Void
   {
     dialogue_box = new DialogueBox(this, message, x, y);
+    paused = true;
   }
 
   private inline function pickup_collision():Void
@@ -179,7 +181,6 @@ class PlayState extends FlxState
     touch_enemy();
 
     item_pickup();
-
 
     FlxG.collide();
   }
