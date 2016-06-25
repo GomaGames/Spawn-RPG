@@ -71,16 +71,7 @@ class PlayState extends FlxState
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
-    // Map.drawTopBar( this, map );
-
-
-    var topBar = new FlxSprite(0,0);
-    topBar.makeGraphic(Main.STAGE_WIDTH, 40, FlxColor.WHITE);
-    topBar.immovable = true;
-    add( topBar );
-    var inventoryText = new FlxText( 2 * ( Main.STAGE_WIDTH / 24 ), 10, "Inventory");
-    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add( inventoryText );
+    Map.drawTopBar( this, map );
 
     bgColor = Main.BACKGROUND_GREY;
     add(map);
@@ -89,13 +80,7 @@ class PlayState extends FlxState
 #if neko
     Spawn.dev();
 #end
-    // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), false);
     FlxG.camera.follow(player, LOCKON, 1);
-    // FlxG.camera.follow(player, TOPDOWN, 1);
-    // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-    var topBarCam = new FlxCamera(0, 0,Main.STAGE_WIDTH, 40); 
-    topBarCam.follow(topBar);
-    FlxG.cameras.add(topBarCam);
 	}
 
   public inline function show_dialogue(message:String, x:Int, y:Int):Void
