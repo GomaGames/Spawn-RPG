@@ -19,9 +19,17 @@ import flixel.math.FlxRect;
 import sprites.CollectableSprite;
 import flixel.FlxObject;
 import flixel.math.FlxPoint;
+import flash.Lib;
+import flixel.FlxCamera;
 
 class PlayState extends FlxState
 {
+  // Demo arena boundaries
+  static var LEVEL_MIN_X;
+  static var LEVEL_MAX_X;
+  static var LEVEL_MIN_Y;
+  static var LEVEL_MAX_Y;
+
   private var map:Map;
   public var dialogue_box:DialogueBox;
   public var player:Player;
@@ -42,6 +50,7 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+    FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
@@ -68,9 +77,7 @@ class PlayState extends FlxState
 #else
     Spawn.game();
 #end
-
-    FlxG.camera.follow(player, TOPDOWN, 1);
-    // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
+    FlxG.camera.follow(player, LOCKON, 1);
 	}
 
   public inline function show_dialogue(message:String, x:Int, y:Int):Void
