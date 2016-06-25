@@ -65,6 +65,11 @@ class Player extends FlxSprite{
     this.attacking = false;
     this.current_direction = Direction.DOWN;
 
+    this.inventoryDisplay = new FlxSpriteGroup(80,0);
+    this.inventoryDisplay.color = 0xffffff;
+    state.add(this.inventoryDisplay);
+
+    this.health = 3;
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
     this.base_speed = DEFAULT_SPEED;
@@ -287,14 +292,15 @@ Bool
 
   public inline function die():Void
   {
-    if( this.state.survival_type ){
+    if( this.health == 0 ){
       this.alive = false;
       this.destroy();
-    } else { // respawn
-      this.x = spawn_position.x;
-      this.y = spawn_position.y;
-      this.velocity.set(0,0);
     }
+    // } else { // respawn
+    //   this.x = spawn_position.x;
+    //   this.y = spawn_position.y;
+    //   this.velocity.set(0,0);
+    // }
   }
 }
 
