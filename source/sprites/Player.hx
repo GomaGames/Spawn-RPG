@@ -58,6 +58,9 @@ class Player extends FlxSprite{
   private inline function set_life(val:Int):Int{
     this._life = val;
     this.state.hud.life = val;
+    if( this._life <= 0 ){
+      this.die();
+    }
     return this._life;
   }
   private inline function get_life():Int{
@@ -300,15 +303,9 @@ Bool
 
   public inline function die():Void
   {
-    if( this.life == 0 ){
-      this.alive = false;
-      this.destroy();
-    }
-    // } else { // respawn
-    //   this.x = spawn_position.x;
-    //   this.y = spawn_position.y;
-    //   this.velocity.set(0,0);
-    // }
+    this.alive = false;
+    this.state.game_over();
+    this.destroy();
   }
 }
 

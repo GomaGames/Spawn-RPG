@@ -130,9 +130,7 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( FlxG.collide(player, enemy) ){
-        player.health = player.health- 1;
-        player.die();
-        survival_check();
+        player.life--;
       }
     }
   }
@@ -158,11 +156,9 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function survival_check():Void
+  public inline function game_over():Void
   {
-    if( !player.alive ){
-      FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
-    }
+    FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
   }
 
   // private inline function victory_check():Void
@@ -193,13 +189,17 @@ class PlayState extends FlxState
   {
     super.update(elapsed);
 
-    pickup_collision();
+    if( this.player.alive ){
 
-    interact_collision();
+      pickup_collision();
 
-    touch_enemy();
+      interact_collision();
 
-    item_pickup();
+      item_pickup();
+
+      touch_enemy(); // must be last, cause can die!
+
+    }
 
     FlxG.collide();
   }
