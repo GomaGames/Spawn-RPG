@@ -11,18 +11,18 @@ class Equippable extends FlxSprite implements IDespawnableSprite{
   public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
   private var state:PlayState;
-  // private var player:Player;
 
   public function new( state:PlayState, ?skin:String = DEFAULT_SKIN ){
     super(0,0, skin);
     this.state = state;
-    // this.player = state.player;
     this.scale.set(0.5,0.5);
-    this.centerOffsets();
+    this.flipX = false;
+    this.flipY = false;
+    // this.centerOffsets();
     this.height *= 2;
     this.width *= 2;
     this.centerOrigin();
-    this.solid = true;
+    this.solid = false;
     this.updateHitbox();
 
     state.add( this );
@@ -38,27 +38,35 @@ class Equippable extends FlxSprite implements IDespawnableSprite{
     var p:Player = state.player;
     if( p.attacking ){
       this.solid = true;
-      this.updateHitbox();
-      var x_inc:Int = 0;
-      var y_inc:Int = 0;
+      // this.updateHitbox();
+      var x_inc:Float = 0;
+      var y_inc:Float = 0;
 
       switch( p.current_direction ){
         case UP:
-          this.x = p.x - 5;
+          this.flipX = false;
+          this.flipY = false;
+          this.x = p.x + 5;
           this.y = p.y - 40;
-          y_inc = -40;
+          y_inc = -50;
         case DOWN:
-          this.x = p.x - 5;
-          this.y = p.y + 20;
-          y_inc = 40;
+          this.flipX = true;
+          this.flipY = true;
+          this.x = p.x - 15;
+          this.y = p.y + 10;
+          y_inc = 50;
         case LEFT:
+          this.flipX = true;
+          this.flipY = true;
           this.x = p.x - 40;
-          this.y = p.y - 5;
-          x_inc = -40;
+          this.y = p.y + 5;
+          x_inc = -50;
         case RIGHT:
-          this.x = p.x + 20;
-          this.y = p.y - 5;
-          x_inc = 40;
+          this.flipX = false;
+          this.flipY = true;
+          this.x = p.x + 10;
+          this.y = p.y + 10;
+          x_inc = 50;
         default: null;
       }
       var weapon_tween = FlxTween.tween(this, { x: this.x + x_inc, y: this.y + y_inc }, 0.3, { ease: FlxEase.elasticOut });
@@ -68,17 +76,25 @@ class Equippable extends FlxSprite implements IDespawnableSprite{
       this.solid = false;
       switch( p.current_direction ){
         case UP:
-          this.x = p.x - 5;
-          this.y = p.y - 5;
+          this.flipX = true;
+          this.flipY = false;
+          this.x = p.x - 20;
+          this.y = p.y - 30;
         case DOWN:
-          this.x = p.x - 5;
+          this.flipX = false;
+          this.flipY = true;
+          this.x = p.x + 5;
           this.y = p.y + 5;
         case LEFT:
-          this.x = p.x - 5;
-          this.y = p.y - 5;
+          this.flipX = true;
+          this.flipY = false;
+          this.x = p.x - 35;
+          this.y = p.y - 20;
         case RIGHT:
+          this.flipX = false;
+          this.flipY = false;
           this.x = p.x + 5;
-          this.y = p.y - 5;
+          this.y = p.y - 20;
         default: null;
       }
       

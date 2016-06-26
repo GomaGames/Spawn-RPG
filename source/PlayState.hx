@@ -143,7 +143,7 @@ class PlayState extends FlxState
   private inline function kill_enemy():Void
   {
     for( enemy in enemies ){
-      if( FlxG.collide(enemy, weapon) && player.attacking ){
+      if( FlxG.overlap(enemy, weapon) && player.attacking ){
         trace('HIT!');
         enemy.despawn();
       }

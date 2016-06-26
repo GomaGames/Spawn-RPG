@@ -134,15 +134,14 @@ class Player extends FlxSprite{
 
   private inline function attack():Void
   {
-    if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
-      // state.weapon.reset(this.x,this.y);
+    if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
+      // state.weapon.reset(state.weapon.x,state.weapon.y);
       this.attacking = true;
-      var time = new FlxTimer();
-      time.start(0.2,function(timer){
-        this.attacking = false;
-        // state.weapon.kill();
-      },3);
       trace('attacking');
+      }
+    if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
+      this.attacking = false;
+      // state.weapon.kill();
     }
   }
 
