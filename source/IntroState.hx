@@ -11,6 +11,7 @@ import flixel.util.FlxTimer;
 
 class IntroState extends FlxState
 {
+  public static inline var DEFAULT_INTRO_TEXT = "Welcome to Spawn Hero RPG!";
   private static inline var TIMEOUT = 2; // seconds
   private var intro_text:FlxText;
   private var ready:Bool;
@@ -27,7 +28,7 @@ class IntroState extends FlxState
     bg.screenCenter();
     add(bg);
 
-    intro_text = new FlxText( 400, 600, Std.string( Spawn.intro ) );
+    intro_text = new FlxText( 400, 600, Spawn.introText );
     intro_text.setFormat( "Arial", 50, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     intro_text.screenCenter();
     add( intro_text );

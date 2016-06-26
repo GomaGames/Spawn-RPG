@@ -23,7 +23,9 @@ enum PickupType{
 
   public static var state:PlayState;
 
-  public static var intro:String;
+  public static var introText:String = IntroState.DEFAULT_INTRO_TEXT;
+  public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
+  public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
 
   public static dynamic function game():Void{}
 
@@ -145,13 +147,20 @@ enum PickupType{
 
   public static inline function gameWin():Void
   {
-    FlxG.switchState(new EndState(state.player, EndState.EndType.FINISH));
+    FlxG.switchState(new EndState(EndState.VictoryStatus.WIN));
+  }
+
+  public static inline function gameOver():Void
+  {
+    FlxG.switchState(new EndState(EndState.VictoryStatus.LOSE));
   }
 
 #if neko
   public static inline function dev_intro():Void
   {
-    intro = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+    introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+    gameWinText = "Good Job!";
+    gameOverText = "You died!";
   }
 
   private static var diddev:Bool = false;

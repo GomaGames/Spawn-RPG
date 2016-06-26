@@ -304,7 +304,7 @@ Bool
   public inline function die():Void
   {
     this.alive = false;
-    this.state.game_over();
+    Spawn.gameOver();
     this.destroy();
   }
 }

@@ -165,11 +165,6 @@ class PlayState extends FlxState
     }
   }
 
-  public inline function game_over():Void
-  {
-    FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
-  }
-
   // private inline function victory_check():Void
   // {
   //   if( Lambda.filter(pickups, function(p){
