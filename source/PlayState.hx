@@ -105,6 +105,15 @@ class PlayState extends FlxState
     paused = true;
   }
 
+  public inline function close_dialogue():Void
+  {
+    if(dialogue_box != null){
+      dialogue_box.close();
+      dialogue_box = null;
+    }
+    paused = false;
+  }
+
   private inline function pickup_collision():Void
   {
     for( pickup in pickups ){

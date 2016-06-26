@@ -192,7 +192,20 @@ enum PickupType{
       // new in RPG version
       collectableSprite( 200, 5, "assets/images/item-gray-egg.png");
       var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-idle.png");
+      sword1.onCollect = function(){
+        Spawn.message("You got the magic sword!");
+        return true;
+      }
       var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
+      sword2.onCollect = function(){
+        if( quest_1_complete ){
+          Spawn.message("You got the super sword!");
+          return true;
+        } else {
+          Spawn.message("Only those who are worthy may wield this sword.");
+          return false;
+        }
+      }
       var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
       interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");

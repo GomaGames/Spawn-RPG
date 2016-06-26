@@ -108,11 +108,17 @@ class Player extends FlxSprite{
   {
     if(!this.state.paused) {
       movement();
+      attack();
+      collect_item();
+      interact(); // must be after collect_item()
+      update_weapon();
+    }else{
+      // check for unpause
+      if(this.state.dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact]) ){
+        this.state.close_dialogue();
+        this.state.interacted = null;
+      }
     }
-    interact();
-    attack();
-    collect_item();
-    update_weapon();
 
     super.update(elapsed);
   }
@@ -149,38 +155,32 @@ class Player extends FlxSprite{
     }
   }
 
-  public inline function interact():Void
-  {
-    if(this.state.interacted != null) {
-      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        this.state.interacted.interact();
-        this.state.interacted = null;
-      }
-    }
-    else if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-      // remove dialogue box
-      if(this.state.dialogue_box != null){
-        this.state.dialogue_box.close();
-      }
-    }
-  }
-
   public inline function collect_item():Void
   {
     if(this.state.collected != null) {
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
         var item = this.state.collected;
-        item.immovable = true;
-        this.inventory.push(item);
-        this.state.collectables.remove(item);
-        this.state.remove(item);
-        this.state.hud.addInventoryItem(item.clone());
+        if( item.onCollect() != false ){
+          item.immovable = true;
+          this.inventory.push(item);
+          this.state.collectables.remove(item);
+          this.state.remove(item);
+          this.state.hud.addInventoryItem(item.clone());
 
-        this.state.collected = null;
-        trace('item added to inventory');
+          this.state.collected = null;
+        }
       }
     }
   }
+
+  public inline function interact():Void
+  {
+    if(this.state.interacted != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){
+      this.state.interacted.interact();
+      this.state.interacted = null;
+    }
+  }
+
   public inline function hasItem(inventory_item:CollectableSprite):
 Bool
   {
