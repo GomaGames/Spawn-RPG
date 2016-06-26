@@ -5,7 +5,7 @@ import flixel.FlxSprite;
 class Pickup extends FlxSprite implements IDespawnableSprite{
 
   public var DURATION:Float;
-  public var POINTS:Int;
+  public var value:Int;
 
   private var state:PlayState;
 

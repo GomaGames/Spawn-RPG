@@ -2,6 +2,7 @@ package sprites;
 
 import haxe.ds.IntMap;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxPoint;
@@ -51,6 +52,7 @@ class Player extends FlxSprite{
   private var spawn_position:FlxPoint;
   private var walkRot:Float;
   private var walkHopY:Float;
+  private var interacted:InteractableSprite;
   public var inventory:List<CollectableSprite>;
 
   public var life(get,set):Int;
@@ -67,6 +69,13 @@ class Player extends FlxSprite{
     return this._life;
   }
 
+  public var coins(default,set):Int;
+  private inline function set_coins(val:Int):Int{
+    this.coins = val;
+    this.state.hud.coins = val;
+    return this.coins;
+  }
+
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
     this.state = state;
@@ -81,6 +90,7 @@ class Player extends FlxSprite{
     this.current_direction = Direction.DOWN;
 
     this.life = 3;
+    this.coins = 0;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
@@ -106,21 +116,17 @@ class Player extends FlxSprite{
 
   override public function update(elapsed:Float):Void
   {
+    super.update(elapsed);
     if(!this.state.paused) {
       movement();
       attack();
       collect_item();
+      interact_collision();
       interact(); // must be after collect_item()
       update_weapon();
-    }else{
-      // check for unpause
-      if(this.state.dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact]) ){
-        this.state.close_dialogue();
-        this.state.interacted = null;
-      }
     }
 
-    super.update(elapsed);
+
   }
 
 
@@ -175,9 +181,18 @@ class Player extends FlxSprite{
 
   public inline function interact():Void
   {
-    if(this.state.interacted != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){
-      this.state.interacted.interact();
-      this.state.interacted = null;
+    if(interacted != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){
+      interacted.interact();
+      interacted = null;
+    }
+  }
+
+  private inline function interact_collision():Void
+  {
+    for(sprite in state.interactableSprites) {
+      if( FlxG.collide(this, sprite) ){
+        interacted = sprite;
+      }
     }
   }
 
@@ -221,31 +236,38 @@ Bool
       , moving_v = false;
 
     if(!this.attacking){
-      if (FlxG.keys.anyPressed([PlayerInput.up])){
-        // this.acceleration.y = -GG.hero_speed;
-        this.current_direction = Direction.UP;
-        this.acceleration.y = -this.speed *10;
-        moving_v = true;
+      if (FlxG.keys.anyPressed([
+        PlayerInput.up,
+        PlayerInput.left,
+        PlayerInput.right,
+        PlayerInput.down])){
+        if(!isTouching(FlxObject.ANY)){
+          interacted = null;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.up])){
+          // this.acceleration.y = -GG.hero_speed;
+          this.current_direction = Direction.UP;
+          this.acceleration.y = -this.speed *10;
+          moving_v = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.down])){
+          this.current_direction = Direction.DOWN;
+          this.acceleration.y = this.speed *10;
+          moving_v = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.left])){
+          // this.acceleration.y = -GG.hero_speed;
+          this.current_direction = Direction.LEFT;
+          this.acceleration.x = -this.speed *10;
+          moving_h = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.right])){
+          this.current_direction = Direction.RIGHT;
+          this.acceleration.x = this.speed *10;
+          moving_h = true;
+        }
+
       }
-      if (FlxG.keys.anyPressed([PlayerInput.down])){
-        this.current_direction = Direction.DOWN;
-        this.acceleration.y = this.speed *10;
-        moving_v = true;
-      }
-      if (FlxG.keys.anyPressed([PlayerInput.left])){
-        // this.acceleration.y = -GG.hero_speed;
-        this.current_direction = Direction.LEFT;
-        this.acceleration.x = -this.speed *10;
-        moving_h = true;
-      }
-      if (FlxG.keys.anyPressed([PlayerInput.right])){
-        this.current_direction = Direction.RIGHT;
-        this.acceleration.x = this.speed *10;
-        moving_h = true;
-      }
-      // if (game.input.space){
-      //   this.attack();
-      // }
     }
 
     // funner walking

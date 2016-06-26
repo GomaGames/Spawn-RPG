@@ -83,14 +83,14 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function gem(x:Int, y:Int, ?points:Int, ?skin:String):Gem
+  public static inline function gem(x:Int, y:Int, ?value:Int, ?skin:String):Gem
   {
     var new_pickup = new Gem(
       state,
       x,
       y,
       skin != null ? skin : Settings.gem.default_skin,
-      points != null ? points : Settings.gem.default_points);
+      value != null ? value : Settings.gem.default_points);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;
@@ -142,7 +142,7 @@ enum PickupType{
   {
     if(x == null) x = 200; // #TODO
     if(y == null) y = 200; // #TODO
-    state.show_dialogue(message, x, y);
+    state.queue_dialogue(message, x, y);
   }
 
   public static inline function gameWin():Void
@@ -233,7 +233,9 @@ enum PickupType{
 
       var messageFlag = interactableSprite( 100, 50, "assets/images/object-flag-orange.png");
       messageFlag.interact = function(){
-        message('bring the sword to the red square.');
+        message('bring ...');
+        message('the sword ...');
+        message('to the red square.');
       }
 
       var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-rock-cube-orange.png');
