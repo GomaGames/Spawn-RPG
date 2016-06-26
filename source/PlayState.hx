@@ -10,6 +10,7 @@ import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
 import sprites.Map;
 import sprites.Player;
+import sprites.Equippable;
 import sprites.Enemy;
 import sprites.DialogueBox;
 import sprites.Object;
@@ -38,7 +39,7 @@ class PlayState extends FlxState
   public var objects:List<Object>;
   public var interactableSprites:List<InteractableSprite>;
   public var collectables:List<CollectableSprite>;
-
+  public var weapon:Equippable;
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
   public var interacted:InteractableSprite;
@@ -67,7 +68,8 @@ class PlayState extends FlxState
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
     Map.drawTopBar( this, map );
-
+    weapon = new Equippable( this );
+    add(weapon);
     bgColor = Main.BACKGROUND_GREY;
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
@@ -112,6 +114,16 @@ class PlayState extends FlxState
       if( FlxG.collide(player, enemy) ){
         player.die();
         survival_check();
+      }
+    }
+  }
+
+  private inline function kill_enemy():Void
+  {
+    for( enemy in enemies ){
+      if( FlxG.collide(enemy, weapon) && player.attacking ){
+        trace('HIT!');
+        enemy.despawn();
       }
     }
   }
@@ -170,7 +182,6 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    super.update(elapsed);
 
     pickup_collision();
 
@@ -178,9 +189,12 @@ class PlayState extends FlxState
 
     touch_enemy();
 
+    kill_enemy();
+
     item_pickup();
-
-
     FlxG.collide();
+    super.update(elapsed);
+
+
   }
 }
