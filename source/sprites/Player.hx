@@ -37,7 +37,7 @@ enum Direction {
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
-  public static inline var DEFAULT_SKIN = "assets/images/person-male-blondehair-blueshirt.png";
+  public static inline var DEFAULT_SKIN = "assets/images/person-male-1.png";
   public static inline var DEFAULT_SPEED = 200;
 
   public var points:Int;

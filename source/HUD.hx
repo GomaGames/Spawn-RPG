@@ -55,7 +55,7 @@ class HUD extends FlxSpriteGroup
     lifeDisplay = new FlxSpriteGroup(760, 0);
     lifeText = new FlxText(60,28);
     lifeText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
-    var heart = new FlxSprite(30,30,'assets/images/item-heart.png');
+    var heart = new FlxSprite(30,30,'assets/images/item-heart-red.png');
     heart.scale.set(0.25,0.25);
     heart.updateHitbox();
     lifeDisplay.add(heart);
@@ -64,7 +64,7 @@ class HUD extends FlxSpriteGroup
     coinsDisplay = new FlxSpriteGroup(680, 0);
     coinsText = new FlxText(34,28);
     coinsText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
-    var coin = new FlxSprite(0,30,'assets/images/item-coin.png');
+    var coin = new FlxSprite(0,30,'assets/images/item-coin-yellow.png');
     coin.scale.set(0.1,0.1);
     coin.updateHitbox();
     coinsDisplay.add(coin);

@@ -2,9 +2,9 @@ package sprites;
 
 class CollectableSprite extends InteractableSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/item-sword-idle.png";
+  public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-white.png";
 
-  public function new(state:PlayState, x:Int, y:Int, graphic:String){
+  public function new(state:PlayState, x:Int, y:Int, ?graphic:String = DEFAULT_SKIN ){
     super(state, x, y, graphic);
     this.scale.set(.5,.5);
     this.updateHitbox();

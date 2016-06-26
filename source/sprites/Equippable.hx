@@ -8,7 +8,7 @@ import flixel.tweens.FlxEase;
 
 class Equippable extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/item-sword-idle.png";
+  public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
   private var state:PlayState;
   // private var player:Player;
