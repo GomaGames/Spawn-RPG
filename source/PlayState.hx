@@ -31,7 +31,8 @@ class PlayState extends FlxState
   static var LEVEL_MAX_Y;
 
   private var map:Map;
-  public var dialogue_box:DialogueBox;
+  private var dialogue_boxes:List<DialogueBox>; // queue
+  private var current_dialogue_box:DialogueBox; // the open one
   public var player:Player;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
@@ -60,6 +61,7 @@ class PlayState extends FlxState
     objects = new List<Object>();
     interactableSprites = new List<InteractableSprite>();
     collectables = new List<CollectableSprite>();
+    dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
     interacted = null;
     collected = null;
@@ -99,19 +101,20 @@ class PlayState extends FlxState
     FlxG.cameras.add(topBarCam);
 	}
 
-  public inline function show_dialogue(message:String, x:Int, y:Int):Void
+  /*
+    queue up dialogue boxes so one can show at a time
+  */
+  public inline function queue_dialogue(message:String, x:Int, y:Int):Void
   {
-    dialogue_box = new DialogueBox(this, message, x, y);
-    paused = true;
+    dialogue_boxes.add(new DialogueBox(message, x, y));
   }
 
   public inline function close_dialogue():Void
   {
-    if(dialogue_box != null){
-      dialogue_box.close();
-      dialogue_box = null;
+    if(current_dialogue_box != null){
+      current_dialogue_box.close();
+      current_dialogue_box = null;
     }
-    paused = false;
   }
 
   private inline function pickup_collision():Void
@@ -186,6 +189,8 @@ class PlayState extends FlxState
     survival_type = null;
     interacted = null;
     collected = null;
+    dialogue_boxes = null;
+    current_dialogue_box = null;
     super.destroy();
 	}
 
@@ -193,7 +198,18 @@ class PlayState extends FlxState
   {
     super.update(elapsed);
 
-    if( this.player.alive ){
+    if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
+      remove(current_dialogue_box);
+      close_dialogue();
+      interacted = null;
+      paused = false;
+
+    } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
+      current_dialogue_box = dialogue_boxes.pop();
+      add(current_dialogue_box);
+      paused = true;
+
+    } else if( this.player.alive ){
 
       pickup_collision();
 

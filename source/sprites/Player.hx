@@ -112,12 +112,6 @@ class Player extends FlxSprite{
       collect_item();
       interact(); // must be after collect_item()
       update_weapon();
-    }else{
-      // check for unpause
-      if(this.state.dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact]) ){
-        this.state.close_dialogue();
-        this.state.interacted = null;
-      }
     }
 
     super.update(elapsed);
