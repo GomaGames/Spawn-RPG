@@ -121,7 +121,7 @@ class PlayState extends FlxState
             player.slow_down(pickup.DURATION);
           case sprites.pickups.Freeze:
             player.freeze(pickup.DURATION);
-          case sprites.pickups.Gem:
+          case sprites.pickups.Coin:
             player.coins += pickup.value;
         }
       }

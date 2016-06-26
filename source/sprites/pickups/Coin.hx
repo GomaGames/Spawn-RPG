@@ -2,10 +2,10 @@ package sprites.pickups;
 
 import flixel.FlxSprite;
 
-class Gem extends Pickup {
+class Coin extends Pickup {
 
   public static inline var DEFAULT_POINTS = 1;
-  public static inline var DEFAULT_SKIN = "assets/images/item-gem-orange.png";
+  public static inline var DEFAULT_SKIN = "assets/images/item-coin.png";
 
   public function new(state:PlayState, x:Int, y:Int, graphic:String, value:Int){
     super(state, x, y, graphic);
