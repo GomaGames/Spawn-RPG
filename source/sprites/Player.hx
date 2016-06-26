@@ -165,7 +165,7 @@ class Player extends FlxSprite{
           this.inventory.push(item);
           this.state.collectables.remove(item);
           this.state.remove(item);
-          this.state.hud.addInventoryItem(item.clone());
+          this.state.hud.addInventoryItem(item);
 
           this.state.collected = null;
         }
@@ -190,6 +190,7 @@ Bool
   public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
   {
     if(this.hasItem(inventory_item)){
+      this.state.hud.removeInventoryItem(inventory_item);
       this.inventory.remove(inventory_item);
       receiver.receiveItem(inventory_item);
       return true;

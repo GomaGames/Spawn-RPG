@@ -3,7 +3,6 @@ package;
 import flixel.FlxBasic;
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.FlxBasic;
 import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxPoint;
@@ -14,6 +13,8 @@ class HUD extends FlxSpriteGroup
 {
   private static inline var HUD_HEIGHT = 40;
   private var background:FlxSprite;
+  //                           original   clone
+  private var inventoryMap:Map<FlxSprite, FlxSprite>;
   public var top_bar_bg:FlxSprite;
   public var inventoryDisplay:FlxSpriteGroup;
   public var lifeDisplay:flixel.group.FlxSpriteGroup;
@@ -29,6 +30,7 @@ class HUD extends FlxSpriteGroup
   public function new(x:Float, y:Float)
   {
     super(-10000,-10000);
+    inventoryMap = new Map<FlxSprite, FlxSprite>();
 
     background = new FlxSprite(); // background is needed for camera to follow
     background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, FlxColor.TRANSPARENT);
@@ -51,10 +53,19 @@ class HUD extends FlxSpriteGroup
     add(lifeDisplay);
   }
 
-  public inline function addInventoryItem(spriteClone:FlxSprite):Void
+  public inline function addInventoryItem(originalSprite:FlxSprite):Void
   {
+    var spriteClone = originalSprite.clone();
     spriteClone.x = this.inventoryDisplay.length * 24;
     spriteClone.scale = FlxPoint.weak(.25,.25);
     this.inventoryDisplay.add(spriteClone);
+    // make a map so we can remove it
+    inventoryMap.set(originalSprite, spriteClone);
+  }
+
+  public inline function removeInventoryItem(originalSprite:FlxSprite):Void
+  {
+    this.inventoryDisplay.remove(inventoryMap.get(originalSprite));
+    inventoryMap.remove(originalSprite);
   }
 }
