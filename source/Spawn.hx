@@ -83,14 +83,14 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function gem(x:Int, y:Int, ?points:Int, ?skin:String):Gem
+  public static inline function gem(x:Int, y:Int, ?value:Int, ?skin:String):Gem
   {
     var new_pickup = new Gem(
       state,
       x,
       y,
       skin != null ? skin : Settings.gem.default_skin,
-      points != null ? points : Settings.gem.default_points);
+      value != null ? value : Settings.gem.default_points);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;

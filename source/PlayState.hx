@@ -122,7 +122,7 @@ class PlayState extends FlxState
           case sprites.pickups.Freeze:
             player.freeze(pickup.DURATION);
           case sprites.pickups.Gem:
-            player.score(pickup.POINTS);
+            player.coins += pickup.value;
         }
       }
     }
@@ -166,6 +166,8 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
+    super.update(elapsed);
+
     if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
       remove(current_dialogue_box);
       close_dialogue();
@@ -185,8 +187,6 @@ class PlayState extends FlxState
       touch_enemy(); // must be last, cause can die!
 
     }
-
-    super.update(elapsed);
 
     FlxG.collide();
   }

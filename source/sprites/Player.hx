@@ -69,6 +69,12 @@ class Player extends FlxSprite{
     return this._life;
   }
 
+  public var coins(default,set):Int;
+  private inline function set_coins(val:Int):Int{
+    this.coins = val;
+    return this.coins;
+  }
+
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
     this.state = state;
@@ -83,6 +89,7 @@ class Player extends FlxSprite{
     this.current_direction = Direction.DOWN;
 
     this.life = 3;
+    this.coins = 0;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
