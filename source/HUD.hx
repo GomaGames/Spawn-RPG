@@ -53,8 +53,9 @@ class HUD extends FlxSpriteGroup
     lifeDisplay = new FlxSpriteGroup(760, -114);
     lifeText = new FlxText(60,28);
     lifeText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
-    var heart = new FlxSprite(0,0,'assets/images/item-heart.png');
+    var heart = new FlxSprite(30,30,'assets/images/item-heart.png');
     heart.scale.set(0.25,0.25);
+    heart.updateHitbox();
     lifeDisplay.add(heart);
     lifeDisplay.add(lifeText);
 
