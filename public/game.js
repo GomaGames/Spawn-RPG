@@ -1,3 +1,5 @@
+Spawn.intro = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+
 Spawn.game = function(){
 
   var wall_skin = "assets/images/terrain-wall-stone.png";

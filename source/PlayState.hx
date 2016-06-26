@@ -32,7 +32,8 @@ class PlayState extends FlxState
   static var LEVEL_MAX_Y;
 
   private var map:Map;
-  public var dialogue_box:DialogueBox;
+  private var dialogue_boxes:List<DialogueBox>; // queue
+  private var current_dialogue_box:DialogueBox; // the open one
   public var player:Player;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
@@ -42,9 +43,10 @@ class PlayState extends FlxState
   public var weapon:Equippable;
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
-  public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
   public var collected_asset:String;
+  public var hud:HUD;
+
   public function new(){
     Spawn.state = this;
     super();
@@ -59,8 +61,8 @@ class PlayState extends FlxState
     objects = new List<Object>();
     interactableSprites = new List<InteractableSprite>();
     collectables = new List<CollectableSprite>();
+    dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
-    interacted = null;
     collected = null;
     paused = false;
 		super.create();
@@ -70,6 +72,11 @@ class PlayState extends FlxState
     Map.drawTopBar( this, map );
     weapon = new Equippable( this );
     add(weapon);
+
+    hud = new HUD(-10000, -10000);
+
+    add(hud);
+
     bgColor = Main.BACKGROUND_GREY;
     add(map);
     add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
@@ -79,12 +86,30 @@ class PlayState extends FlxState
 #else
     Spawn.game();
 #end
-    FlxG.camera.follow(player, LOCKON, 1);
+    // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
+    FlxG.camera.follow(player, TOPDOWN, 1);
+    // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
+    var topBarCam = new FlxCamera(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT, 2);
+    topBarCam.bgColor = FlxColor.TRANSPARENT;
+
+    topBarCam.follow(hud);
+    FlxG.cameras.add(topBarCam);
 	}
 
-  public inline function show_dialogue(message:String, x:Int, y:Int):Void
+  /*
+    queue up dialogue boxes so one can show at a time
+  */
+  public inline function queue_dialogue(message:String, x:Int, y:Int):Void
   {
-    dialogue_box = new DialogueBox(this, message, x, y);
+    dialogue_boxes.add(new DialogueBox(message, x, y));
+  }
+
+  public inline function close_dialogue():Void
+  {
+    if(current_dialogue_box != null){
+      current_dialogue_box.close();
+      current_dialogue_box = null;
+    }
   }
 
   private inline function pickup_collision():Void
@@ -101,8 +126,7 @@ class PlayState extends FlxState
           case sprites.pickups.Freeze:
             player.freeze(pickup.DURATION);
           case sprites.pickups.Gem:
-            player.score(pickup.POINTS);
-            // victory_check();
+            player.coins += pickup.value;
         }
       }
     }
@@ -112,8 +136,7 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( FlxG.collide(player, enemy) ){
-        player.die();
-        survival_check();
+        player.life--;
       }
     }
   }
@@ -128,15 +151,15 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function interact_collision():Void
-  {
-    for(sprite in interactableSprites) {
-      if( FlxG.collide(player, sprite) ){
-        interacted = sprite;
-        trace('interacting');
-      }
-    }
-  }
+  // private inline function interact_collision():Void
+  // {
+  //   for(sprite in interactableSprites) {
+  //     if( FlxG.collide(player, sprite) ){
+  //       interacted = sprite;
+  //       trace('interacting');
+  //     }
+  //   }
+  // }
 
   private inline function item_pickup():Void
   {
@@ -149,22 +172,6 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function survival_check():Void
-  {
-    if( !player.alive ){
-      FlxG.switchState(new EndState(player, EndState.EndType.NO_SURVIVORS));
-    }
-  }
-
-  // private inline function victory_check():Void
-  // {
-  //   if( Lambda.filter(pickups, function(p){
-  //     return Type.getClass(p) == sprites.pickups.Gem;
-  //   }).length == 0 ){
-  //     FlxG.switchState(new EndState(player, EndState.EndType.FINISH));
-  //   }
-  // }
-
   override public function destroy():Void
 	{
     map = null;
@@ -175,19 +182,28 @@ class PlayState extends FlxState
     interactableSprites = null;
     collectables = null;
     survival_type = null;
-    interacted = null;
     collected = null;
+    dialogue_boxes = null;
+    current_dialogue_box = null;
     super.destroy();
 	}
 
   override public function update(elapsed:Float):Void
   {
 
-    pickup_collision();
+    if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
+      remove(current_dialogue_box);
+      close_dialogue();
+      paused = false;
 
-    interact_collision();
+    } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
+      current_dialogue_box = dialogue_boxes.pop();
+      add(current_dialogue_box);
+      paused = true;
 
-    touch_enemy();
+    } else if( this.player.alive ){
+
+      pickup_collision();
 
     kill_enemy();
 
@@ -195,6 +211,9 @@ class PlayState extends FlxState
     FlxG.collide();
     super.update(elapsed);
 
+      touch_enemy(); // must be last, cause can die!
+
+    }
 
   }
 }

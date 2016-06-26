@@ -9,6 +9,8 @@ import sprites.Object;
 import sprites.pickups.*;
 import sprites.InteractableSprite;
 import sprites.CollectableSprite;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 
 enum PickupType{
   GEM;
@@ -20,6 +22,10 @@ enum PickupType{
 @:expose class Spawn {
 
   public static var state:PlayState;
+
+  public static var introText:String = IntroState.DEFAULT_INTRO_TEXT;
+  public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
+  public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
 
   public static dynamic function game():Void{}
 
@@ -77,14 +83,14 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function gem(x:Int, y:Int, ?points:Int, ?skin:String):Gem
+  public static inline function gem(x:Int, y:Int, ?value:Int, ?skin:String):Gem
   {
     var new_pickup = new Gem(
       state,
       x,
       y,
       skin != null ? skin : Settings.gem.default_skin,
-      points != null ? points : Settings.gem.default_points);
+      value != null ? value : Settings.gem.default_points);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;
@@ -136,19 +142,32 @@ enum PickupType{
   {
     if(x == null) x = 200; // #TODO
     if(y == null) y = 200; // #TODO
-    state.show_dialogue(message, x, y);
+    state.queue_dialogue(message, x, y);
   }
 
   public static inline function gameWin():Void
   {
-    FlxG.switchState(new EndState(state.player, EndState.EndType.FINISH));
+    FlxG.switchState(new EndState(EndState.VictoryStatus.WIN));
+  }
+
+  public static inline function gameOver():Void
+  {
+    FlxG.switchState(new EndState(EndState.VictoryStatus.LOSE));
   }
 
 #if neko
+  public static inline function dev_intro():Void
+  {
+    introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+    gameWinText = "Good Job!";
+    gameOverText = "You died!";
+  }
+
   private static var diddev:Bool = false;
   public static inline function dev():Void
   {
     if( !diddev ){
+
       var wall_skin = "assets/images/terrain-wall-stone.png";
       var player = hero( 0, 50 );
       object(120, 240, wall_skin);
@@ -184,9 +203,23 @@ enum PickupType{
       // new in RPG version
       collectableSprite( 200, 5, "assets/images/item-gray-egg.png");
       var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-idle.png");
+      sword1.onCollect = function(){
+        Spawn.message("You got the magic sword!");
+        return true;
+      }
       var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
+      sword2.onCollect = function(){
+        if( quest_1_complete ){
+          Spawn.message("You got the super sword!");
+          return true;
+        } else {
+          Spawn.message("Only those who are worthy may wield this sword.");
+          return false;
+        }
+      }
       var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
+      interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){
         if(!player.hasItem(mirror)){
           girl.talk("Killer robots? Do I LOOK dumb?");
@@ -200,7 +233,9 @@ enum PickupType{
 
       var messageFlag = interactableSprite( 100, 50, "assets/images/object-flag-orange.png");
       messageFlag.interact = function(){
-        message('bring the sword to the red square.');
+        message('bring ...');
+        message('the sword ...');
+        message('to the red square.');
       }
 
       var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-rock-cube-orange.png');

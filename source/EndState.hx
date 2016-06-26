@@ -11,38 +11,23 @@ import flixel.util.FlxAxes;
 import flixel.util.FlxTimer;
 import sprites.Player;
 
-enum EndType {
-  TIME_OUT;
-  SURVIVED; // if there are no gems, timed out, there is a survivor
-  NO_SURVIVORS; // if there are no gems, there is no survivors, all lose
-  FINISH; // if there are gems, all gems have been collected
+enum VictoryStatus {
+  WIN;
+  LOSE;
 }
 
 class EndState extends FlxState
 {
-  private var p1Score:Int;
-  private var end_type:EndType;
+  public static inline var DEFAULT_WIN_TEXT = "You Win!";
+  public static inline var DEFAULT_LOSE_TEXT = "Game Over!";
+  private var status:VictoryStatus;
   private var allow_continue:Bool; // don't allow rapid continue while holding buttons
   private var resolve_timer:FlxTimer; // don't allow rapid continue while holding buttons
   private static inline var resolve_delay:Int = 3; // seconds
 
-  private inline function resolveWinner( p1Score:Int ):String
-  {
-    var text = switch( this.end_type ){
-      // TODO: VICTORY CONDITIONS
-      case EndType.TIME_OUT: 'Hero Wins!';
-      case EndType.SURVIVED: 'Hero Survived!';
-      case EndType.NO_SURVIVORS: 'Nobody survived!';
-      case EndType.FINISH: 'Hero Wins!';
-      default: 'Hero Wins!';
-    }
-    return text;
-  }
-
-  public function new(player_1:Player, end_type:EndType){
+  public function new(status:VictoryStatus){
     super();
-    this.p1Score = player_1.points;
-    this.end_type = end_type;
+    this.status = status;
   }
 
   override public function create():Void
@@ -50,31 +35,14 @@ class EndState extends FlxState
     super.create();
     bgColor = Main.BACKGROUND_GREY;
 
-    var headerText = new FlxText( ( Main.STAGE_WIDTH / 8 ), ( Main.STAGE_HEIGHT / 10 ), 'GAME OVER' );
-    headerText.setFormat( "Arial", 42, Main.FONT_GREY, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    headerText.screenCenter( FlxAxes.X );
-    add( headerText );
-
-    var winnerText = new FlxText( Main.STAGE_WIDTH / 2, Main.STAGE_HEIGHT * (20/100), resolveWinner( this.p1Score ));
-    winnerText.setFormat( "Arial", 72, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    winnerText.screenCenter( FlxAxes.X );
-    add( winnerText );
-
-    var player1TextX = (1/5) * Main.STAGE_WIDTH;
-    var player2TextX = (3/5) * Main.STAGE_WIDTH;
-    var playerTextY = (40/100) * Main.STAGE_HEIGHT;
-
-    var player1Text = new FlxText( player1TextX, playerTextY, "Hero 1" );
-    player1Text.setFormat( "Arial", 52, Main.FONT_GREY, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add( player1Text );
-
-    var player2Text = new FlxText( player2TextX, playerTextY, "Hero 2" );
-    player2Text.setFormat( "Arial", 52, Main.FONT_GREY, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add( player2Text );
-
-    var player1Score = new FlxText( player1TextX + 50, playerTextY + (playerTextY/4), Std.string( this.p1Score ) );
-    player1Score.setFormat( "Arial", 90, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-    add( player1Score );
+    var endgameText = new FlxText( ( Main.STAGE_WIDTH / 8 ), ( Main.STAGE_HEIGHT / 10 ) );
+    endgameText.setFormat( "Arial", 42, Main.FONT_GREY, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    endgameText.screenCenter( FlxAxes.X );
+    add( endgameText );
+    endgameText.text = switch(status){
+      case WIN: Spawn.gameWinText;
+      case LOSE: Spawn.gameOverText;
+    }
 
     resolve_timer = new FlxTimer();
     resolve_timer.start(resolve_delay, function(t){
@@ -90,8 +58,8 @@ class EndState extends FlxState
 
   override public function destroy():Void
   {
-    p1Score = null;
-    end_type = null;
+    status = null;
+    resolve_timer = null;
     super.destroy();
   }
   override public function update(elapsed:Float):Void

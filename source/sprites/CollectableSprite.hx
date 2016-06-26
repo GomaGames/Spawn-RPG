@@ -17,4 +17,9 @@ class CollectableSprite extends InteractableSprite implements IDespawnableSprite
     this.destroy();
   }
 
+  // if return false, player does not pick up!
+  public dynamic function onCollect():Bool{
+    return true;
+  }
+
 }

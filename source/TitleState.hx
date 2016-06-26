@@ -10,12 +10,14 @@ import flixel.util.FlxColor;
 
 class TitleState extends FlxState
 {
+  private var titleImage:FlxSprite;
+
   override public function create():Void
   {
     super.create();
     bgColor = Main.BACKGROUND_GREY;
 
-    var titleImage = new FlxSprite();
+    titleImage = new FlxSprite();
     titleImage.loadGraphic( AssetPaths.TITLE_SCREEN );
     titleImage.scale.set(0.5, 0.5);
     titleImage.screenCenter();
@@ -27,7 +29,13 @@ class TitleState extends FlxState
     if(
       FlxG.keys.getIsDown().length > 0 ||
       FlxG.mouse.pressed
-      ) FlxG.switchState( new MenuState() );
+      ) FlxG.switchState( new IntroState() );
     super.update(elapsed);
   }
+
+  override public function destroy():Void
+	{
+    titleImage = null;
+    super.destroy();
+	}
 }

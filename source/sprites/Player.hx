@@ -2,6 +2,7 @@ package sprites;
 
 import haxe.ds.IntMap;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxPoint;
@@ -50,11 +51,33 @@ class Player extends FlxSprite{
   private var spawn_position:FlxPoint;
   private var walkRot:Float;
   private var walkHopY:Float;
+  private var interacted:InteractableSprite;
   public var inventory:List<CollectableSprite>;
-  public var inventoryDisplay:flixel.group.FlxSpriteGroup;
+
+  public var life(get,set):Int;
+  private var _life:Int;
+  private inline function set_life(val:Int):Int{
+    this._life = val;
+    this.state.hud.life = val;
+    if( this._life <= 0 ){
+      this.die();
+    }
+    return this._life;
+  }
+  private inline function get_life():Int{
+    return this._life;
+  }
+
+  public var coins(default,set):Int;
+  private inline function set_coins(val:Int):Int{
+    this.coins = val;
+    this.state.hud.coins = val;
+    return this.coins;
+  }
 
   public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
     super(x, y, skin);
+    this.state = state;
 
     this.scale.set(.5,.5);
     this.updateHitbox();
@@ -65,9 +88,8 @@ class Player extends FlxSprite{
     this.attacking = false;
     this.current_direction = Direction.DOWN;
 
-    this.inventoryDisplay = new FlxSpriteGroup(80,0);
-    this.inventoryDisplay.color = 0xffffff;
-    state.add(this.inventoryDisplay);
+    this.life = 3;
+    this.coins = 0;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
@@ -77,36 +99,38 @@ class Player extends FlxSprite{
     this.points = 0;
     this.walkRot = 0;
     this.walkHopY = 0;
-    this.state = state;
+
   }
 
   override public function update(elapsed:Float):Void
   {
+    super.update(elapsed);
     if(!this.state.paused) {
       movement();
+      attack();
+      collect_item();
+      interact_collision();
+      interact(); // must be after collect_item()
     }
-    interact();
-    attack();
-    collect_item();
-    super.update(elapsed);
+  }
+  public inline function collect_item():Void
+  {
+    if(this.state.collected != null) {
+      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
+        var item = this.state.collected;
+        if( item.onCollect() != false ){
+          item.immovable = true;
+          this.inventory.push(item);
+          this.state.collectables.remove(item);
+          this.state.remove(item);
+          this.state.hud.addInventoryItem(item);
+
+          this.state.collected = null;
+        }
+      }
+    }
   }
 
-  public inline function interact():Void
-  {
-    if(this.state.paused && FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-      this.state.paused = false;
-      // remove dialogue box
-      if(this.state.dialogue_box != null){
-        this.state.dialogue_box.close();
-      }
-    } else if(!this.state.paused && this.state.interacted != null) {
-      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        this.state.interacted.interact();
-        this.state.paused = true;
-        this.state.interacted = null;
-      }
-    }
-  }
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
@@ -121,24 +145,23 @@ class Player extends FlxSprite{
     }
   }
 
-  public inline function collect_item():Void
+  public inline function interact():Void
   {
-    if(this.state.collected != null) {
-      if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        var item = this.state.collected;
-        item.y = this.inventoryDisplay.y;
-        for(i in 0...this.inventory.length) {
-          item.x = this.inventoryDisplay.x + 24*(i+1);
-        }
-        item.scale.set(.3,.3);
-        item.immovable = true;
-        this.inventory.push(item);
-        this.inventoryDisplay.add(item);
-        this.state.collected = null;
-        trace('item added to inventory');
+    if(interacted != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){
+      interacted.interact();
+      interacted = null;
+    }
+  }
+
+  private inline function interact_collision():Void
+  {
+    for(sprite in state.interactableSprites) {
+      if( FlxG.collide(this, sprite) ){
+        interacted = sprite;
       }
     }
   }
+
   public inline function hasItem(inventory_item:CollectableSprite):
 Bool
   {
@@ -148,6 +171,7 @@ Bool
   public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
   {
     if(this.hasItem(inventory_item)){
+      this.state.hud.removeInventoryItem(inventory_item);
       this.inventory.remove(inventory_item);
       receiver.receiveItem(inventory_item);
       return true;
@@ -164,31 +188,38 @@ Bool
       , moving_v = false;
 
     if(!this.attacking){
-      if (FlxG.keys.anyPressed([PlayerInput.up])){
-        // this.acceleration.y = -GG.hero_speed;
-        this.current_direction = Direction.UP;
-        this.acceleration.y = -this.speed *10;
-        moving_v = true;
+      if (FlxG.keys.anyPressed([
+        PlayerInput.up,
+        PlayerInput.left,
+        PlayerInput.right,
+        PlayerInput.down])){
+        if(!isTouching(FlxObject.ANY)){
+          interacted = null;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.up])){
+          // this.acceleration.y = -GG.hero_speed;
+          this.current_direction = Direction.UP;
+          this.acceleration.y = -this.speed *10;
+          moving_v = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.down])){
+          this.current_direction = Direction.DOWN;
+          this.acceleration.y = this.speed *10;
+          moving_v = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.left])){
+          // this.acceleration.y = -GG.hero_speed;
+          this.current_direction = Direction.LEFT;
+          this.acceleration.x = -this.speed *10;
+          moving_h = true;
+        }
+        if (FlxG.keys.anyPressed([PlayerInput.right])){
+          this.current_direction = Direction.RIGHT;
+          this.acceleration.x = this.speed *10;
+          moving_h = true;
+        }
+
       }
-      if (FlxG.keys.anyPressed([PlayerInput.down])){
-        this.current_direction = Direction.DOWN;
-        this.acceleration.y = this.speed *10;
-        moving_v = true;
-      }
-      if (FlxG.keys.anyPressed([PlayerInput.left])){
-        // this.acceleration.y = -GG.hero_speed;
-        this.current_direction = Direction.LEFT;
-        this.acceleration.x = -this.speed *10;
-        moving_h = true;
-      }
-      if (FlxG.keys.anyPressed([PlayerInput.right])){
-        this.current_direction = Direction.RIGHT;
-        this.acceleration.x = this.speed *10;
-        moving_h = true;
-      }
-      // if (game.input.space){
-      //   this.attack();
-      // }
     }
 
     // funner walking
@@ -247,14 +278,9 @@ Bool
 
   public inline function die():Void
   {
-    if( this.state.survival_type ){
-      this.alive = false;
-      this.destroy();
-    } else { // respawn
-      this.x = spawn_position.x;
-      this.y = spawn_position.y;
-      this.velocity.set(0,0);
-    }
+    this.alive = false;
+    Spawn.gameOver();
+    this.destroy();
   }
 }
 
