@@ -14,6 +14,7 @@ class IntroState extends FlxState
   private static inline var TIMEOUT = 2; // seconds
   private var intro_text:FlxText;
   private var ready:Bool;
+  private var bg:FlxSprite;
 
 	override public function create():Void
 	{
@@ -21,10 +22,15 @@ class IntroState extends FlxState
     Spawn.dev_intro();
 #end
 		super.create();
-    bgColor = Main.BACKGROUND_GREY;
+    // bgColor = Main.BACKGROUND_GREY;
+    bg = new FlxSprite();
+    bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
+    bg.screenCenter();
+    add(bg);
 
     intro_text = new FlxText( 400, 600, Std.string( Spawn.intro ) );
-    intro_text.setFormat( "Arial", 30, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    intro_text.setFormat( "Arial", 50, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    intro_text.screenCenter();
     add( intro_text );
 
     var timeout = new FlxTimer();

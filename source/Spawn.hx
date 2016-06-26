@@ -9,6 +9,8 @@ import sprites.Object;
 import sprites.pickups.*;
 import sprites.InteractableSprite;
 import sprites.CollectableSprite;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 
 enum PickupType{
   GEM;
