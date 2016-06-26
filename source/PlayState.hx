@@ -195,25 +195,23 @@ class PlayState extends FlxState
       remove(current_dialogue_box);
       close_dialogue();
       paused = false;
-
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
       current_dialogue_box = dialogue_boxes.pop();
       add(current_dialogue_box);
       paused = true;
 
     } else if( this.player.alive ){
-
+      kill_enemy();
       pickup_collision();
 
-    kill_enemy();
-
-    item_pickup();
-    FlxG.collide();
-    super.update(elapsed);
+      item_pickup();
 
       touch_enemy(); // must be last, cause can die!
 
     }
+    FlxG.collide();
+    super.update(elapsed);
+    
 
   }
 }

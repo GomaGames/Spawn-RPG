@@ -113,6 +113,7 @@ class Player extends FlxSprite{
       interact(); // must be after collect_item()
     }
   }
+
   public inline function collect_item():Void
   {
     if(this.state.collected != null) {
