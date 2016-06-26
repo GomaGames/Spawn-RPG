@@ -72,6 +72,7 @@ class Player extends FlxSprite{
   public var coins(default,set):Int;
   private inline function set_coins(val:Int):Int{
     this.coins = val;
+    this.state.hud.coins = val;
     return this.coins;
   }
 
