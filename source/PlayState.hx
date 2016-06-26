@@ -69,7 +69,6 @@ class PlayState extends FlxState
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
-    Map.drawTopBar( this, map );
     weapon = new Equippable( this );
     add(weapon);
 
@@ -151,16 +150,6 @@ class PlayState extends FlxState
     }
   }
 
-  // private inline function interact_collision():Void
-  // {
-  //   for(sprite in interactableSprites) {
-  //     if( FlxG.collide(player, sprite) ){
-  //       interacted = sprite;
-  //       trace('interacting');
-  //     }
-  //   }
-  // }
-
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
@@ -190,6 +179,7 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
+    super.update(elapsed);
 
     if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
       remove(current_dialogue_box);
@@ -201,7 +191,9 @@ class PlayState extends FlxState
       paused = true;
 
     } else if( this.player.alive ){
+      
       kill_enemy();
+
       pickup_collision();
 
       item_pickup();
@@ -209,9 +201,7 @@ class PlayState extends FlxState
       touch_enemy(); // must be last, cause can die!
 
     }
-    FlxG.collide();
-    super.update(elapsed);
-    
 
+    FlxG.collide();
   }
 }
