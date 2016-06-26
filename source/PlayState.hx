@@ -42,7 +42,6 @@ class PlayState extends FlxState
 
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
-  public var interacted:InteractableSprite;
   public var collected:CollectableSprite;
   public var collected_asset:String;
   public var hud:HUD;
@@ -63,24 +62,16 @@ class PlayState extends FlxState
     collectables = new List<CollectableSprite>();
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
-    interacted = null;
     collected = null;
     paused = false;
 		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
-    // Map.drawTopBar( this, map );
 
     hud = new HUD(-10000, -10000);
 
     add(hud);
-    // var topBar = new FlxSprite();
-    // topBar.makeGraphic(Main.STAGE_WIDTH, 40, FlxColor.WHITE);
-    // topBar.immovable = true;
-    // add( topBar );
-
-    // add( inventoryText );
 
     bgColor = Main.BACKGROUND_GREY;
     add(map);
@@ -132,7 +123,6 @@ class PlayState extends FlxState
             player.freeze(pickup.DURATION);
           case sprites.pickups.Gem:
             player.score(pickup.POINTS);
-            // victory_check();
         }
       }
     }
@@ -143,16 +133,6 @@ class PlayState extends FlxState
     for( enemy in enemies ){
       if( FlxG.collide(player, enemy) ){
         player.life--;
-      }
-    }
-  }
-
-  private inline function interact_collision():Void
-  {
-    for(sprite in interactableSprites) {
-      if( FlxG.collide(player, sprite) ){
-        interacted = sprite;
-        trace('interacting');
       }
     }
   }
@@ -168,15 +148,6 @@ class PlayState extends FlxState
     }
   }
 
-  // private inline function victory_check():Void
-  // {
-  //   if( Lambda.filter(pickups, function(p){
-  //     return Type.getClass(p) == sprites.pickups.Gem;
-  //   }).length == 0 ){
-  //     FlxG.switchState(new EndState(player, EndState.EndType.FINISH));
-  //   }
-  // }
-
   override public function destroy():Void
 	{
     map = null;
@@ -187,7 +158,6 @@ class PlayState extends FlxState
     interactableSprites = null;
     collectables = null;
     survival_type = null;
-    interacted = null;
     collected = null;
     dialogue_boxes = null;
     current_dialogue_box = null;
@@ -196,12 +166,9 @@ class PlayState extends FlxState
 
   override public function update(elapsed:Float):Void
   {
-    super.update(elapsed);
-
     if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
       remove(current_dialogue_box);
       close_dialogue();
-      interacted = null;
       paused = false;
 
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
@@ -213,13 +180,13 @@ class PlayState extends FlxState
 
       pickup_collision();
 
-      interact_collision();
-
       item_pickup();
 
       touch_enemy(); // must be last, cause can die!
 
     }
+
+    super.update(elapsed);
 
     FlxG.collide();
   }
