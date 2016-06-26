@@ -201,13 +201,13 @@ enum PickupType{
       }
 
       // new in RPG version
-      collectableSprite( 200, 5, "assets/images/item-gray-egg.png");
-      var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-idle.png");
+      collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
+      var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-blue.png");
       sword1.onCollect = function(){
         Spawn.message("You got the magic sword!");
         return true;
       }
-      var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-idle.png");
+      var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-green.png");
       sword2.onCollect = function(){
         if( quest_1_complete ){
           Spawn.message("You got the super sword!");
@@ -217,7 +217,7 @@ enum PickupType{
           return false;
         }
       }
-      var girl = interactableSprite( 400, 50, "assets/images/person-female-blackhair-orangeshirt.png");
+      var girl = interactableSprite( 400, 50, "assets/images/person-female-2.png");
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
       interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){
@@ -231,14 +231,14 @@ enum PickupType{
         }
       }
 
-      var messageFlag = interactableSprite( 100, 50, "assets/images/object-flag-orange.png");
+      var messageFlag = interactableSprite( 100, 50, "assets/images/item-flag-red.png");
       messageFlag.interact = function(){
         message('bring ...');
         message('the sword ...');
         message('to the red square.');
       }
 
-      var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-rock-cube-orange.png');
+      var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-cube-yellow.png');
       enemyBomb.y = 300;
       enemyBomb.interact = function(){
         if(player.hasItem(sword1) || player.hasItem(sword2)){
