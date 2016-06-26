@@ -22,7 +22,6 @@ class IntroState extends FlxState
     Spawn.dev_intro();
 #end
 		super.create();
-    // bgColor = Main.BACKGROUND_GREY;
     bg = new FlxSprite();
     bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
     bg.screenCenter();
