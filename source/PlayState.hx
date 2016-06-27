@@ -128,7 +128,7 @@ class PlayState extends FlxState
   private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
-      if( FlxG.collide(player, enemy) ){
+      if( enemy.alive && FlxG.collide(player, enemy) ){
         player.life--;
       }
     }
