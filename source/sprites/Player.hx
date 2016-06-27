@@ -122,6 +122,10 @@ class Player extends FlxSprite{
     if(this.weapon != null){
       drop(this.weapon);
     }
+
+    // overwrite any onCollect callbacks after the first call
+    item.onCollect = function(){ return true; };
+
     this.weapon = item;
     this.state.collectables.remove(item);
   }
