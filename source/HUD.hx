@@ -27,7 +27,7 @@ class HUD extends FlxSpriteGroup
   public var life(default, set):Int;
   private inline function set_life(val:Int):Int
   {
-    lifeText.text = '${val} / 3';
+    lifeText.text = '${val} / ${Settings.hero.default_life}';
     return life = val;
   }
 

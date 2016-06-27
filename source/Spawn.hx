@@ -162,11 +162,15 @@ enum PickupType{
   }
 
 #if neko
-  public static inline function dev_intro():Void
+  public static inline function dev_settings():Void
   {
     Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
     Settings.gameWinText = "Good Job!";
     Settings.gameOverText = "You died!";
+
+    Settings.hero.default_skin = "assets/images/creature-trex.png";
+    Settings.hero.default_speed = 499;
+    Settings.hero.default_life = 10;
   }
 
   private static var diddev:Bool = false;

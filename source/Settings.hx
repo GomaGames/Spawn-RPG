@@ -10,6 +10,12 @@ import sprites.pickups.*;
   public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
   public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
 
+  public static var hero = {
+    default_skin : Player.DEFAULT_SKIN,
+    default_speed : Player.DEFAULT_SPEED,
+    default_life : Player.DEFAULT_LIFE
+  }
+
   public static var enemy = {
     default_skin : Enemy.DEFAULT_SKIN,
     default_speed : Enemy.DEFAULT_SPEED,

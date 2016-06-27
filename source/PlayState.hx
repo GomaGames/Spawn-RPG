@@ -50,6 +50,7 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+		super.create();
     FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
@@ -61,7 +62,6 @@ class PlayState extends FlxState
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
     paused = false;
-		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
