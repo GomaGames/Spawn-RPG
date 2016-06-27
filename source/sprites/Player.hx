@@ -39,8 +39,6 @@ class Player extends FlxSprite{
   public static inline var DEFAULT_SKIN = "assets/images/person-male-1.png";
   public static inline var DEFAULT_SPEED = 200;
 
-  public var points:Int;
-
   private var state:PlayState;
   private var graphic_path:String;
   public var current_direction:Direction;
@@ -54,7 +52,7 @@ class Player extends FlxSprite{
   private var collected:CollectableSprite;
   private var collected_asset:String;
   public var inventory:List<CollectableSprite>;
-  public var weapon:Equippable;
+  public var weapon:Weapon;
 
   public var life(get,set):Int;
   private var _life:Int;
@@ -98,7 +96,6 @@ class Player extends FlxSprite{
     this.base_speed = DEFAULT_SPEED;
     this.speed = DEFAULT_SPEED;
     this.drag = FlxPoint.weak(this.speed*10, this.speed*10);
-    this.points = 0;
     this.walkRot = 0;
     this.walkHopY = 0;
 
@@ -117,7 +114,7 @@ class Player extends FlxSprite{
     }
   }
 
-  private inline function equipWeapon(item:Weapon):Void
+  public inline function equipWeapon(item:Weapon):Void
   {
     if(this.weapon != null){
       drop(this.weapon);
@@ -331,11 +328,6 @@ Bool
     new FlxTimer().start(duration, function(timer){
       this.speed = base_speed;
     });
-  }
-
-  public inline function score(points:Int):Void
-  {
-    this.points += points;
   }
 
   public inline function die():Void

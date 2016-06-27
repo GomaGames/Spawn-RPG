@@ -87,7 +87,7 @@ enum PickupType{
       x,
       y,
       skin != null ? skin : Settings.coin.default_skin,
-      value != null ? value : Settings.coin.default_points);
+      value != null ? value : Settings.coin.default_value);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;

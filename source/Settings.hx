@@ -17,7 +17,7 @@ import sprites.pickups.*;
 
   public static var coin = {
     default_skin : Coin.DEFAULT_SKIN,
-    default_points : Coin.DEFAULT_POINTS
+    default_value : Coin.DEFAULT_VALUE
   }
 
   public static var freeze = {
