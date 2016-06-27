@@ -19,7 +19,6 @@ class TitleState extends FlxState
 
     titleImage = new FlxSprite();
     titleImage.loadGraphic( AssetPaths.TITLE_SCREEN );
-    titleImage.scale.set(0.5, 0.5);
     titleImage.screenCenter();
     add( titleImage );
   }
