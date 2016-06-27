@@ -34,11 +34,12 @@ class EndState extends FlxState
   override public function create():Void
   {
     super.create();
-    // bgColor = Main.BACKGROUND_GREY;
-    bg = new FlxSprite();
-    bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
-    bg.screenCenter();
-    add(bg);
+    bgColor = Main.BACKGROUND_GREY;
+    // bg = new FlxSprite();
+    // bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
+    // bg.screenCenter();
+    // add(bg);
+
 
     var endgameText = new FlxText( ( Main.STAGE_WIDTH / 8 ), ( Main.STAGE_HEIGHT / 10 ) );
     endgameText.screenCenter( FlxAxes.X );
