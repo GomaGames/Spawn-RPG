@@ -7,14 +7,16 @@ import flixel.group.FlxSpriteGroup;
 import flixel.text.FlxText;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import sprites.CollectableSprite;
+
 using flixel.util.FlxSpriteUtil;
 
 class HUD extends FlxSpriteGroup
 {
   private static inline var HUD_HEIGHT = 40;
   private var background:FlxSprite;
-  //                           original   clone
-  private var inventoryMap:Map<FlxSprite, FlxSprite>;
+  //                           original           clone
+  private var inventoryMap:Map<CollectableSprite, FlxSprite>;
   public var top_bar_bg:FlxSprite;
   public var inventoryDisplay:FlxSpriteGroup;
   public var lifeDisplay:FlxSpriteGroup;
@@ -39,7 +41,7 @@ class HUD extends FlxSpriteGroup
   public function new(x:Float, y:Float)
   {
     super(-10000,-10000);
-    inventoryMap = new Map<FlxSprite, FlxSprite>();
+    inventoryMap = new Map<CollectableSprite, FlxSprite>();
 
     background = new FlxSprite(); // background is needed for camera to follow
     // add y offset (226px) to let the camera follow the HUD at the correct point
@@ -78,9 +80,9 @@ class HUD extends FlxSpriteGroup
     add(coinsDisplay);
   }
 
-  public inline function addInventoryItem(originalSprite:FlxSprite):Void
+  public inline function addInventoryItem(originalSprite:CollectableSprite):Void
   {
-    var spriteClone = originalSprite.clone();
+    var spriteClone:FlxSprite = originalSprite.clone();
     spriteClone.x = this.inventoryDisplay.length * 24;
     spriteClone.scale = FlxPoint.weak(.25,.25);
     spriteClone.updateHitbox();
@@ -89,9 +91,10 @@ class HUD extends FlxSpriteGroup
     inventoryMap.set(originalSprite, spriteClone);
   }
 
-  public inline function removeInventoryItem(originalSprite:FlxSprite):Void
+  public inline function removeInventoryItem(originalSprite:CollectableSprite):CollectableSprite
   {
     this.inventoryDisplay.remove(inventoryMap.get(originalSprite));
     inventoryMap.remove(originalSprite);
+    return originalSprite;
   }
 }
