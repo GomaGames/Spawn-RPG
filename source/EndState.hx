@@ -24,6 +24,7 @@ class EndState extends FlxState
   private var allow_continue:Bool; // don't allow rapid continue while holding buttons
   private var resolve_timer:FlxTimer; // don't allow rapid continue while holding buttons
   private static inline var resolve_delay:Int = 3; // seconds
+  private var bg:FlxSprite;
 
   public function new(status:VictoryStatus){
     super();
@@ -33,10 +34,14 @@ class EndState extends FlxState
   override public function create():Void
   {
     super.create();
-    bgColor = Main.BACKGROUND_GREY;
+    // bgColor = Main.BACKGROUND_GREY;
+    bg = new FlxSprite();
+    bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
+    bg.screenCenter();
+    add(bg);
 
     var endgameText = new FlxText( ( Main.STAGE_WIDTH / 8 ), ( Main.STAGE_HEIGHT / 10 ) );
-    endgameText.setFormat( "Arial", 42, Main.FONT_GREY, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+    endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     endgameText.screenCenter( FlxAxes.X );
     add( endgameText );
     endgameText.text = switch(status){
