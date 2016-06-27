@@ -28,7 +28,7 @@ class IntroState extends FlxState
     bg.screenCenter();
     add(bg);
 
-    intro_text = new FlxText( 400, 600, Spawn.introText );
+    intro_text = new FlxText( 400, 600, Settings.introText );
     intro_text.setFormat( "Arial", 50, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     intro_text.screenCenter();
     add( intro_text );

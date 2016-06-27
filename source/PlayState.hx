@@ -93,9 +93,9 @@ class PlayState extends FlxState
   /*
     queue up dialogue boxes so one can show at a time
   */
-  public inline function queue_dialogue(message:String, x:Int, y:Int):Void
+  public inline function queue_dialogue(message:String, type:TYPE, x:Int, y:Int):Void
   {
-    dialogue_boxes.add(new DialogueBox(message, x, y));
+    dialogue_boxes.add(new DialogueBox(message, type, x, y));
   }
 
   public inline function close_dialogue():Void
@@ -172,12 +172,20 @@ class PlayState extends FlxState
     super.update(elapsed);
 
     if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
-      remove(current_dialogue_box);
+      if(current_dialogue_box.type == TYPE.HUD){
+        hud.remove(current_dialogue_box);
+      } else {
+        remove(current_dialogue_box);
+      }
       close_dialogue();
       paused = false;
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
       current_dialogue_box = dialogue_boxes.pop();
-      add(current_dialogue_box);
+      if(current_dialogue_box.type == TYPE.HUD){
+        hud.add(current_dialogue_box);
+      } else {
+        add(current_dialogue_box);
+      }
       paused = true;
 
     } else if( this.player.alive ){

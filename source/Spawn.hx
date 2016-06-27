@@ -25,10 +25,6 @@ enum PickupType{
 
   public static var state:PlayState;
 
-  public static var introText:String = IntroState.DEFAULT_INTRO_TEXT;
-  public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
-  public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
-
   public static dynamic function game():Void{}
 
   // only allow if hero is not spawned yet
@@ -159,8 +155,8 @@ enum PickupType{
   public static inline function message(message:String, ?x:Int, ?y:Int):Void
   {
     if(x == null) x = 200; // #TODO
-    if(y == null) y = 200; // #TODO
-    state.queue_dialogue(message, x, y);
+    if(y == null) y = 525; // #TODO
+    state.queue_dialogue(message, TYPE.HUD, x, y);
   }
 
   public static inline function gameWin():Void
@@ -176,9 +172,9 @@ enum PickupType{
 #if neko
   public static inline function dev_intro():Void
   {
-    introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
-    gameWinText = "Good Job!";
-    gameOverText = "You died!";
+    Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
+    Settings.gameWinText = "Good Job!";
+    Settings.gameOverText = "You died!";
   }
 
   private static var diddev:Bool = false;

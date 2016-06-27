@@ -6,7 +6,9 @@ import sprites.pickups.*;
 
 @:expose class Settings {
 
-  public static var time_limit = 40; // seconds
+  public static var introText:String = IntroState.DEFAULT_INTRO_TEXT;
+  public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
+  public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
 
   public static var enemy = {
     default_skin : Enemy.DEFAULT_SKIN,
