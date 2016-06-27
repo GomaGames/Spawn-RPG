@@ -22,11 +22,11 @@ class MenuState extends FlxState
     bg.screenCenter();
     add(bg);
 
-    titleImage = new FlxSprite();
-    titleImage.loadGraphic( AssetPaths.INSTRUCTION_SCREEN );
-    titleImage.scale.set(0.5, 0.5);
-    titleImage.screenCenter();
-    add( titleImage );
+    // titleImage = new FlxSprite();
+    // titleImage.loadGraphic( AssetPaths.INSTRUCTION_SCREEN );
+    // titleImage.scale.set(0.5, 0.5);
+    // titleImage.screenCenter();
+    // add( titleImage );
 
     ready_text = new FlxText( 400, 600, Std.string( "READY?" ) );
     ready_text.setFormat( "Arial", 50, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
@@ -47,7 +47,7 @@ class MenuState extends FlxState
 
   override public function destroy():Void
 	{
-    titleImage = null;
+    // titleImage = null;
     ready_text = null;
     super.destroy();
 	}

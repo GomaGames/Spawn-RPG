@@ -18,7 +18,6 @@ class Equippable extends FlxSprite implements IDespawnableSprite{
     this.scale.set(0.5,0.5);
     this.flipX = false;
     this.flipY = false;
-    // this.centerOffsets();
     this.height *= 2;
     this.width *= 2;
     this.centerOrigin();
@@ -38,7 +37,6 @@ class Equippable extends FlxSprite implements IDespawnableSprite{
     var p:Player = state.player;
     if( p.attacking ){
       this.solid = true;
-      // this.updateHitbox();
       var x_inc:Float = 0;
       var y_inc:Float = 0;
 
