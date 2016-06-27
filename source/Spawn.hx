@@ -6,6 +6,7 @@ import sprites.Player;
 import sprites.Enemy;
 import sprites.DialogueBox;
 import sprites.Object;
+import sprites.Weapon;
 import sprites.pickups.*;
 import sprites.InteractableSprite;
 import sprites.CollectableSprite;
@@ -126,6 +127,14 @@ enum PickupType{
     return new_sprite;
   }
 
+  public static inline function weapon(x:Int, y:Int, graphic:String):CollectableSprite
+  {
+    var new_sprite = new Weapon(state, x, y, graphic);
+    state.collectables.add(new_sprite);
+    state.add(new_sprite);
+    return new_sprite;
+  }
+
   public static inline function object(x:Int, y:Int, ?skin:String):Object
   {
     var new_obj = new Object(state, x, y, skin);
@@ -203,12 +212,12 @@ enum PickupType{
 
       // new in RPG version
       collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
-      var sword1 = collectableSprite( 300, 200, "assets/images/item-sword-blue.png");
+      var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png");
       sword1.onCollect = function(){
         Spawn.message("You got the magic sword!");
         return true;
       }
-      var sword2 = collectableSprite( 50, 100, "assets/images/item-sword-green.png");
+      var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png");
       sword2.onCollect = function(){
         if( quest_1_complete ){
           Spawn.message("You got the super sword!");

@@ -53,6 +53,7 @@ class Player extends FlxSprite{
   private var walkHopY:Float;
   private var interacted:InteractableSprite;
   public var inventory:List<CollectableSprite>;
+  public var weapon:Equippable;
 
   public var life(get,set):Int;
   private var _life:Int;
@@ -120,11 +121,23 @@ class Player extends FlxSprite{
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
         var item = this.state.collected;
         if( item.onCollect() != false ){
-          item.immovable = true;
-          this.inventory.push(item);
-          this.state.collectables.remove(item);
-          this.state.remove(item);
-          this.state.hud.addInventoryItem(item);
+
+          if( Std.is(item, Equippable )){
+            // equip it
+            if( Std.is(item, Weapon) ){
+              this.weapon = cast(item, Weapon);
+            } else {
+              trace("equipping non-weapon not yet implemented!");
+            }
+            this.state.add(item);
+
+          }else{
+            item.immovable = true;
+            this.inventory.push(item);
+            this.state.collectables.remove(item);
+            this.state.remove(item);
+            this.state.hud.addInventoryItem(item);
+          }
 
           this.state.collected = null;
         }
@@ -135,13 +148,10 @@ class Player extends FlxSprite{
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
-      // state.weapon.reset(state.weapon.x,state.weapon.y);
       this.attacking = true;
-      trace('attacking');
       }
     if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
       this.attacking = false;
-      // state.weapon.kill();
     }
   }
 
@@ -166,6 +176,12 @@ class Player extends FlxSprite{
 Bool
   {
     return this.inventory.has(inventory_item);
+  }
+
+  public inline function hasEquipped(item:Equippable):
+Bool
+  {
+    return this.weapon == item;
   }
 
   public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
