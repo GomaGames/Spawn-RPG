@@ -10,6 +10,7 @@ import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxColor;
 import sprites.Map;
 import sprites.Player;
+import sprites.Equippable;
 import sprites.Enemy;
 import sprites.DialogueBox;
 import sprites.Object;
@@ -39,7 +40,7 @@ class PlayState extends FlxState
   public var objects:List<Object>;
   public var interactableSprites:List<InteractableSprite>;
   public var collectables:List<CollectableSprite>;
-
+  public var weapon:Equippable;
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
   public var collected:CollectableSprite;
@@ -68,6 +69,8 @@ class PlayState extends FlxState
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
+    weapon = new Equippable( this );
+    add(weapon);
 
     hud = new HUD(-10000, -10000);
 
@@ -137,6 +140,16 @@ class PlayState extends FlxState
     }
   }
 
+  private inline function kill_enemy():Void
+  {
+    for( enemy in enemies ){
+      if( FlxG.overlap(enemy, weapon) && player.attacking ){
+        trace('HIT!');
+        enemy.despawn();
+      }
+    }
+  }
+
   private inline function item_pickup():Void
   {
     for(sprite in collectables) {
@@ -172,13 +185,14 @@ class PlayState extends FlxState
       remove(current_dialogue_box);
       close_dialogue();
       paused = false;
-
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
       current_dialogue_box = dialogue_boxes.pop();
       add(current_dialogue_box);
       paused = true;
 
     } else if( this.player.alive ){
+      
+      kill_enemy();
 
       pickup_collision();
 

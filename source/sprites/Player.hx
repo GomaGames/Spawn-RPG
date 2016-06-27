@@ -37,18 +37,17 @@ enum Direction {
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
-  public static inline var DEFAULT_SKIN = "assets/images/person-male-blondehair-blueshirt.png";
+  public static inline var DEFAULT_SKIN = "assets/images/person-male-1.png";
   public static inline var DEFAULT_SPEED = 200;
 
   public var points:Int;
 
   private var state:PlayState;
   private var graphic_path:String;
-  private var current_direction:Direction;
-  private var attacking:Bool;
+  public var current_direction:Direction;
+  public var attacking:Bool;
   private var base_speed:Int;
   private var speed:Int;
-  private var weapon:FlxSprite;
   private var spawn_position:FlxPoint;
   private var walkRot:Float;
   private var walkHopY:Float;
@@ -101,17 +100,6 @@ class Player extends FlxSprite{
     this.walkRot = 0;
     this.walkHopY = 0;
 
-    weapon = new FlxSprite();
-    weapon.loadGraphic( "assets/images/item-sword-idle.png" );
-    weapon.x = this.x;
-    weapon.y = this.y - 20;
-    weapon.solid = false;
-    weapon.allowCollisions = 0x0000;
-    weapon.scale.set(0.5, 0.5);
-    weapon.height /= 3;
-    weapon.width /= 3;
-    weapon.updateHitbox();
-    state.add( weapon );
   }
 
   override public function update(elapsed:Float):Void
@@ -123,41 +111,6 @@ class Player extends FlxSprite{
       collect_item();
       interact_collision();
       interact(); // must be after collect_item()
-      update_weapon();
-    }
-
-
-  }
-
-
-  private inline function update_weapon():Void
-  {
-    if( this.attacking ){
-      var x_inc:Int = 0;
-      var y_inc:Int = 0;
-      switch( this.current_direction ){
-        case UP:
-          x_inc = -Std.int(this.width);
-          y_inc = -50;
-        case DOWN:
-          x_inc = -Std.int(this.width);
-          y_inc = 20;
-        case LEFT:
-          x_inc = -50;
-          y_inc = -Std.int(this.height);
-        case RIGHT:
-          x_inc = 20;
-          y_inc = -Std.int(this.height);
-        default: null;
-      }
-      var weapon_tween = FlxTween.tween(weapon, { x: this.x + x_inc, y: this.y + y_inc }, 0.3, { ease: FlxEase.elasticOut });
-      weapon_tween.start();
-
-    } else {
-      weapon.centerOffsets();
-      weapon.centerOrigin();
-      weapon.x = this.x - this.width;
-      weapon.y = this.y - this.height;
     }
   }
 
@@ -176,6 +129,19 @@ class Player extends FlxSprite{
           this.state.collected = null;
         }
       }
+    }
+  }
+
+  private inline function attack():Void
+  {
+    if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
+      // state.weapon.reset(state.weapon.x,state.weapon.y);
+      this.attacking = true;
+      trace('attacking');
+      }
+    if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
+      this.attacking = false;
+      // state.weapon.kill();
     }
   }
 
@@ -212,20 +178,6 @@ Bool
     } else {
       trace("WARNING: Player cannot giveItem that is not in player's inventory.");
       return false;
-    }
-  }
-
-  private inline function attack():Void
-  {
-    if(FlxG.keys.anyJustPressed([PlayerInput.attack])) {
-      weapon.reset(this.x,this.y);
-      this.attacking = true;
-      var time = new FlxTimer();
-      time.start(0.1,function(timer){
-        this.attacking = false;
-        // weapon.kill();
-      },3);
-      trace('attacking');
     }
   }
 
