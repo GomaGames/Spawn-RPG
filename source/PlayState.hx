@@ -35,6 +35,7 @@ class PlayState extends FlxState
   private var dialogue_boxes:List<DialogueBox>; // queue
   private var current_dialogue_box:DialogueBox; // the open one
   public var player:Player;
+  public var projectile:FlxSprite;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
   public var objects:List<Object>;
@@ -141,6 +142,12 @@ class PlayState extends FlxState
         if( FlxG.overlap(enemy, player.weapon) && player.attacking ){
           enemy.die();
         }
+        if( FlxG.overlap(enemy, projectile) ){
+          trace('fireball touch');
+          enemy.die();
+          projectile.kill();
+        }
+
       }
     }
   }
