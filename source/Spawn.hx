@@ -147,7 +147,7 @@ enum PickupType{
   {
     if(x == null) x = 200; // #TODO
     if(y == null) y = 200; // #TODO
-    state.queue_dialogue(message, x, y);
+    state.queue_dialogue(message, TYPE.HUD, x, y);
   }
 
   public static inline function gameWin():Void
