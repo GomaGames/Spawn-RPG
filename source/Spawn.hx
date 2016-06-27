@@ -93,7 +93,7 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function enemy(x:Int, y:Int, ?direction:String, ?speed:Int, ?skin:String):Enemy
+  public static inline function enemy(x:Int, y:Int, ?direction:String, ?speed:Int, ?skin:String, ?health:Int = 1):Enemy
   {
     var new_enemy = new Enemy(
       state,
@@ -101,7 +101,8 @@ enum PickupType{
       y,
       speed != null ? speed : Settings.enemy.default_speed,
       skin != null ? skin : Settings.enemy.default_skin,
-      direction);
+      direction,
+      health);
     state.enemies.add(new_enemy);
     state.add(new_enemy);
     return new_enemy;
@@ -174,8 +175,8 @@ enum PickupType{
     if( !diddev ){
 
       var wall_skin = "assets/images/terrain-wall-stone.png";
-      var player = hero( 0, 50 );
-      object(120, 240, wall_skin);
+      var player = Spawn.hero( 0, 50 );
+
       object(160, 200, wall_skin);
       object(650, 600, wall_skin);
       object(240, 0, wall_skin);
@@ -185,11 +186,11 @@ enum PickupType{
       coin( 200, 100 );
       coin( 200, 400 );
       var trex = "assets/images/creature-trex.png";
-      var e1 = enemy( 650, 500 , "down", trex);
-      var e2 = enemy( 500, 550 , "right", trex);
-      var e3 = enemy( 600, 500 , "up", trex);
-      var e4 = enemy( 500, 450 , "left", trex);
-      var e5 = enemy( 400, 450 , null, trex );
+      var e1 = enemy( 650, 500 , "down", trex, 4);
+      var e2 = enemy( 500, 550 , "right", trex, 4);
+      var e3 = enemy( 600, 500 , "up", trex, 4);
+      var e4 = enemy( 500, 450 , "left", trex, 4);
+      var e5 = enemy( 400, 450 , null, trex, 4 );
 
       var quest_1_complete = false;
       var quest_2_complete = false;
@@ -206,7 +207,23 @@ enum PickupType{
         }
       }
 
-      // new in RPG version
+      var badGuy = enemy( 700, 750 , null, "assets/images/creature-robot-yellow.png", 999 );
+      badGuy.hit = function(?weapon:Weapon){
+        if( quest_1_complete ){
+          badGuy.hurt( 9999 );
+        } else {
+          badGuy.hurt( 0 );
+        }
+      }
+
+      // badGuy.hit = function(weapon){
+      //   if( weapon == staff ){
+      //     badGuy.hurt( 9999 );
+      //   } else {
+      //     badGuy.hurt( 1 );
+      //   }
+      // }
+
       collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
       var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png", 2);
       sword1.onCollect = function(){

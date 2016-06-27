@@ -12,7 +12,8 @@ import sprites.pickups.*;
 
   public static var enemy = {
     default_skin : Enemy.DEFAULT_SKIN,
-    default_speed : Enemy.DEFAULT_SPEED
+    default_speed : Enemy.DEFAULT_SPEED,
+    default_health : Enemy.DEFAULT_HEALTH
   }
 
   public static var coin = {

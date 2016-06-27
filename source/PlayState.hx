@@ -134,12 +134,13 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function kill_enemy():Void
+  private inline function attack_enemy():Void
   {
     if( player.weapon != null ){
       for( enemy in enemies ){
         if( FlxG.overlap(enemy, player.weapon) && player.attacking ){
-          enemy.die();
+          enemy.hit(player.weapon);
+          player.attacking = false;
         }
       }
     }
@@ -183,7 +184,7 @@ class PlayState extends FlxState
 
     } else if( this.player.alive ){
 
-      kill_enemy();
+      attack_enemy();
 
       pickup_collision();
 
