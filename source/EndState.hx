@@ -46,11 +46,9 @@ class EndState extends FlxState
       case WIN:
         endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
         endgameText.text = Spawn.gameWinText;
-        trace('brah you went win!');
       case LOSE:
         endgameText.setFormat( "Arial", 42, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
         endgameText.text = Spawn.gameOverText;
-        trace('brah, you when lose');
     }
     add( endgameText );
 
