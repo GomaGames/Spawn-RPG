@@ -24,7 +24,6 @@ class MenuState extends FlxState
 
     titleImage = new FlxSprite();
     titleImage.loadGraphic( AssetPaths.INSTRUCTION_SCREEN );
-    titleImage.scale.set(0.5, 0.5);
     titleImage.screenCenter();
     add( titleImage );
 

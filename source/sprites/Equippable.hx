@@ -13,14 +13,11 @@ class Equippable extends CollectableSprite{
     this.scale.set(0.5,0.5);
     this.flipX = false;
     this.flipY = false;
-    // this.centerOffsets();
     this.height *= 2;
     this.width *= 2;
     this.centerOrigin();
     this.solid = false;
     this.updateHitbox();
-
-    // state.add( this );
   }
 
 }
