@@ -41,13 +41,18 @@ class EndState extends FlxState
     add(bg);
 
     var endgameText = new FlxText( ( Main.STAGE_WIDTH / 8 ), ( Main.STAGE_HEIGHT / 10 ) );
-    endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
     endgameText.screenCenter( FlxAxes.X );
-    add( endgameText );
-    endgameText.text = switch(status){
-      case WIN: Spawn.gameWinText;
-      case LOSE: Spawn.gameOverText;
+    switch(status){
+      case WIN:
+        endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+        endgameText.text = Spawn.gameWinText;
+        trace('brah you went win!');
+      case LOSE:
+        endgameText.setFormat( "Arial", 42, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+        endgameText.text = Spawn.gameOverText;
+        trace('brah, you when lose');
     }
+    add( endgameText );
 
     resolve_timer = new FlxTimer();
     resolve_timer.start(resolve_delay, function(t){
