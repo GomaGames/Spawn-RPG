@@ -13,9 +13,9 @@ import sprites.pickups.*;
     default_speed : Enemy.DEFAULT_SPEED
   }
 
-  public static var gem = {
-    default_skin : Gem.DEFAULT_SKIN,
-    default_points : Gem.DEFAULT_POINTS
+  public static var coin = {
+    default_skin : Coin.DEFAULT_SKIN,
+    default_points : Coin.DEFAULT_POINTS
   }
 
   public static var freeze = {

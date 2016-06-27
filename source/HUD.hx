@@ -64,8 +64,8 @@ class HUD extends FlxSpriteGroup
     coinsDisplay = new FlxSpriteGroup(680, 0);
     coinsText = new FlxText(34,28);
     coinsText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
-    var coin = new FlxSprite(0,30,'assets/images/item-coin-yellow.png');
-    coin.scale.set(0.1,0.1);
+    var coin = new FlxSprite(0,30,'assets/images/item-gem-yellow.png');
+    coin.scale.set(0.25,0.25);
     coin.updateHitbox();
     coinsDisplay.add(coin);
     coinsDisplay.add(coinsText);

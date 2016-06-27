@@ -124,7 +124,7 @@ class PlayState extends FlxState
             player.slow_down(pickup.DURATION);
           case sprites.pickups.Freeze:
             player.freeze(pickup.DURATION);
-          case sprites.pickups.Gem:
+          case sprites.pickups.Coin:
             player.coins += pickup.value;
         }
       }
@@ -144,8 +144,7 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( FlxG.overlap(enemy, weapon) && player.attacking ){
-        trace('HIT!');
-        enemy.despawn();
+        enemy.die();
       }
     }
   }
@@ -191,7 +190,7 @@ class PlayState extends FlxState
       paused = true;
 
     } else if( this.player.alive ){
-      
+
       kill_enemy();
 
       pickup_collision();

@@ -13,7 +13,7 @@ import flixel.text.FlxText;
 import flixel.util.FlxColor;
 
 enum PickupType{
-  GEM;
+  COIN;
   FREEZE;
   SLOW;
   SPEED;
@@ -83,14 +83,14 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function gem(x:Int, y:Int, ?value:Int, ?skin:String):Gem
+  public static inline function coin(x:Int, y:Int, ?value:Int, ?skin:String):Coin
   {
-    var new_pickup = new Gem(
+    var new_pickup = new Coin(
       state,
       x,
       y,
-      skin != null ? skin : Settings.gem.default_skin,
-      value != null ? value : Settings.gem.default_points);
+      skin != null ? skin : Settings.coin.default_skin,
+      value != null ? value : Settings.coin.default_points);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;
@@ -177,13 +177,14 @@ enum PickupType{
       freeze( 200, 200 );
       speed( 160, 100 );
       slow( 160, 300 );
-      gem( 200, 100 );
-      gem( 200, 400 );
-      var e1 = enemy( 650, 500 , "down");
-      var e2 = enemy( 500, 550 , "right");
-      var e3 = enemy( 600, 500 , "up");
-      var e4 = enemy( 500, 450 , "left");
-      var e5 = enemy( 400, 450 );
+      coin( 200, 100 );
+      coin( 200, 400 );
+      var trex = "assets/images/creature-trex.png";
+      var e1 = enemy( 650, 500 , "down", trex);
+      var e2 = enemy( 500, 550 , "right", trex);
+      var e3 = enemy( 600, 500 , "up", trex);
+      var e4 = enemy( 500, 450 , "left", trex);
+      var e5 = enemy( 400, 450 , null, trex );
 
       var quest_1_complete = false;
       var quest_2_complete = false;
@@ -218,6 +219,8 @@ enum PickupType{
         }
       }
       var girl = interactableSprite( 400, 50, "assets/images/person-female-2.png");
+      var thingNextToGirl = coin(Std.int(girl.x) + 50, 50);
+
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
       interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){

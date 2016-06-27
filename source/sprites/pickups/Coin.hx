@@ -2,7 +2,7 @@ package sprites.pickups;
 
 import flixel.FlxSprite;
 
-class Gem extends Pickup {
+class Coin extends Pickup {
 
   public static inline var DEFAULT_POINTS = 1;
   public static inline var DEFAULT_SKIN = "assets/images/item-gem-yellow.png";
