@@ -19,7 +19,6 @@ import sprites.Map;
 using Lambda;
 
 class PlayerInput {
-  // map Int-> Player number
   public static var up:FlxKey = FlxKey.UP;
   public static var down:FlxKey = FlxKey.DOWN;
   public static var left:FlxKey = FlxKey.LEFT;
@@ -52,6 +51,8 @@ class Player extends FlxSprite{
   private var walkRot:Float;
   private var walkHopY:Float;
   private var interacted:InteractableSprite;
+  private var collected:CollectableSprite;
+  private var collected_asset:String;
   public var inventory:List<CollectableSprite>;
   public var weapon:Equippable;
 
@@ -111,26 +112,55 @@ class Player extends FlxSprite{
       attack();
       collect_item();
       interact_collision();
+      collectable_collision();
       interact(); // must be after collect_item()
+    }
+  }
+
+  private inline function equipWeapon(item:Weapon):Void
+  {
+    if(this.weapon != null){
+      drop(this.weapon);
+    }
+    this.weapon = item;
+    this.state.collectables.remove(item);
+  }
+
+  public inline function drop(item:CollectableSprite):Void
+  {
+    if(this.hasItem(item)){
+      this.state.hud.removeInventoryItem(item);
+      item.immovable = false;
+      this.inventory.remove(item);
+      this.state.collectables.add(item);
+      this.state.add(item);
+      item.x = this.x;
+      item.y = this.y;
+    } else if( this.hasEquipped(item) ){
+      if(this.weapon == item){
+        this.weapon = null;
+      }
+      item.x = this.x;
+      item.y = this.y;
+      item.immovable = false;
+      this.state.collectables.add(item);
+      this.state.add(item);
     }
   }
 
   public inline function collect_item():Void
   {
-    if(this.state.collected != null) {
+    if(this.collected != null) {
       if(FlxG.keys.anyJustPressed([PlayerInput.interact])) {
-        var item = this.state.collected;
+        var item = this.collected;
         if( item.onCollect() != false ){
-
           if( Std.is(item, Equippable )){
             // equip it
             if( Std.is(item, Weapon) ){
-              this.weapon = cast(item, Weapon);
+              equipWeapon(cast(item, Weapon));
             } else {
               trace("equipping non-weapon not yet implemented!");
             }
-            this.state.add(item);
-
           }else{
             item.immovable = true;
             this.inventory.push(item);
@@ -139,11 +169,23 @@ class Player extends FlxSprite{
             this.state.hud.addInventoryItem(item);
           }
 
-          this.state.collected = null;
+          this.collected = null;
         }
       }
     }
   }
+
+  private inline function collectable_collision():Void
+  {
+    for(sprite in state.collectables) {
+      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);
+      if(this.pixelsOverlapPoint(spritePosition)){
+        collected = sprite;
+        collected_asset = sprite.graphic.assetsKey;
+      }
+    }
+  }
+
 
   private inline function attack():Void
   {
@@ -178,7 +220,7 @@ Bool
     return this.inventory.has(inventory_item);
   }
 
-  public inline function hasEquipped(item:Equippable):
+  public inline function hasEquipped(item:CollectableSprite):
 Bool
   {
     return this.weapon == item;
@@ -199,7 +241,6 @@ Bool
 
   private inline function movement():Void
   {
-    // this.velocity.set(0,0);
     var moving_h = false
       , moving_v = false;
 
@@ -211,6 +252,7 @@ Bool
         PlayerInput.down])){
         if(!isTouching(FlxObject.ANY)){
           interacted = null;
+          collected = null;
         }
         if (FlxG.keys.anyPressed([PlayerInput.up])){
           // this.acceleration.y = -GG.hero_speed;

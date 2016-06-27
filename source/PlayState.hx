@@ -42,8 +42,6 @@ class PlayState extends FlxState
   public var collectables:List<CollectableSprite>;
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
-  public var collected:CollectableSprite;
-  public var collected_asset:String;
   public var hud:HUD;
 
   public function new(){
@@ -62,7 +60,6 @@ class PlayState extends FlxState
     collectables = new List<CollectableSprite>();
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
-    collected = null;
     paused = false;
 		super.create();
     map = new Map(this);
@@ -148,17 +145,6 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function item_pickup():Void
-  {
-    for(sprite in collectables) {
-      var spritePosition = new FlxPoint(sprite.x+sprite.width/2, sprite.y+sprite.height/2);
-      if(player.pixelsOverlapPoint(spritePosition)){
-        collected = sprite;
-        collected_asset = sprite.graphic.assetsKey;
-      }
-    }
-  }
-
   override public function destroy():Void
 	{
     map = null;
@@ -169,7 +155,6 @@ class PlayState extends FlxState
     interactableSprites = null;
     collectables = null;
     survival_type = null;
-    collected = null;
     dialogue_boxes = null;
     current_dialogue_box = null;
     super.destroy();
@@ -193,8 +178,6 @@ class PlayState extends FlxState
       kill_enemy();
 
       pickup_collision();
-
-      item_pickup();
 
       touch_enemy(); // must be last, cause can die!
 

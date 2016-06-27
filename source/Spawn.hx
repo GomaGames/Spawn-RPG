@@ -218,6 +218,9 @@ enum PickupType{
         return true;
       }
       var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png");
+      var staff = weapon( 150, 400, "assets/images/item-staff-brown.png");
+
+
       sword2.onCollect = function(){
         if( quest_1_complete ){
           Spawn.message("You got the super sword!");
