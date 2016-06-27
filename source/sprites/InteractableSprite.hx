@@ -22,7 +22,7 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   public function talk(message:String):Void
   {
-    this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x), Std.int(this.y));
+    this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x + 25), Std.int(this.y + 15));
   }
 
   public inline function receiveItem(item:CollectableSprite):Void

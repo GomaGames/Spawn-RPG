@@ -146,7 +146,7 @@ enum PickupType{
   public static inline function message(message:String, ?x:Int, ?y:Int):Void
   {
     if(x == null) x = 200; // #TODO
-    if(y == null) y = 200; // #TODO
+    if(y == null) y = 525; // #TODO
     state.queue_dialogue(message, TYPE.HUD, x, y);
   }
 
