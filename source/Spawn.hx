@@ -218,6 +218,8 @@ enum PickupType{
         }
       }
       var girl = interactableSprite( 400, 50, "assets/images/person-female-2.png");
+      var thingNextToGirl = coin(Std.int(girl.x) + 50, 50);
+
       var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
       interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
       girl.interact = function(){

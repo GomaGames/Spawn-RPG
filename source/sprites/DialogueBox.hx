@@ -2,6 +2,7 @@ package sprites;
 
 import flixel.FlxSprite;
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.text.FlxText;
 import flixel.group.FlxSpriteGroup;
 import flixel.addons.ui.FlxUI9SliceSprite;
@@ -27,6 +28,8 @@ class DialogueBox extends FlxSpriteGroup{
     add(bg);
     add(dialogue);
     immovable = true;
+    dialogue.allowCollisions =
+    bg.allowCollisions = FlxObject.NONE;
   }
 
   public inline function close():Void
