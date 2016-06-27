@@ -10,9 +10,12 @@ class Weapon extends Equippable{
   private var swipe:FlxSprite;
   public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
-  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN ){
+  public var power:Int;
+
+  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?power:Int = 1 ){
     super(state, x, y, skin);
 
+    this.power = power;
     swipe = new FlxSprite();
     swipe.loadGraphic("assets/images/swipe.png");
     swipe.scale.set(0.5,0.5);

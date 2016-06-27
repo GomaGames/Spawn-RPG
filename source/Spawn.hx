@@ -123,9 +123,9 @@ enum PickupType{
     return new_sprite;
   }
 
-  public static inline function weapon(x:Int, y:Int, graphic:String):CollectableSprite
+  public static inline function weapon(x:Int, y:Int, graphic:String, ?power:Int = 1):Weapon
   {
-    var new_sprite = new Weapon(state, x, y, graphic);
+    var new_sprite = new Weapon(state, x, y, graphic, power);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -208,13 +208,13 @@ enum PickupType{
 
       // new in RPG version
       collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
-      var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png");
+      var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png", 2);
       sword1.onCollect = function(){
         Spawn.message("You got the magic sword!");
         return true;
       }
-      var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png");
-      var staff = weapon( 150, 400, "assets/images/item-staff-brown.png");
+      var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png", 4);
+      var staff = weapon( 150, 400, "assets/images/item-staff-brown.png", 1);
 
 
       sword2.onCollect = function(){
