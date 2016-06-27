@@ -40,8 +40,8 @@ class EndState extends FlxState
     endgameText.screenCenter( FlxAxes.X );
     add( endgameText );
     endgameText.text = switch(status){
-      case WIN: Spawn.gameWinText;
-      case LOSE: Spawn.gameOverText;
+      case WIN: Settings.gameWinText;
+      case LOSE: Settings.gameOverText;
     }
 
     resolve_timer = new FlxTimer();
