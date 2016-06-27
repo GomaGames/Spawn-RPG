@@ -45,10 +45,10 @@ class EndState extends FlxState
     switch(status){
       case WIN:
         endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-        endgameText.text = Spawn.gameWinText;
+        endgameText.text = Settings.gameWinText;
       case LOSE:
         endgameText.setFormat( "Arial", 42, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
-        endgameText.text = Spawn.gameOverText;
+        endgameText.text = Settings.gameOverText;
     }
     add( endgameText );
 

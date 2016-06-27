@@ -8,13 +8,21 @@ import flixel.group.FlxSpriteGroup;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flash.geom.Rectangle;
 
+enum TYPE {
+  HUD;
+  STAGE;
+}
+
 class DialogueBox extends FlxSpriteGroup{
 
   private var dialogue:String;
   private static inline var padding = 20;
 
-  public function new(input:String, x:Float, y:Float) {
+  public var type:TYPE;
+
+  public function new(input:String, type:TYPE, x:Float, y:Float) {
     super(x+15, y-15);
+    this.type = type;
 
     var dialogue = new FlxText();
     dialogue.text = input;
