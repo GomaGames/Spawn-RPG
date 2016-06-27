@@ -47,10 +47,24 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public override function update(_:Float):Void
   {
+    super.update(_);
+
     if(!this.state.paused) {
       this.flipX = this.velocity.x > 0;
-      super.update(_);
+
+      if(!this.alive){
+        this.angle += this.angle + 20;
+        this.scale.set( this.scale.x - .05, this.scale.y - .05 );
+        if(this.scale.x < 0){
+          this.despawn();
+        }
+      }
     }
   }
 
+  public inline function die():Void
+  {
+    this.centerOffsets(); // for spinning
+    this.alive = false;
+  }
 }

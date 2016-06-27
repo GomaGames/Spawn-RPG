@@ -144,8 +144,7 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( FlxG.overlap(enemy, weapon) && player.attacking ){
-        trace('HIT!');
-        enemy.despawn();
+        enemy.die();
       }
     }
   }
@@ -191,7 +190,7 @@ class PlayState extends FlxState
       paused = true;
 
     } else if( this.player.alive ){
-      
+
       kill_enemy();
 
       pickup_collision();

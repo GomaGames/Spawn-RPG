@@ -179,11 +179,12 @@ enum PickupType{
       slow( 160, 300 );
       coin( 200, 100 );
       coin( 200, 400 );
-      var e1 = enemy( 650, 500 , "down");
-      var e2 = enemy( 500, 550 , "right");
-      var e3 = enemy( 600, 500 , "up");
-      var e4 = enemy( 500, 450 , "left");
-      var e5 = enemy( 400, 450 );
+      var trex = "assets/images/creature-trex.png";
+      var e1 = enemy( 650, 500 , "down", trex);
+      var e2 = enemy( 500, 550 , "right", trex);
+      var e3 = enemy( 600, 500 , "up", trex);
+      var e4 = enemy( 500, 450 , "left", trex);
+      var e5 = enemy( 400, 450 , null, trex );
 
       var quest_1_complete = false;
       var quest_2_complete = false;
