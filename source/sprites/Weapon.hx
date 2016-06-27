@@ -5,14 +5,16 @@ import flixel.FlxSprite;
 using flixel.util.FlxSpriteUtil;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
 
 class Weapon extends Equippable{
   private var swipe:FlxSprite;
+  private var on_cooldown:Bool;
   public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
   public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN ){
     super(state, x, y, skin);
-
+    this.on_cooldown = false;
     swipe = new FlxSprite();
     swipe.loadGraphic("assets/images/swipe.png");
     swipe.scale.set(0.5,0.5);
@@ -81,6 +83,10 @@ class Weapon extends Equippable{
       swipe.alpha = 1.0;
       var weapon_tween:FlxTween = FlxTween.tween(this, { x: this.x + x_inc, y: this.y + y_inc }, 0.3, { ease: FlxEase.elasticOut });
       weapon_tween.start();
+      var time:FlxTimer = new FlxTimer();
+      time.start(0.5,function(timer){
+        p.attacking = false;
+      },1);
 
     } else {
       this.solid = false;
@@ -107,9 +113,8 @@ class Weapon extends Equippable{
           this.y = p.y - 20;
         default: null;
       }
-      
-      this.updateHitbox();
     }
+
   }
 
   override public function update(elapsed:Float):Void

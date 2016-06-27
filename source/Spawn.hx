@@ -7,6 +7,7 @@ import sprites.Enemy;
 import sprites.DialogueBox;
 import sprites.Object;
 import sprites.Weapon;
+import sprites.Projectile;
 import sprites.RangedWeapon;
 import sprites.pickups.*;
 import sprites.InteractableSprite;
@@ -132,9 +133,9 @@ enum PickupType{
     return new_sprite;
   }
 
-  public static inline function ranged_weapon(x:Int, y:Int, graphic:String):RangedWeapon
+  public static inline function ranged_weapon(x:Int, y:Int, graphic:String, ?ranged_graphic:String, ?range:Float, ?ammo:Int, ?duration:Float ):RangedWeapon
   {
-    var new_sprite = new RangedWeapon(state, x, y, graphic);
+    var new_sprite = new RangedWeapon(state, x, y, graphic, ranged_graphic, range, ammo, duration);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -224,7 +225,7 @@ enum PickupType{
       }
       var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png");
       var staff = weapon( 150, 400, "assets/images/item-staff-brown.png");
-      var staff2 = ranged_weapon( 50, 50, "assets/images/item-staff-brown.png");
+      var ranged1 = ranged_weapon( 50, 50, "assets/images/item-bow-and-arrow.png", "assets/images/item-arrow.png");
 
 
       sword2.onCollect = function(){

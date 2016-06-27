@@ -16,6 +16,7 @@ import sprites.DialogueBox;
 import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
+import sprites.Projectile;
 import flixel.math.FlxRect;
 import sprites.CollectableSprite;
 import flixel.FlxObject;
@@ -35,7 +36,7 @@ class PlayState extends FlxState
   private var dialogue_boxes:List<DialogueBox>; // queue
   private var current_dialogue_box:DialogueBox; // the open one
   public var player:Player;
-  public var projectile:FlxSprite;
+  public var projectiles:List<Projectile>;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
   public var objects:List<Object>;
@@ -57,6 +58,7 @@ class PlayState extends FlxState
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     objects = new List<Object>();
+    projectiles = new List<Projectile>();
     interactableSprites = new List<InteractableSprite>();
     collectables = new List<CollectableSprite>();
     dialogue_boxes = new List<DialogueBox>();
@@ -142,12 +144,12 @@ class PlayState extends FlxState
         if( FlxG.overlap(enemy, player.weapon) && player.attacking ){
           enemy.die();
         }
-        if( FlxG.overlap(enemy, projectile) ){
-          trace('fireball touch');
-          enemy.die();
-          projectile.kill();
+        for( projectile in projectiles ){
+          if( FlxG.overlap(projectile, enemy) ){
+            enemy.die();
+            projectile.destroy();
+          }
         }
-
       }
     }
   }
