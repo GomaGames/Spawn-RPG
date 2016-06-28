@@ -16,6 +16,7 @@ import sprites.DialogueBox;
 import sprites.Object;
 import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
+import sprites.Projectile;
 import flixel.math.FlxRect;
 import sprites.CollectableSprite;
 import flixel.FlxObject;
@@ -35,6 +36,7 @@ class PlayState extends FlxState
   private var dialogue_boxes:List<DialogueBox>; // queue
   private var current_dialogue_box:DialogueBox; // the open one
   public var player:Player;
+  public var projectiles:List<Projectile>;
   public var pickups:List<Pickup>;
   public var enemies:List<Enemy>;
   public var objects:List<Object>;
@@ -50,18 +52,19 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+		super.create();
     FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     objects = new List<Object>();
+    projectiles = new List<Projectile>();
     interactableSprites = new List<InteractableSprite>();
     collectables = new List<CollectableSprite>();
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
     paused = false;
-		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
@@ -92,9 +95,9 @@ class PlayState extends FlxState
   /*
     queue up dialogue boxes so one can show at a time
   */
-  public inline function queue_dialogue(message:String, x:Int, y:Int):Void
+  public inline function queue_dialogue(message:String, type:TYPE, x:Int, y:Int):Void
   {
-    dialogue_boxes.add(new DialogueBox(message, x, y));
+    dialogue_boxes.add(new DialogueBox(message, type, x, y));
   }
 
   public inline function close_dialogue():Void
@@ -134,12 +137,19 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function kill_enemy():Void
+  private inline function attack_enemy():Void
   {
     if( player.weapon != null ){
       for( enemy in enemies ){
         if( FlxG.overlap(enemy, player.weapon) && player.attacking ){
-          enemy.die();
+          enemy.hit(player.weapon);
+          player.attacking = false;
+        }
+        for( projectile in projectiles ){
+          if( FlxG.overlap(projectile, enemy) ){
+            enemy.hit(player.weapon);
+            projectile.destroy();
+          }
         }
       }
     }
@@ -165,17 +175,25 @@ class PlayState extends FlxState
     super.update(elapsed);
 
     if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
-      remove(current_dialogue_box);
+      if(current_dialogue_box.type == TYPE.HUD){
+        hud.remove(current_dialogue_box);
+      } else {
+        remove(current_dialogue_box);
+      }
       close_dialogue();
       paused = false;
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
       current_dialogue_box = dialogue_boxes.pop();
-      add(current_dialogue_box);
+      if(current_dialogue_box.type == TYPE.HUD){
+        hud.add(current_dialogue_box);
+      } else {
+        add(current_dialogue_box);
+      }
       paused = true;
 
     } else if( this.player.alive ){
 
-      kill_enemy();
+      attack_enemy();
 
       pickup_collision();
 

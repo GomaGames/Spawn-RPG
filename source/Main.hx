@@ -18,10 +18,16 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+
+
+#if neko
+    Spawn.dev_settings();
+#end
+
     FlxG.stage.quality = openfl.display.StageQuality.BEST;
     //                                skip splash -------------------------------V
     // addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, EndState, null, null, null, true));
-		addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, TitleState, null, null, null, true));
+		addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, PlayState, null, null, null, true));
     FlxG.camera.antialiasing = true;
     FlxG.camera.setScale(2, 2);
 

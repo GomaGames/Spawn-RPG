@@ -1,18 +1,23 @@
 package sprites;
 
-class CollectableSprite extends InteractableSprite implements IDespawnableSprite{
+import flixel.FlxSprite;
+
+class CollectableSprite extends FlxSprite implements IDespawnableSprite{
 
   public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-white.png";
 
+  private var state:PlayState;
+
   public function new(state:PlayState, x:Int, y:Int, ?graphic:String = DEFAULT_SKIN ){
-    super(state, x, y, graphic);
+    super(x, y, graphic);
+    this.state = state;
     this.scale.set(.5,.5);
     this.updateHitbox();
     this.immovable = true;
     this.solid = false;
   }
 
-  public override function despawn(){
+  public inline function despawn(){
     this.state.collectables.remove(this);
     this.destroy();
   }

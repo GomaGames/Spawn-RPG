@@ -7,6 +7,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-red.png";
   public static inline var DEFAULT_SPEED = 100;
+  public static inline var DEFAULT_HEALTH = 1;
   public static inline var UP = "up";
   public static inline var DOWN = "down";
   public static inline var LEFT = "left";
@@ -14,7 +15,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
   public var speed:Int;
   private var state:PlayState;
 
-  public function new(state:PlayState, x:Int, y:Int, speed:Int, ?skin:String = DEFAULT_SKIN, ?direction:String ){
+  public function new(state:PlayState, x:Int, y:Int, speed:Int, ?skin:String = DEFAULT_SKIN, ?direction:String, ?health:Int = 1){
     this.speed = speed;
     this.state = state;
     super(x, y, skin);
@@ -25,6 +26,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
     this.centerOrigin();
     this.updateHitbox();
     this.elasticity = 1;
+    this.health = health;
     if(direction != null){
       switch(direction){
         case UP : this.velocity.set(0,-speed);
@@ -33,11 +35,6 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
         case RIGHT : this.velocity.set(speed, 0);
       }
     }
-  }
-
-  public function interact(cb:Void->Void):Void
-  {
-    cb();
   }
 
   public function despawn(){
@@ -62,7 +59,20 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
     }
   }
 
-  public inline function die():Void
+  public dynamic function hit(?weapon:Weapon):Void
+  {
+    hurt(
+      if( weapon != null ){
+        weapon.power;
+      } else if( state.player.weapon != null ){
+        state.player.weapon.power;
+      } else {
+        1;
+      }
+    );
+  }
+
+  public override function kill():Void
   {
     this.centerOffsets(); // for spinning
     this.alive = false;
