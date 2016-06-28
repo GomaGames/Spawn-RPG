@@ -51,12 +51,12 @@ class HUD extends FlxSpriteGroup
     top_bar_bg.makeGraphic(Main.VIEWPORT_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
 
     var inventoryText = new FlxText(10,0,"Inventory");
-    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
+    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
     inventoryDisplay = new FlxSpriteGroup(110, 0);
 
     lifeDisplay = new FlxSpriteGroup(760, 0);
     lifeText = new FlxText(60,28);
-    lifeText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
+    lifeText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
     var heart = new FlxSprite(30,30,'assets/images/item-heart-red.png');
     heart.scale.set(0.25,0.25);
     heart.updateHitbox();
@@ -65,7 +65,7 @@ class HUD extends FlxSpriteGroup
 
     coinsDisplay = new FlxSpriteGroup(680, 0);
     coinsText = new FlxText(34,28);
-    coinsText.setFormat( null, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);
+    coinsText.setFormat( null, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
     var coin = new FlxSprite(0,30,'assets/images/item-gem-yellow.png');
     coin.scale.set(0.25,0.25);
     coin.updateHitbox();
