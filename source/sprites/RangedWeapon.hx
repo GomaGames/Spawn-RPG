@@ -10,15 +10,15 @@ import flixel.util.FlxTimer;
 class RangedWeapon extends Weapon{
   private var range:Float;
   private var ranged_skin:String;
-  private var duration:Float;
+  private var cooldown:Float;
   public static inline var DEFAULT_SKIN = "assets/images/item-staff.png";
   public static inline var DEFAULT_SKIN_PROJECTILE = "assets/images/item-fireball-red.png";
 
-  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?ranged_skin:String = DEFAULT_SKIN_PROJECTILE, ?power:Int = 2, ?range:Float = 3, ?duration:Float = 5 ){
+  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?ranged_skin:String = DEFAULT_SKIN_PROJECTILE, ?power:Int = 2, ?range:Float = 3, ?cooldown:Float = 1 ){
     super(state, x, y, skin, power);
     this.range = range;
     this.ranged_skin = ranged_skin;
-    this.duration = duration; // seconds
+    this.cooldown = cooldown; // seconds
   }
 
   public inline function update_projectile():Void
@@ -73,7 +73,7 @@ class RangedWeapon extends Weapon{
     
      if ( this.on_cooldown == true ){
       var cd_timer:FlxTimer = new FlxTimer();
-      cd_timer.start(1,function(timer){
+      cd_timer.start(this.cooldown,function(timer){
         ranged_attack.start();
         this.on_cooldown = false;
       },1);
