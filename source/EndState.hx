@@ -74,7 +74,7 @@ class EndState extends FlxState
   {
     if( allow_continue &&
       ( FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed )
-      ) FlxG.switchState( new MenuState() );
+      ) FlxG.switchState( new IntroState() );
     super.update(elapsed);
   }
 

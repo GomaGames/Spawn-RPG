@@ -38,7 +38,8 @@ class IntroState extends FlxState
 
 	override public function update(elapsed:Float):Void
 	{
-    if( ready && FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed ){
+    if( ( Main.intro_watched || ready ) && ( FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed ) ){
+      Main.intro_watched = true;
       FlxG.switchState( new MenuState() );
     }
 

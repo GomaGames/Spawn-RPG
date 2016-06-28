@@ -15,6 +15,9 @@ class Main extends Sprite
   public static var FONT_RED:FlxColor = FlxColor.fromString('#e76924');
   public static var FONT_YELLOW:FlxColor = FlxColor.fromString('#fec256');
   public static var FONT_BLUE:FlxColor = FlxColor.fromString('#5dc3ce');
+
+  public static var intro_watched:Bool = false;
+
 	public function new()
 	{
 		super();
