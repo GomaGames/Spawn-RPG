@@ -121,6 +121,7 @@ class Player extends FlxSprite{
   public inline function hit(?damage:Int = 1):Void
   {
     this.flicker(.2);
+    this.state.hud_cam.shake(0.04, 0.2);
     this.life -= damage;
   }
 

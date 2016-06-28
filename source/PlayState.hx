@@ -42,6 +42,7 @@ class PlayState extends FlxState
   public var paused:Bool;
   public var survival_type:Bool; // true? only one life
   public var hud:HUD;
+  public var hud_cam:FlxCamera;
 
   public function new(){
     Spawn.state = this;
@@ -82,10 +83,10 @@ class PlayState extends FlxState
     FlxG.camera.bgColor = Main.BACKGROUND_GREY;
 
 
-    var topBarCam = new FlxCamera(0, 0, Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, 1);
-    topBarCam.bgColor = FlxColor.TRANSPARENT;
-    topBarCam.focusOn(FlxPoint.weak(hud.getMidpoint().x + Main.VIEWPORT_WIDTH/2, hud.getMidpoint().y + Main.VIEWPORT_HEIGHT/2));
-    FlxG.cameras.add(topBarCam);
+    hud_cam = new FlxCamera(0, 0, Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, 1);
+    hud_cam.bgColor = FlxColor.TRANSPARENT;
+    hud_cam.focusOn(FlxPoint.weak(hud.getMidpoint().x + Main.VIEWPORT_WIDTH/2, hud.getMidpoint().y + Main.VIEWPORT_HEIGHT/2));
+    FlxG.cameras.add(hud_cam);
 
     drawBounds(this);
 	}
@@ -183,6 +184,7 @@ class PlayState extends FlxState
     survival_type = null;
     dialogue_boxes = null;
     current_dialogue_box = null;
+    hud_cam = null;
     super.destroy();
 	}
 
