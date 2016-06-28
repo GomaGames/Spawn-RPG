@@ -45,7 +45,7 @@ class HUD extends FlxSpriteGroup
 
     background = new FlxSprite(); // background is needed for camera to follow
     // add y offset (226px) to let the camera follow the HUD at the correct point
-    background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT+226, FlxColor.TRANSPARENT);
+    background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, FlxColor.TRANSPARENT);
 
     top_bar_bg = new FlxSprite(0, 0);
     top_bar_bg.makeGraphic(Main.STAGE_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
@@ -78,6 +78,8 @@ class HUD extends FlxSpriteGroup
     add(inventoryDisplay);
     add(lifeDisplay);
     add(coinsDisplay);
+
+    this.updateHitbox();
   }
 
   public inline function addInventoryItem(originalSprite:CollectableSprite):Void

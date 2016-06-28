@@ -81,10 +81,9 @@ class PlayState extends FlxState
     // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
     FlxG.camera.follow(player, TOPDOWN, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-    var topBarCam = new FlxCamera(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT, 2);
+    var topBarCam = new FlxCamera(0, 0, Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, 2);
     topBarCam.bgColor = FlxColor.TRANSPARENT;
-
-    topBarCam.follow(hud);
+    topBarCam.focusOn(FlxPoint.weak(hud.getMidpoint().x + Main.VIEWPORT_WIDTH/2, hud.getMidpoint().y + Main.VIEWPORT_HEIGHT/2));
     FlxG.cameras.add(topBarCam);
 	}
 
