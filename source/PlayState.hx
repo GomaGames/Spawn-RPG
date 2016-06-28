@@ -154,7 +154,7 @@ class PlayState extends FlxState
   {
     for( enemy in enemies ){
       if( enemy.alive && FlxG.collide(player, enemy) ){
-        player.life--;
+        player.hit();
       }
     }
   }

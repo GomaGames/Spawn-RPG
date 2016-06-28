@@ -17,6 +17,7 @@ import flixel.text.FlxText;
 import sprites.Map;
 
 using Lambda;
+using flixel.effects.FlxFlicker;
 
 class PlayerInput {
   public static var up:FlxKey = FlxKey.UP;
@@ -115,6 +116,12 @@ class Player extends FlxSprite{
       collectable_collision();
       interact(); // must be after collect_item()
     }
+  }
+
+  public inline function hit(?damage:Int = 1):Void
+  {
+    this.flicker(.2);
+    this.life -= damage;
   }
 
   public inline function equipWeapon(item:Weapon):Void
