@@ -18,6 +18,12 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+
+
+#if neko
+    Spawn.dev_settings();
+#end
+
     FlxG.stage.quality = openfl.display.StageQuality.BEST;
     //                                skip splash -------------------------------V
     // addChild(new FlxGame(STAGE_WIDTH, STAGE_HEIGHT, EndState, null, null, null, true));

@@ -89,13 +89,13 @@ enum PickupType{
       x,
       y,
       skin != null ? skin : Settings.coin.default_skin,
-      value != null ? value : Settings.coin.default_points);
+      value != null ? value : Settings.coin.default_value);
     state.pickups.add(new_pickup);
     state.add(new_pickup);
     return new_pickup;
   }
 
-  public static inline function enemy(x:Int, y:Int, ?direction:String, ?speed:Int, ?skin:String):Enemy
+  public static inline function enemy(x:Int, y:Int, ?direction:String, ?speed:Int, ?skin:String, ?health:Int = 1):Enemy
   {
     var new_enemy = new Enemy(
       state,
@@ -103,7 +103,8 @@ enum PickupType{
       y,
       speed != null ? speed : Settings.enemy.default_speed,
       skin != null ? skin : Settings.enemy.default_skin,
-      direction);
+      direction,
+      health);
     state.enemies.add(new_enemy);
     state.add(new_enemy);
     return new_enemy;
@@ -125,17 +126,17 @@ enum PickupType{
     return new_sprite;
   }
 
-  public static inline function weapon(x:Int, y:Int, graphic:String):CollectableSprite
+  public static inline function weapon(x:Int, y:Int, graphic:String, ?power:Int = 1):Weapon
   {
-    var new_sprite = new Weapon(state, x, y, graphic);
+    var new_sprite = new Weapon(state, x, y, graphic, power);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
   }
 
-  public static inline function ranged_weapon(x:Int, y:Int, graphic:String, ?ranged_graphic:String, ?range:Float, ?ammo:Int, ?duration:Float ):RangedWeapon
+  public static inline function ranged_weapon(x:Int, y:Int, graphic:String, ?ranged_graphic:String, ?power:Int, ?range:Float, ?duration:Float ):RangedWeapon
   {
-    var new_sprite = new RangedWeapon(state, x, y, graphic, ranged_graphic, range, ammo, duration);
+    var new_sprite = new RangedWeapon(state, x, y, graphic, ranged_graphic, power, range, duration);
     state.collectables.add(new_sprite);
     state.add(new_sprite);
     return new_sprite;
@@ -171,113 +172,127 @@ enum PickupType{
   }
 
 #if neko
-  public static inline function dev_intro():Void
+  public static inline function dev_settings():Void
   {
     Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
     Settings.gameWinText = "Good Job!";
     Settings.gameOverText = "You died!";
+
+    Settings.hero.default_skin = "assets/images/creature-trex.png";
+    Settings.hero.default_speed = 499;
+    Settings.hero.default_life = 10;
   }
 
-  private static var diddev:Bool = false;
   public static inline function dev():Void
   {
-    if( !diddev ){
+    var wall_skin = "assets/images/terrain-wall-stone.png";
+    var player = Spawn.hero( 0, 50 );
 
-      var wall_skin = "assets/images/terrain-wall-stone.png";
-      var player = hero( 0, 50 );
-      object(120, 240, wall_skin);
-      object(160, 200, wall_skin);
-      object(650, 600, wall_skin);
-      object(240, 0, wall_skin);
-      freeze( 200, 200 );
-      speed( 160, 100 );
-      slow( 160, 300 );
-      coin( 200, 100 );
-      coin( 200, 400 );
-      var trex = "assets/images/creature-trex.png";
-      var e1 = enemy( 650, 500 , "down", trex);
-      var e2 = enemy( 500, 550 , "right", trex);
-      var e3 = enemy( 600, 500 , "up", trex);
-      var e4 = enemy( 500, 450 , "left", trex);
-      var e5 = enemy( 400, 450 , null, trex );
+    object(160, 200, wall_skin);
+    object(650, 600, wall_skin);
+    object(240, 0, wall_skin);
+    freeze( 200, 200 );
+    speed( 160, 100 );
+    slow( 160, 300 );
+    coin( 200, 100 );
+    coin( 200, 400 );
+    var trex = "assets/images/creature-trex.png";
+    var e1 = enemy( 650, 500 , "down", trex, 4);
+    var e2 = enemy( 500, 550 , "right", trex, 4);
+    var e3 = enemy( 600, 500 , "up", trex, 4);
+    var e4 = enemy( 500, 450 , "left", trex, 4);
+    var e5 = enemy( 400, 450 , null, trex, 4 );
 
-      var quest_1_complete = false;
-      var quest_2_complete = false;
-      function completeQuest(number){
-        if(number == 1){
-          quest_1_complete = true;
-          message("Quest 1 complete!");
-        }else if(number == 2){
-          quest_2_complete = true;
-          message("Quest 2 complete!");
-        }
-        if(quest_1_complete && quest_2_complete){
-          gameWin();
-        }
+    var quest_1_complete = false;
+    var quest_2_complete = false;
+    function completeQuest(number){
+      if(number == 1){
+        quest_1_complete = true;
+        message("Quest 1 complete!");
+      }else if(number == 2){
+        quest_2_complete = true;
+        message("Quest 2 complete!");
       }
-
-      // new in RPG version
-      collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
-      var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png");
-      sword1.onCollect = function(){
-        Spawn.message("You got the magic sword!");
-        return true;
+      if(quest_1_complete && quest_2_complete){
+        gameWin();
       }
-      var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png");
-      var staff = weapon( 150, 400, "assets/images/item-staff-brown.png");
-      var ranged1 = ranged_weapon( 50, 50, "assets/images/item-bow-and-arrow.png", "assets/images/item-arrow.png");
-
-
-      sword2.onCollect = function(){
-        if( quest_1_complete ){
-          Spawn.message("You got the super sword!");
-          return true;
-        } else {
-          Spawn.message("Only those who are worthy may wield this sword.");
-          return false;
-        }
-      }
-      var girl = interactableSprite( 400, 50, "assets/images/person-female-2.png");
-      var thingNextToGirl = coin(Std.int(girl.x) + 50, 50);
-
-      var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
-      interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
-      girl.interact = function(){
-        if(!player.hasItem(mirror)){
-          girl.talk("Killer robots? Do I LOOK dumb?");
-        } else {
-          player.giveItem(mirror, girl);
-          girl.talk("Wow, the girl in this picture looks so clueless.");
-          completeQuest(1);
-          girl.talk("If you give the red blockhead guy a sword, he'll kill all the robots.");
-        }
-      }
-
-      var messageFlag = interactableSprite( 100, 50, "assets/images/item-flag-red.png");
-      messageFlag.interact = function(){
-        message('bring ...');
-        message('the sword ...');
-        message('to the red square.');
-      }
-
-      var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-cube-yellow.png');
-      enemyBomb.y = 300;
-      enemyBomb.interact = function(){
-        if(player.hasItem(sword1) || player.hasItem(sword2)){
-          e1.despawn();
-          e2.despawn();
-          e3.despawn();
-          e4.despawn();
-          e5.despawn();
-          enemyBomb.despawn();
-          completeQuest(2);
-        }
-      }
-
-
-      // need this for dev, just leave it, make sure it's always here
-      diddev = true;
     }
+
+    var badGuy = enemy( 700, 750 , null, "assets/images/creature-robot-yellow.png", 999 );
+    badGuy.hit = function(?weapon:Weapon){
+      if( quest_1_complete ){
+        badGuy.hurt( 9999 );
+      } else {
+        badGuy.hurt( 0 );
+      }
+    }
+
+    // badGuy.hit = function(weapon){
+    //   if( weapon == staff ){
+    //     badGuy.hurt( 9999 );
+    //   } else {
+    //     badGuy.hurt( 1 );
+    //   }
+    // }
+
+    collectableSprite( 200, 5, "assets/images/nature-rock-smooth-grey.png");
+    var sword1 = weapon( 300, 200, "assets/images/item-sword-blue.png", 2);
+    sword1.onCollect = function(){
+      Spawn.message("You got the magic sword!");
+      return true;
+    }
+    var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png", 4);
+    var staff = weapon( 150, 400, "assets/images/item-staff-brown.png", 1);
+    var ranged1 = ranged_weapon( 50, 50, "assets/images/item-bow-and-arrow.png", "assets/images/item-arrow.png");
+
+
+    sword2.onCollect = function(){
+      if( quest_1_complete ){
+        Spawn.message("You got the super sword!");
+        return true;
+      } else {
+        Spawn.message("Only those who are worthy may wield this sword.");
+        return false;
+      }
+    }
+    var girl = interactableSprite( 400, 50, "assets/images/person-female-2.png");
+    var thingNextToGirl = coin(Std.int(girl.x) + 50, 50);
+
+    var mirror = collectableSprite( 800, 400, "assets/images/item-mirror-blue.png");
+    interactableSprite( 20, 400, "assets/images/item-mirror-blue.png");
+    girl.interact = function(){
+      if(!player.hasItem(mirror)){
+        girl.talk("Killer robots? Do I LOOK dumb?");
+      } else {
+        player.giveItem(mirror, girl);
+        girl.talk("Wow, the girl in this picture looks so clueless.");
+        completeQuest(1);
+        girl.talk("If you give the red blockhead guy a sword, he'll kill all the robots.");
+      }
+    }
+
+    var messageFlag = interactableSprite( 100, 50, "assets/images/item-flag-red.png");
+    messageFlag.interact = function(){
+      message('bring ...');
+      message('the sword ...');
+      message('to the red square.');
+    }
+
+    var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-cube-yellow.png');
+    enemyBomb.y = 300;
+    enemyBomb.interact = function(){
+      if(player.hasItem(sword1) || player.hasItem(sword2)){
+        e1.despawn();
+        e2.despawn();
+        e3.despawn();
+        e4.despawn();
+        e5.despawn();
+        enemyBomb.despawn();
+        completeQuest(2);
+      }
+    }
+
+
   }
 #end
 

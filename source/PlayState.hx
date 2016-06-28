@@ -52,6 +52,7 @@ class PlayState extends FlxState
   }
 	override public function create():Void
 	{
+		super.create();
     FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
@@ -64,7 +65,6 @@ class PlayState extends FlxState
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
     paused = false;
-		super.create();
     map = new Map(this);
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
@@ -137,16 +137,17 @@ class PlayState extends FlxState
     }
   }
 
-  private inline function kill_enemy():Void
+  private inline function attack_enemy():Void
   {
     if( player.weapon != null ){
       for( enemy in enemies ){
         if( FlxG.overlap(enemy, player.weapon) && player.attacking ){
-          enemy.die();
+          enemy.hit(player.weapon);
+          player.attacking = false;
         }
         for( projectile in projectiles ){
           if( FlxG.overlap(projectile, enemy) ){
-            enemy.die();
+            enemy.hit(player.weapon);
             projectile.destroy();
           }
         }
@@ -192,7 +193,7 @@ class PlayState extends FlxState
 
     } else if( this.player.alive ){
 
-      kill_enemy();
+      attack_enemy();
 
       pickup_collision();
 

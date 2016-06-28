@@ -36,10 +36,10 @@ enum Direction {
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
+
   public static inline var DEFAULT_SKIN = "assets/images/person-male-1.png";
   public static inline var DEFAULT_SPEED = 200;
-
-  public var points:Int;
+  public static inline var DEFAULT_LIFE = 3;
 
   private var state:PlayState;
   private var graphic_path:String;
@@ -54,7 +54,7 @@ class Player extends FlxSprite{
   private var collected:CollectableSprite;
   private var collected_asset:String;
   public var inventory:List<CollectableSprite>;
-  public var weapon:Equippable;
+  public var weapon:Weapon;
 
   public var life(get,set):Int;
   private var _life:Int;
@@ -77,7 +77,8 @@ class Player extends FlxSprite{
     return this.coins;
   }
 
-  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String) {
+    if(skin == null) skin = Settings.hero.default_skin;
     super(x, y, skin);
     this.state = state;
 
@@ -90,15 +91,14 @@ class Player extends FlxSprite{
     this.attacking = false;
     this.current_direction = Direction.DOWN;
 
-    this.life = 3;
+    this.life = Settings.hero.default_life;
     this.coins = 0;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
-    this.base_speed = DEFAULT_SPEED;
-    this.speed = DEFAULT_SPEED;
+    this.base_speed = Settings.hero.default_speed;
+    this.speed = Settings.hero.default_speed;
     this.drag = FlxPoint.weak(this.speed*10, this.speed*10);
-    this.points = 0;
     this.walkRot = 0;
     this.walkHopY = 0;
 
@@ -117,7 +117,7 @@ class Player extends FlxSprite{
     }
   }
 
-  private inline function equipWeapon(item:Weapon):Void
+  public inline function equipWeapon(item:Weapon):Void
   {
     if(this.weapon != null){
       drop(this.weapon);
@@ -194,8 +194,13 @@ class Player extends FlxSprite{
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
+      trace('couaasd');
       this.attacking = true;
-      }
+      var time:FlxTimer = new FlxTimer();
+      time.start(0.5,function(timer){
+        this.attacking = false;
+      },1);
+    }
     if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
       this.attacking = false;
     }
@@ -331,11 +336,6 @@ Bool
     new FlxTimer().start(duration, function(timer){
       this.speed = base_speed;
     });
-  }
-
-  public inline function score(points:Int):Void
-  {
-    this.points += points;
   }
 
   public inline function die():Void

@@ -12,9 +12,12 @@ class Weapon extends Equippable{
   private var on_cooldown:Bool;
   public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
-  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN ){
+  public var power:Int;
+
+  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?power:Int = 1 ){
     super(state, x, y, skin);
     this.on_cooldown = false;
+    this.power = power;
     swipe = new FlxSprite();
     swipe.loadGraphic("assets/images/swipe.png");
     swipe.scale.set(0.5,0.5);
@@ -83,10 +86,6 @@ class Weapon extends Equippable{
       swipe.alpha = 1.0;
       var weapon_tween:FlxTween = FlxTween.tween(this, { x: this.x + x_inc, y: this.y + y_inc }, 0.3, { ease: FlxEase.elasticOut });
       weapon_tween.start();
-      var time:FlxTimer = new FlxTimer();
-      time.start(0.5,function(timer){
-        p.attacking = false;
-      },1);
 
     } else {
       this.solid = false;

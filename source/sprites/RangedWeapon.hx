@@ -10,15 +10,13 @@ import flixel.util.FlxTimer;
 class RangedWeapon extends Weapon{
   private var range:Float;
   private var ranged_skin:String;
-  private var ammo:Int;
   private var duration:Float;
   public static inline var DEFAULT_SKIN = "assets/images/item-staff.png";
   public static inline var DEFAULT_SKIN_PROJECTILE = "assets/images/item-fireball-red.png";
 
-  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?ranged_skin:String = DEFAULT_SKIN_PROJECTILE, ?range:Float = 3, ?ammo:Int = 20, ?duration:Float = 5 ){
-    super(state, x, y, skin);
+  public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?ranged_skin:String = DEFAULT_SKIN_PROJECTILE, ?power:Int = 2, ?range:Float = 3, ?duration:Float = 5 ){
+    super(state, x, y, skin, power);
     this.range = range;
-    this.ammo = ammo;
     this.ranged_skin = ranged_skin;
     this.duration = duration; // seconds
   }
@@ -75,7 +73,7 @@ class RangedWeapon extends Weapon{
     
      if ( this.on_cooldown == true ){
       var cd_timer:FlxTimer = new FlxTimer();
-      cd_timer.start(2.5,function(timer){
+      cd_timer.start(1,function(timer){
         ranged_attack.start();
         this.on_cooldown = false;
       },1);
@@ -85,7 +83,7 @@ class RangedWeapon extends Weapon{
   override public function update(elapsed:Float):Void
   {
     super.update(elapsed);
-    if(state.player.hasEquipped(this)){
+    if(state.player.hasEquipped(this) == true && state.player.weapon.on_cooldown == false){
       update_projectile();
     }
     FlxG.collide();
