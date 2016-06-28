@@ -1,6 +1,8 @@
 package sprites;
 
 import flixel.FlxSprite;
+import flixel.effects.particles.FlxEmitter;
+
 using flixel.util.FlxSpriteUtil;
 
 class Enemy extends FlxSprite implements IDespawnableSprite{
@@ -61,6 +63,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public dynamic function hit(?weapon:Weapon):Void
   {
+    hitEffect();
     hurt(
       if( weapon != null ){
         weapon.power;
@@ -70,6 +73,19 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
         1;
       }
     );
+  }
+
+  private inline function hitEffect():Void
+  {
+    var emitter = new FlxEmitter( this.getMidpoint().x-30, this.getMidpoint().y-30, Std.int(this.health * 10) );
+    emitter.makeParticles();
+    emitter.alpha.set(.1, .5, 0, 0);
+    emitter.setSize(30, 30);
+    emitter.acceleration.set(.1, .1, 1, 1, .1, .1, 0, 0);
+    var angleDiff = state.player.getMidpoint().angleBetween(this.getMidpoint());
+    emitter.launchAngle.set(angleDiff-60, angleDiff-130);
+    emitter.start(true);
+    this.state.add(emitter);
   }
 
   public override function kill():Void
