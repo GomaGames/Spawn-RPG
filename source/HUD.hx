@@ -38,7 +38,7 @@ class HUD extends FlxSpriteGroup
     return coins = val;
   }
 
-  public function new(x:Float, y:Float)
+  public function new()
   {
     super(-10000,-10000);
     inventoryMap = new Map<CollectableSprite, FlxSprite>();

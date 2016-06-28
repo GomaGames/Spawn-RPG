@@ -65,7 +65,7 @@ class PlayState extends FlxState
     map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
     Map.drawGridLines( this, map );
 
-    hud = new HUD(-10000, -10000);
+    hud = new HUD();
 
     add(hud);
 
