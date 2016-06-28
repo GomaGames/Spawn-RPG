@@ -48,7 +48,7 @@ class HUD extends FlxSpriteGroup
     background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, FlxColor.TRANSPARENT);
 
     top_bar_bg = new FlxSprite(0, 0);
-    top_bar_bg.makeGraphic(Main.STAGE_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
+    top_bar_bg.makeGraphic(Main.VIEWPORT_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
 
     var inventoryText = new FlxText(10,0,"Inventory");
     inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, Main.FONT_GREY, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, FlxColor.WHITE, true);

@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxObject;
 import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
@@ -18,9 +19,7 @@ import sprites.pickups.Pickup;
 import sprites.InteractableSprite;
 import flixel.math.FlxRect;
 import sprites.CollectableSprite;
-import flixel.FlxObject;
 import flixel.math.FlxPoint;
-import flash.Lib;
 import flixel.FlxCamera;
 
 class PlayState extends FlxState
@@ -51,8 +50,6 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-    FlxG.camera.setScale(2, 2);
-    FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
     enemies = new List<Enemy>();
     objects = new List<Object>();
@@ -61,17 +58,17 @@ class PlayState extends FlxState
     dialogue_boxes = new List<DialogueBox>();
     survival_type = true;
     paused = false;
-    map = new Map(this);
-    map.makeGraphic( Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY );
-    Map.drawGridLines( this, map );
+    bgColor = Main.BACKGROUND_GREY;
+
+    map = new Map();
+    add(map);
 
     hud = new HUD();
-
     add(hud);
 
-    bgColor = Main.BACKGROUND_GREY;
-    add(map);
-    add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 1));
+    FlxG.worldBounds.set(0,0,Main.STAGE_WIDTH,Main.STAGE_HEIGHT);
+
+    // add(flixel.util.FlxCollision.createCameraWall(FlxG.camera, true, 10));
 
 #if neko
     Spawn.dev();
@@ -79,13 +76,43 @@ class PlayState extends FlxState
     Spawn.game();
 #end
     // FlxG.camera.setScrollBoundsRect(LEVEL_MIN_X , LEVEL_MIN_Y , LEVEL_MAX_X + Math.abs(LEVEL_MIN_X), LEVEL_MAX_Y + Math.abs(LEVEL_MIN_Y), true);
-    FlxG.camera.follow(player, TOPDOWN, 1);
     // FlxG.camera.setScrollBoundsRect(0, 0, Main.STAGE_WIDTH, Main.STAGE_HEIGHT);
-    var topBarCam = new FlxCamera(0, 0, Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, 2);
+
+    FlxG.camera.follow(player, TOPDOWN, 1);
+    FlxG.camera.bgColor = Main.BACKGROUND_GREY;
+
+
+    var topBarCam = new FlxCamera(0, 0, Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, 1);
     topBarCam.bgColor = FlxColor.TRANSPARENT;
     topBarCam.focusOn(FlxPoint.weak(hud.getMidpoint().x + Main.VIEWPORT_WIDTH/2, hud.getMidpoint().y + Main.VIEWPORT_HEIGHT/2));
     FlxG.cameras.add(topBarCam);
+
+    drawBounds(this);
 	}
+
+  /*
+    FlxG.collide() does not work in areas outside of the FlxG.worldBounds
+  */
+  private static inline function drawBounds(state:PlayState):Void
+  {
+    var leftBounds = new FlxObject(-999,0, 1000, FlxG.worldBounds.height);
+    var rightBounds = new FlxObject(FlxG.worldBounds.width-1,0, 1000, FlxG.worldBounds.height);
+    var topBounds = new FlxObject(0,-999, FlxG.worldBounds.width, 1000 );
+    var bottomBounds = new FlxObject(0, FlxG.worldBounds.height-1, FlxG.worldBounds.width, 1000);
+    leftBounds.solid =
+    leftBounds.immovable =
+    rightBounds.solid =
+    rightBounds.immovable =
+    topBounds.solid =
+    topBounds.immovable =
+    bottomBounds.solid =
+    bottomBounds.immovable = true;
+
+    state.add(leftBounds);
+    state.add(rightBounds);
+    state.add(topBounds);
+    state.add(bottomBounds);
+  }
 
   /*
     queue up dialogue boxes so one can show at a time

@@ -177,13 +177,19 @@ enum PickupType{
   public static inline function dev():Void
   {
     var wall_skin = "assets/images/terrain-wall-stone.png";
-    var player = Spawn.hero( 0, 50 );
+    var player = Spawn.hero( 100, 150 );
 
     object(160, 200, wall_skin);
     object(650, 600, wall_skin);
     object(240, 0, wall_skin);
     freeze( 200, 200 );
     speed( 160, 100 );
+    speed( 1160, 100 );
+    speed( 2160, 100 );
+    speed( 160, 1100 );
+    speed( 160, 2100 );
+    speed( 760, 500 );
+    speed( 460, 900 );
     slow( 160, 300 );
     coin( 200, 100 );
     coin( 200, 400 );

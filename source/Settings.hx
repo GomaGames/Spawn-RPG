@@ -43,9 +43,9 @@ import sprites.pickups.*;
     default_duration : Slow.DEFAULT_DURATION
   }
 
-  public static var world_size = {
-    width: 2000,
-    height: 2000
+  public static var worldSize = {
+    width: 2400,
+    height: 2400
   }
 
 }
