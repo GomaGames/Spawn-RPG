@@ -195,7 +195,11 @@ class Player extends FlxSprite{
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
       this.attacking = true;
-      }
+      var time:FlxTimer = new FlxTimer();
+      time.start(0.5,function(timer){
+        this.attacking = false;
+      },1);
+    }
     if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
       this.attacking = false;
     }
