@@ -51,7 +51,6 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-    FlxG.mouse.visible = false;
     FlxG.camera.setScale(2, 2);
     FlxG.camera.setPosition(0,0);
     pickups = new List<Pickup>();
