@@ -4,6 +4,7 @@ import flixel.FlxSprite;
 import flixel.effects.particles.FlxEmitter;
 
 using flixel.util.FlxSpriteUtil;
+using flixel.effects.FlxFlicker;
 
 class Enemy extends FlxSprite implements IDespawnableSprite{
 
@@ -86,6 +87,8 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
     emitter.launchAngle.set(angleDiff-60, angleDiff-130);
     emitter.start(true);
     this.state.add(emitter);
+
+    this.flicker(.2);
   }
 
   public override function kill():Void
