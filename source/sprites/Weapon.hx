@@ -5,16 +5,18 @@ import flixel.FlxSprite;
 using flixel.util.FlxSpriteUtil;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
+import flixel.util.FlxTimer;
 
 class Weapon extends Equippable{
   private var swipe:FlxSprite;
+  private var on_cooldown:Bool;
   public static inline var DEFAULT_SKIN = "assets/images/item-sword-blue.png";
 
   public var power:Int;
 
   public function new( state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?power:Int = 1 ){
     super(state, x, y, skin);
-
+    this.on_cooldown = false;
     this.power = power;
     swipe = new FlxSprite();
     swipe.loadGraphic("assets/images/swipe.png");
@@ -110,9 +112,8 @@ class Weapon extends Equippable{
           this.y = p.y - 20;
         default: null;
       }
-      
-      this.updateHitbox();
     }
+
   }
 
   override public function update(elapsed:Float):Void
