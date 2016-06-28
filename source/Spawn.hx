@@ -167,6 +167,7 @@ enum PickupType{
     Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
     Settings.gameWinText = "Good Job!";
     Settings.gameOverText = "You died!";
+    Settings.skipIntro = true;
 
     Settings.hero.default_skin = "assets/images/creature-trex.png";
     Settings.hero.default_speed = 499;

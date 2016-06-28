@@ -9,6 +9,7 @@ import sprites.pickups.*;
   public static var introText:String = IntroState.DEFAULT_INTRO_TEXT;
   public static var gameWinText:String = EndState.DEFAULT_WIN_TEXT;
   public static var gameOverText:String = EndState.DEFAULT_LOSE_TEXT;
+  public static var skipIntro:Bool = false;
 
   public static var hero = {
     default_skin : Player.DEFAULT_SKIN,
