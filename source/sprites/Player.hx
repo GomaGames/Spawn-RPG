@@ -194,7 +194,6 @@ class Player extends FlxSprite{
   private inline function attack():Void
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
-      trace('couaasd');
       this.attacking = true;
       var time:FlxTimer = new FlxTimer();
       time.start(0.5,function(timer){
