@@ -225,16 +225,20 @@ class PlayState extends FlxState
       }
       paused = true;
 
-    } else if( this.player.alive ){
+    } else {
 
       // process Spawn queue
       Spawn.process_queue();
 
-      attack_enemy();
+       if( this.player.alive ){
 
-      pickup_collision();
+        attack_enemy();
 
-      touch_enemy(); // must be last, cause can die!
+        pickup_collision();
+
+        touch_enemy(); // must be last, cause can die!
+
+      }
 
     }
 
