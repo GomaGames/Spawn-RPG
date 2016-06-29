@@ -22,12 +22,16 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   public function talk(message:String):Void
   {
-    this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x + 25), Std.int(this.y + 15));
+    Spawn.enqueue(function(){
+      this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x + 25), Std.int(this.y + 15));
+    });
   }
 
   public inline function receiveItem(item:CollectableSprite):Void
   {
-    this.inventory.add(item);
+    Spawn.enqueue(function(){
+      this.inventory.add(item);
+    });
   }
 
   public inline function hasItem(inventory_item:CollectableSprite):Bool
@@ -36,7 +40,9 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.interactableSprites.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.interactableSprites.remove(this);
+      this.destroy();
+    });
   }
 }

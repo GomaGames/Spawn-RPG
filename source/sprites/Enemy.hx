@@ -42,8 +42,10 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.enemies.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.enemies.remove(this);
+      this.destroy();
+    });
   }
 
   public override function update(_:Float):Void
@@ -112,8 +114,10 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public override function kill():Void
   {
-    this.onDeath();
-    this.centerOffsets(); // for spinning
-    this.alive = false;
+    Spawn.enqueue(function(){
+      this.onDeath();
+      this.centerOffsets(); // for spinning
+      this.alive = false;
+    });
   }
 }
