@@ -359,8 +359,8 @@ Bool
 
   public inline function die():Void
   {
+    this.alive = false;
     Spawn.enqueue(function(){
-      this.alive = false;
       new flixel.util.FlxTimer().start(1.5, function(t){
         Spawn.gameOver();
         this.destroy();
