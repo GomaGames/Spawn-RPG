@@ -361,8 +361,10 @@ Bool
   {
     Spawn.enqueue(function(){
       this.alive = false;
-      Spawn.gameOver();
-      this.destroy();
+      new flixel.util.FlxTimer().start(1.5, function(t){
+        Spawn.gameOver();
+        this.destroy();
+      });
     });
   }
 }
