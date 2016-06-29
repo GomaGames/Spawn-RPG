@@ -112,16 +112,17 @@ enum PickupType{
     return new_pickup;
   }
 
-  public static inline function enemy(x:Int, y:Int, ?direction:String, ?speed:Int, ?skin:String, ?health:Int = 1):Enemy
+  public static inline function enemy(x:Int, y:Int, ?skin:String, ?health:Int = 1, ?direction:String, ?speed:Int):Enemy
   {
     var new_enemy = new Enemy(
       state,
       x,
       y,
-      speed != null ? speed : Settings.enemy.default_speed,
       skin != null ? skin : Settings.enemy.default_skin,
+      health,
       direction,
-      health);
+      speed != null ? speed : Settings.enemy.default_speed
+    );
     enqueue(function(){
       state.enemies.add(new_enemy);
       state.add(new_enemy);
@@ -239,11 +240,11 @@ enum PickupType{
     coin( 200, 100 );
     coin( 200, 400 );
     var trex = "assets/images/creature-trex.png";
-    var e1 = enemy( 650, 500 , "down", trex, 4);
-    var e2 = enemy( 500, 550 , "right", trex, 4);
-    var e3 = enemy( 600, 500 , "up", trex, 4);
-    var e4 = enemy( 500, 450 , "left", trex, 4);
-    var e5 = enemy( 400, 450 , null, trex, 4 );
+    var e1 = enemy( 650, 500, trex, 4, "down");
+    var e2 = enemy( 500, 550, trex, 4, "right");
+    var e3 = enemy( 600, 500, trex, 4, "left");
+    var e4 = enemy( 500, 450, trex, 4, "up");
+    var e5 = enemy( 400, 450, trex, 4 );
     e5.onDeath = function(){
       Spawn.message("noooooooo");
     }
@@ -332,7 +333,7 @@ enum PickupType{
       messageFlag.talk('5. next spawn coin');
       coin(420, 300);
       messageFlag.talk('6. next spawn enemy');
-      enemy(300, 340, "right", 2, trex);
+      enemy(300, 340, trex, "right", 2);
       messageFlag.talk('7. next spawn interactable');
       interactableSprite(300, 380, "assets/images/item-potion-green.png");
       messageFlag.talk('8. next spawn collectable');

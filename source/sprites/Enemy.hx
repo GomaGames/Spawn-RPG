@@ -18,7 +18,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
   public var speed:Int;
   private var state:PlayState;
 
-  public function new(state:PlayState, x:Int, y:Int, speed:Int, ?skin:String = DEFAULT_SKIN, ?direction:String, ?health:Int = 1){
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?health:Int = 1, ?direction:String, speed:Int){
     this.speed = speed;
     this.state = state;
     super(x, y, skin);
