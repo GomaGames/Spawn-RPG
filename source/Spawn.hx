@@ -156,8 +156,8 @@ enum PickupType{
   */
   public static inline function message(message:String, ?x:Int, ?y:Int):Void
   {
-    if(x == null) x = 200; // #TODO
-    if(y == null) y = 525; // #TODO
+    if(x == null) x = Std.int( Main.VIEWPORT_WIDTH - ( message.length * 4 ) );
+    if(y == null) y = Std.int( Main.VIEWPORT_HEIGHT + 100 );
     state.queue_dialogue(message, TYPE.HUD, x, y);
   }
 
@@ -177,6 +177,7 @@ enum PickupType{
     Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
     Settings.gameWinText = "Good Job!";
     Settings.gameOverText = "You died!";
+    Settings.skipIntro = true;
 
     Settings.hero.default_skin = "assets/images/creature-trex.png";
     Settings.hero.default_speed = 499;
@@ -186,13 +187,19 @@ enum PickupType{
   public static inline function dev():Void
   {
     var wall_skin = "assets/images/terrain-wall-stone.png";
-    var player = Spawn.hero( 0, 50 );
+    var player = Spawn.hero( 100, 150 );
 
     object(160, 200, wall_skin);
     object(650, 600, wall_skin);
     object(240, 0, wall_skin);
     freeze( 200, 200 );
     speed( 160, 100 );
+    speed( 1160, 100 );
+    speed( 2160, 100 );
+    speed( 160, 1100 );
+    speed( 160, 2100 );
+    speed( 760, 500 );
+    speed( 460, 900 );
     slow( 160, 300 );
     coin( 200, 100 );
     coin( 200, 400 );
@@ -202,6 +209,9 @@ enum PickupType{
     var e3 = enemy( 600, 500 , "up", trex, 4);
     var e4 = enemy( 500, 450 , "left", trex, 4);
     var e5 = enemy( 400, 450 , null, trex, 4 );
+    e5.onDeath = function(){
+      Spawn.message("noooooooo");
+    }
 
     var quest_1_complete = false;
     var quest_2_complete = false;

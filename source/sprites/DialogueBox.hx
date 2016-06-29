@@ -7,6 +7,7 @@ import flixel.text.FlxText;
 import flixel.group.FlxSpriteGroup;
 import flixel.addons.ui.FlxUI9SliceSprite;
 import flash.geom.Rectangle;
+import flixel.util.FlxColor;
 
 enum TYPE {
   HUD;
@@ -26,6 +27,7 @@ class DialogueBox extends FlxSpriteGroup{
 
     var dialogue = new FlxText();
     dialogue.text = input;
+    dialogue.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.CENTER, null, null, true);
     var _slice:Array<Int> = [10,10,40,40];
     var _graphic:String = "assets/images/tile-grey-square.png";
     var bg = new FlxUI9SliceSprite(0, 0, _graphic, new Rectangle(0,0,dialogue.width+padding,dialogue.height+padding), _slice);
