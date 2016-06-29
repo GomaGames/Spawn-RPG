@@ -85,8 +85,8 @@ class Player extends FlxSprite{
 
     this.scale.set(.5,.5);
     this.updateHitbox();
-    this.height /= 4;
-    this.width /= 4;
+    this.height /= 1.5;
+    this.width /= 1.5;
     this.centerOffsets();
     this.centerOrigin();
     this.attacking = false;

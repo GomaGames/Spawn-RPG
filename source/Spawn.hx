@@ -192,7 +192,7 @@ enum PickupType{
     object(160, 200, wall_skin);
     object(650, 600, wall_skin);
     object(240, 0, wall_skin);
-    freeze( 200, 200 );
+    freeze( 200, 200, 60 );
     speed( 160, 100 );
     speed( 1160, 100 );
     speed( 2160, 100 );

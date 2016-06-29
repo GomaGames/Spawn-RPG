@@ -23,10 +23,11 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
     this.state = state;
     super(x, y, skin);
     this.scale.set(.5,.5);
-    this.height /= 2;
-    this.width /= 2;
+    this.height -= 10;
+    this.width -= 10;
     this.centerOffsets();
     this.centerOrigin();
+    this.solid = true;
     this.updateHitbox();
     this.elasticity = 1;
     this.health = health;
@@ -91,7 +92,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 #if html5
     if(total_particles > 5) total_particles = 5;
 #end
-    trace(total_particles);
+    // trace(total_particles);
     var emitter = new FlxEmitter( this.getMidpoint().x-30, this.getMidpoint().y-30, total_particles  );
     emitter.makeParticles();
 #if html5
