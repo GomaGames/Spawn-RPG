@@ -112,7 +112,7 @@ class Player extends FlxSprite{
   override public function update(elapsed:Float):Void
   {
     super.update(elapsed);
-    if(!this.state.paused) {
+    if(!this.state.paused && this.alive) {
       movement();
       attack();
       collect_item();
