@@ -52,7 +52,7 @@ class HUD extends FlxSpriteGroup
 
     var inventoryText = new FlxText(10,0,"Inventory");
     inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
-    inventoryDisplay = new FlxSpriteGroup(110, 0);
+    inventoryDisplay = new FlxSpriteGroup(600, 350);
 
     lifeDisplay = new FlxSpriteGroup(760, 0);
     lifeText = new FlxText(60,28);
