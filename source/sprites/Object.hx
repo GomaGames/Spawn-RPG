@@ -17,8 +17,10 @@ class Object extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.objects.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.objects.remove(this);
+      this.destroy();
+    });
   }
 
 }

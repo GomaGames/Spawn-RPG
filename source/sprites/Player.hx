@@ -61,10 +61,12 @@ class Player extends FlxSprite{
   private var _life:Int;
   private inline function set_life(val:Int):Int{
     this._life = val;
-    this.state.hud.life = val;
-    if( this._life <= 0 ){
-      this.die();
-    }
+    Spawn.enqueue(function(){
+      this.state.hud.life = val;
+      if( this._life <= 0 ){
+        this.die();
+      }
+    });
     return this._life;
   }
   private inline function get_life():Int{
@@ -74,7 +76,9 @@ class Player extends FlxSprite{
   public var coins(default,set):Int;
   private inline function set_coins(val:Int):Int{
     this.coins = val;
-    this.state.hud.coins = val;
+    Spawn.enqueue(function(){
+      this.state.hud.coins = val;
+    });
     return this.coins;
   }
 
@@ -120,44 +124,50 @@ class Player extends FlxSprite{
 
   public inline function hit(?damage:Int = 1):Void
   {
-    this.flicker(.2);
-    this.state.hud_cam.shake(0.04, 0.2);
-    this.life -= damage;
+    Spawn.enqueue(function(){
+      this.flicker(.2);
+      this.state.hud_cam.shake(0.04, 0.2);
+      this.life -= damage;
+    });
   }
 
   public inline function equipWeapon(item:Weapon):Void
   {
-    if(this.weapon != null){
-      drop(this.weapon);
-    }
+    Spawn.enqueue(function(){
+      if(this.weapon != null){
+        drop(this.weapon);
+      }
 
-    // overwrite any onCollect callbacks after the first call
-    item.onCollect = function(){ return true; };
+      // overwrite any onCollect callbacks after the first call
+      item.onCollect = function(){ return true; };
 
-    this.weapon = item;
-    this.state.collectables.remove(item);
+      this.weapon = item;
+      this.state.collectables.remove(item);
+    });
   }
 
   public inline function drop(item:CollectableSprite):Void
   {
-    if(this.hasItem(item)){
-      this.state.hud.removeInventoryItem(item);
-      item.immovable = false;
-      this.inventory.remove(item);
-      this.state.collectables.add(item);
-      this.state.add(item);
-      item.x = this.x;
-      item.y = this.y;
-    } else if( this.hasEquipped(item) ){
-      if(this.weapon == item){
-        this.weapon = null;
+    Spawn.enqueue(function(){
+      if(this.hasItem(item)){
+        this.state.hud.removeInventoryItem(item);
+        item.immovable = false;
+        this.inventory.remove(item);
+        this.state.collectables.add(item);
+        this.state.add(item);
+        item.x = this.x;
+        item.y = this.y;
+      } else if( this.hasEquipped(item) ){
+        if(this.weapon == item){
+          this.weapon = null;
+        }
+        item.x = this.x;
+        item.y = this.y;
+        item.immovable = false;
+        this.state.collectables.add(item);
+        this.state.add(item);
       }
-      item.x = this.x;
-      item.y = this.y;
-      item.immovable = false;
-      this.state.collectables.add(item);
-      this.state.add(item);
-    }
+    });
   }
 
   public inline function collect_item():Void
@@ -245,9 +255,11 @@ Bool
   public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
   {
     if(this.hasItem(inventory_item)){
-      this.state.hud.removeInventoryItem(inventory_item);
-      this.inventory.remove(inventory_item);
-      receiver.receiveItem(inventory_item);
+      Spawn.enqueue(function(){
+        this.state.hud.removeInventoryItem(inventory_item);
+        this.inventory.remove(inventory_item);
+        receiver.receiveItem(inventory_item);
+      });
       return true;
     } else {
       trace("WARNING: Player cannot giveItem that is not in player's inventory.");
@@ -347,9 +359,11 @@ Bool
 
   public inline function die():Void
   {
-    this.alive = false;
-    Spawn.gameOver();
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.alive = false;
+      Spawn.gameOver();
+      this.destroy();
+    });
   }
 }
 

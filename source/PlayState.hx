@@ -197,18 +197,25 @@ class PlayState extends FlxState
     super.destroy();
 	}
 
+  /*
+     process dialogue queues first
+     to block, and wait for user interaction
+  */
   override public function update(elapsed:Float):Void
   {
     super.update(elapsed);
 
-    if( current_dialogue_box != null && FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
-      if(current_dialogue_box.type == TYPE.HUD){
-        hud.remove(current_dialogue_box);
-      } else {
-        remove(current_dialogue_box);
+    if( current_dialogue_box != null ){
+      if(FlxG.keys.anyJustPressed([PlayerInput.interact])){ // wait for unpause
+        if(current_dialogue_box.type == TYPE.HUD){
+          hud.remove(current_dialogue_box);
+        } else {
+          remove(current_dialogue_box);
+        }
+        close_dialogue();
+        paused = false;
       }
-      close_dialogue();
-      paused = false;
+      // still reading, do nothing
     } else if( current_dialogue_box == null && dialogue_boxes.length > 0 ){ // process queue
       current_dialogue_box = dialogue_boxes.pop();
       if(current_dialogue_box.type == TYPE.HUD){
@@ -219,6 +226,9 @@ class PlayState extends FlxState
       paused = true;
 
     } else if( this.player.alive ){
+
+      // process Spawn queue
+      Spawn.process_queue();
 
       attack_enemy();
 

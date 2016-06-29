@@ -25,6 +25,15 @@ enum PickupType{
 @:expose class Spawn {
 
   public static var state:PlayState;
+  private static var queue:List<Void->Void> = new List<Void->Void>();
+  public static inline function enqueue(func:Void->Void):Void
+    queue.add(func);
+
+  public static inline function process_queue():Void{
+    if(!queue.isEmpty()){
+      queue.pop()();
+    }
+  }
 
   public static dynamic function game():Void{}
 
@@ -50,8 +59,10 @@ enum PickupType{
       y,
       skin != null ? skin : Settings.freeze.default_skin,
       duration != null ? duration : Settings.freeze.default_duration);
-    state.pickups.add(new_pickup);
-    state.add(new_pickup);
+    enqueue(function(){
+      state.pickups.add(new_pickup);
+      state.add(new_pickup);
+    });
     return new_pickup;
   }
 
@@ -63,8 +74,10 @@ enum PickupType{
       y,
       skin != null ? skin : Settings.speed.default_skin,
       duration != null ? duration : Settings.speed.default_duration);
-    state.pickups.add(new_pickup);
-    state.add(new_pickup);
+    enqueue(function(){
+      state.pickups.add(new_pickup);
+      state.add(new_pickup);
+    });
     return new_pickup;
   }
 
@@ -77,8 +90,10 @@ enum PickupType{
       y,
       skin != null ? skin : Settings.slow.default_skin,
       duration != null ? duration : Settings.slow.default_duration);
-    state.pickups.add(new_pickup);
-    state.add(new_pickup);
+    enqueue(function(){
+      state.pickups.add(new_pickup);
+      state.add(new_pickup);
+    });
     return new_pickup;
   }
 
@@ -90,8 +105,10 @@ enum PickupType{
       y,
       skin != null ? skin : Settings.coin.default_skin,
       value != null ? value : Settings.coin.default_value);
-    state.pickups.add(new_pickup);
-    state.add(new_pickup);
+    enqueue(function(){
+      state.pickups.add(new_pickup);
+      state.add(new_pickup);
+    });
     return new_pickup;
   }
 
@@ -105,48 +122,60 @@ enum PickupType{
       skin != null ? skin : Settings.enemy.default_skin,
       direction,
       health);
-    state.enemies.add(new_enemy);
-    state.add(new_enemy);
+    enqueue(function(){
+      state.enemies.add(new_enemy);
+      state.add(new_enemy);
+    });
     return new_enemy;
   }
 
   public static inline function interactableSprite(x:Int, y:Int, graphic:String):InteractableSprite
   {
     var new_sprite = new InteractableSprite(state, x, y, graphic);
-    state.interactableSprites.add(new_sprite);
-    state.add(new_sprite);
+    enqueue(function(){
+      state.interactableSprites.add(new_sprite);
+      state.add(new_sprite);
+    });
     return new_sprite;
   }
 
   public static inline function collectableSprite(x:Int, y:Int, graphic:String):CollectableSprite
   {
     var new_sprite = new CollectableSprite(state, x, y, graphic);
-    state.collectables.add(new_sprite);
-    state.add(new_sprite);
+    enqueue(function(){
+      state.collectables.add(new_sprite);
+      state.add(new_sprite);
+    });
     return new_sprite;
   }
 
   public static inline function weapon(x:Int, y:Int, graphic:String, ?power:Int = 1):Weapon
   {
     var new_sprite = new Weapon(state, x, y, graphic, power);
-    state.collectables.add(new_sprite);
-    state.add(new_sprite);
+    enqueue(function(){
+      state.collectables.add(new_sprite);
+      state.add(new_sprite);
+    });
     return new_sprite;
   }
 
-  public static inline function ranged_weapon(x:Int, y:Int, graphic:String, ?ranged_graphic:String, ?power:Int, ?range:Float, ?duration:Float ):RangedWeapon
+  public static inline function rangedWeapon(x:Int, y:Int, graphic:String, ?ranged_graphic:String, ?power:Int, ?range:Float, ?duration:Float ):RangedWeapon
   {
     var new_sprite = new RangedWeapon(state, x, y, graphic, ranged_graphic, power, range, duration);
-    state.collectables.add(new_sprite);
-    state.add(new_sprite);
+    enqueue(function(){
+      state.collectables.add(new_sprite);
+      state.add(new_sprite);
+    });
     return new_sprite;
   }
 
   public static inline function object(x:Int, y:Int, ?skin:String):Object
   {
     var new_obj = new Object(state, x, y, skin);
-    state.objects.add(new_obj);
-    state.add(new_obj);
+    enqueue(function(){
+      state.objects.add(new_obj);
+      state.add(new_obj);
+    });
     return new_obj;
   }
 
@@ -158,17 +187,23 @@ enum PickupType{
   {
     if(x == null) x = Std.int( Main.VIEWPORT_WIDTH - ( message.length * 4 ) );
     if(y == null) y = Std.int( Main.VIEWPORT_HEIGHT + 100 );
-    state.queue_dialogue(message, TYPE.HUD, x, y);
+    enqueue(function(){
+      state.queue_dialogue(message, TYPE.HUD, x, y);
+    });
   }
 
   public static inline function gameWin():Void
   {
-    FlxG.switchState(new EndState(EndState.VictoryStatus.WIN));
+    enqueue(function(){
+      FlxG.switchState(new EndState(EndState.VictoryStatus.WIN));
+    });
   }
 
   public static inline function gameOver():Void
   {
-    FlxG.switchState(new EndState(EndState.VictoryStatus.LOSE));
+    enqueue(function(){
+      FlxG.switchState(new EndState(EndState.VictoryStatus.LOSE));
+    });
   }
 
 #if neko
@@ -257,7 +292,7 @@ enum PickupType{
     }
     var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png", 4);
     var staff = weapon( 150, 400, "assets/images/item-staff-brown.png", 1);
-    var ranged1 = ranged_weapon( 50, 50, "assets/images/item-bow-and-arrow.png", "assets/images/item-arrow.png");
+    var ranged1 = rangedWeapon( 50, 50, "assets/images/item-bow-and-arrow.png", "assets/images/item-arrow.png");
 
 
     sword2.onCollect = function(){
@@ -287,12 +322,32 @@ enum PickupType{
 
     var messageFlag = interactableSprite( 100, 50, "assets/images/item-flag-red.png");
     messageFlag.interact = function(){
-      message('bring ...');
-      message('the sword ...');
-      message('to the red square.');
+      message('1.test queueing');
+      messageFlag.talk('2. next spawn freeze');
+      freeze(300, 300);
+      messageFlag.talk('3. next spawn speed');
+      speed(340, 300);
+      messageFlag.talk('4. next spawn slow');
+      slow(380, 300);
+      messageFlag.talk('5. next spawn coin');
+      coin(420, 300);
+      messageFlag.talk('6. next spawn enemy');
+      enemy(300, 340, "right", 2, trex);
+      messageFlag.talk('7. next spawn interactable');
+      interactableSprite(300, 380, "assets/images/item-potion-green.png");
+      messageFlag.talk('8. next spawn collectable');
+      collectableSprite(340, 380, "assets/images/item-gem-blue.png");
+      messageFlag.talk('9. next spawn weapon');
+      weapon(380, 380, "assets/images/item-sword-white.png");
+      messageFlag.talk('10. next spawn ranged weapon');
+      rangedWeapon(420, 380, "assets/images/item-bow-and-arrow.png");
+      messageFlag.talk('11. next spawn object');
+      object(300, 420, "assets/images/nature-flower1-blue.png");
+      message('finally, end game with gameWin()');
+      gameWin();
     }
 
-    var enemyBomb = interactableSprite(300, 50, 'assets/images/creature-cube-yellow.png');
+    var enemyBomb = interactableSprite(220, 50, 'assets/images/creature-cube-yellow.png');
     enemyBomb.y = 300;
     enemyBomb.interact = function(){
       if(player.hasItem(sword1) || player.hasItem(sword2)){

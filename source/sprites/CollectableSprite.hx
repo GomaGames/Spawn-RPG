@@ -18,8 +18,10 @@ class CollectableSprite extends FlxSprite implements IDespawnableSprite{
   }
 
   public inline function despawn(){
-    this.state.collectables.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.collectables.remove(this);
+      this.destroy();
+    });
   }
 
   // if return false, player does not pick up!

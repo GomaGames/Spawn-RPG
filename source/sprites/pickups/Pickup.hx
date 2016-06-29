@@ -15,8 +15,10 @@ class Pickup extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.pickups.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.pickups.remove(this);
+      this.destroy();
+    });
   }
 
 }
