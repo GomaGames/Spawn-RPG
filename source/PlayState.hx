@@ -137,7 +137,7 @@ class PlayState extends FlxState
   private inline function pickup_collision():Void
   {
     for( pickup in pickups ){
-      if( FlxG.collide(player, pickup) ){
+      if( FlxG.overlap(player, pickup) ){
         remove(pickup);
         pickups.remove(pickup);
         switch(Type.getClass(pickup)){
@@ -157,7 +157,7 @@ class PlayState extends FlxState
   private inline function touch_enemy():Void
   {
     for( enemy in enemies ){
-      if( enemy.alive && FlxG.collide(player, enemy) ){
+      if( enemy.alive && FlxG.overlap(player, enemy) ){
         player.hit();
       }
     }

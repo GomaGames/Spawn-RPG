@@ -39,7 +39,6 @@ class EndState extends FlxState
     bg.screenCenter();
     add(bg);
 
-
     var endgameText = new FlxText( ( Main.STAGE_WIDTH / 4 ), ( Main.STAGE_HEIGHT / 4 ) );
     endgameText.fieldWidth = Main.STAGE_WIDTH / 2;
     switch(status){
