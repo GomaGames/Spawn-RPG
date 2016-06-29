@@ -176,7 +176,7 @@ enum PickupType{
   {
     Settings.introText = "This is my game.\n\nThere are many games like it.\n\nThis one is mine";
     Settings.gameWinText = "Good Job!";
-    Settings.gameOverText = "You died!";
+    Settings.gameOverText = "You died ladidadidah!";
     Settings.skipIntro = true;
 
     Settings.hero.default_skin = "assets/images/creature-trex.png";
@@ -250,6 +250,10 @@ enum PickupType{
     sword1.onCollect = function(){
       Spawn.message("You got the magic sword!");
       return true;
+    }
+    var badgirl = interactableSprite( 30, 60, "assets/images/person-female-2.png");
+    badgirl.interact = function(){
+      gameOver();
     }
     var sword2 = weapon( 50, 100, "assets/images/item-sword-green.png", 4);
     var staff = weapon( 150, 400, "assets/images/item-staff-brown.png", 1);
