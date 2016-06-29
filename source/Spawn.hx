@@ -199,6 +199,9 @@ enum PickupType{
     var e3 = enemy( 600, 500 , "up", trex, 4);
     var e4 = enemy( 500, 450 , "left", trex, 4);
     var e5 = enemy( 400, 450 , null, trex, 4 );
+    e5.onDeath = function(){
+      Spawn.message("noooooooo");
+    }
 
     var quest_1_complete = false;
     var quest_2_complete = false;

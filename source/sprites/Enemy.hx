@@ -76,6 +76,8 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
     );
   }
 
+  public dynamic function onDeath():Void{};
+
   private inline function hitEffect():Void
   {
     var emitter = new FlxEmitter( this.getMidpoint().x-30, this.getMidpoint().y-30, Std.int(this.health * 10) );
@@ -93,6 +95,7 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public override function kill():Void
   {
+    this.onDeath();
     this.centerOffsets(); // for spinning
     this.alive = false;
   }
