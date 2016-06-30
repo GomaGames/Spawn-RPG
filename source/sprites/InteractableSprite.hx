@@ -8,8 +8,9 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   private var state:PlayState;
   private var inventory:List<CollectableSprite>;
+  public static inline var DEFAULT_SKIN = "assets/images/item-sign-brown.png";
 
-  public function new(state:PlayState, x:Int, y:Int, graphic:String) {
+  public function new(state:PlayState, x:Int, y:Int, ?graphic:String = DEFAULT_SKIN) {
     super(x, y, graphic);
     this.state = state;
     this.inventory = new List<CollectableSprite>();
@@ -40,6 +41,7 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
+    this.interact = function(){};
     Spawn.enqueue(function(){
       this.state.interactableSprites.remove(this);
       this.destroy();

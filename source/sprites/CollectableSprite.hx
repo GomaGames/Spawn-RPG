@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 
 class CollectableSprite extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-white.png";
+  public static inline var DEFAULT_SKIN = "assets/images/item-sword-yellow.png";
 
   private var state:PlayState;
 
