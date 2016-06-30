@@ -8,7 +8,7 @@ using flixel.effects.FlxFlicker;
 
 class Enemy extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-red.png";
+  public static inline var DEFAULT_SKIN = "assets/images/creature-robot-grey.png";
   public static inline var DEFAULT_SPEED = 100;
   public static inline var DEFAULT_HEALTH = 1;
   public static inline var UP = "up";

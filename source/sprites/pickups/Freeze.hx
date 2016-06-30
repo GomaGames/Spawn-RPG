@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 
 class Freeze extends Pickup {
 
-  public static inline var DEFAULT_SKIN = "assets/images/item-crown-blue.png";
+  public static inline var DEFAULT_SKIN = "assets/images/item-ice-blue.png";
   public static inline var DEFAULT_DURATION = 2; // seconds
 
   public function new(state:PlayState, x:Int, y:Int, graphic:String, ?duration:Float = DEFAULT_DURATION){
