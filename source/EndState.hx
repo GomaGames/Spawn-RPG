@@ -33,21 +33,21 @@ class EndState extends FlxState
 
   override public function create():Void
   {
+    
     super.create();
     bg = new FlxSprite();
-    bg.makeGraphic(Main.STAGE_WIDTH, Main.STAGE_HEIGHT, Main.BACKGROUND_GREY);
+    bg.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, Main.BACKGROUND_GREY);
     bg.screenCenter();
     add(bg);
 
-
-    var endgameText = new FlxText( ( Main.STAGE_WIDTH / 4 ), ( Main.STAGE_HEIGHT / 4 ) );
-    endgameText.fieldWidth = Main.STAGE_WIDTH / 2;
+    // var endgameText = new FlxText( 200, 100 );
+    var endgameText = new FlxText( ( Main.VIEWPORT_WIDTH / 4 ), 100 );
     switch(status){
       case WIN:
-        endgameText.setFormat( "Arial", 42, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+        endgameText.setFormat( "Arial", 48, Main.FONT_BLUE, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
         endgameText.text = Settings.gameWinText;
       case LOSE:
-        endgameText.setFormat( "Arial", 42, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
+        endgameText.setFormat( "Arial", 48, Main.FONT_RED, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
         endgameText.text = Settings.gameOverText;
     }
     add( endgameText );
@@ -56,12 +56,13 @@ class EndState extends FlxState
     resolve_timer.start(resolve_delay, function(t){
       allow_continue = true;
 
-      var playAgain = new FlxText( 3*(Main.STAGE_WIDTH/5), Main.STAGE_HEIGHT * (3/4), "PLAY AGAIN?" );
+      var playAgain = new FlxText( 600,600, "PLAY AGAIN?" );
+      // var playAgain = new FlxText( 3*(Main.VIEWPORT_WIDTH/5), Main.VIEWPORT_HEIGHT * (3/4), "PLAY AGAIN?" );
       playAgain.setFormat( "Arial", 60, Main.FONT_YELLOW, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, FlxColor.BLACK, true);
       playAgain.screenCenter( FlxAxes.X );
       add( playAgain );
 
-    });
+    },1);
   }
 
   override public function destroy():Void
@@ -74,7 +75,7 @@ class EndState extends FlxState
   {
     if( allow_continue &&
       ( FlxG.keys.getIsDown().length > 0 || FlxG.mouse.pressed )
-      ) FlxG.switchState( new MenuState() );
+      ) FlxG.switchState( new IntroState() );
     super.update(elapsed);
   }
 

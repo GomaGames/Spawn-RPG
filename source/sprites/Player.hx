@@ -17,6 +17,7 @@ import flixel.text.FlxText;
 import sprites.Map;
 
 using Lambda;
+using flixel.effects.FlxFlicker;
 
 class PlayerInput {
   public static var up:FlxKey = FlxKey.UP;
@@ -36,8 +37,10 @@ enum Direction {
 class Player extends FlxSprite{
 
   private static inline var DIAGONAL_MOVEMENT = 1.41421356237;  // divide by sqrt(2)
-  public static inline var DEFAULT_SKIN = "assets/images/person-male-1.png";
+
+  public static inline var DEFAULT_SKIN = "assets/images/person-female-4.png";
   public static inline var DEFAULT_SPEED = 200;
+  public static inline var DEFAULT_LIFE = 3;
 
   private var state:PlayState;
   private var graphic_path:String;
@@ -58,10 +61,12 @@ class Player extends FlxSprite{
   private var _life:Int;
   private inline function set_life(val:Int):Int{
     this._life = val;
-    this.state.hud.life = val;
-    if( this._life <= 0 ){
-      this.die();
-    }
+    Spawn.enqueue(function(){
+      this.state.hud.life = val;
+      if( this._life <= 0 ){
+        this.die();
+      }
+    });
     return this._life;
   }
   private inline function get_life():Int{
@@ -71,30 +76,33 @@ class Player extends FlxSprite{
   public var coins(default,set):Int;
   private inline function set_coins(val:Int):Int{
     this.coins = val;
-    this.state.hud.coins = val;
+    Spawn.enqueue(function(){
+      this.state.hud.coins = val;
+    });
     return this.coins;
   }
 
-  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN) {
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String) {
+    if(skin == null) skin = Settings.hero.default_skin;
     super(x, y, skin);
     this.state = state;
 
     this.scale.set(.5,.5);
     this.updateHitbox();
-    this.height /= 4;
-    this.width /= 4;
+    this.height /= 1.5;
+    this.width /= 1.5;
     this.centerOffsets();
     this.centerOrigin();
     this.attacking = false;
     this.current_direction = Direction.DOWN;
 
-    this.life = 3;
+    this.life = Settings.hero.default_life;
     this.coins = 0;
 
     this.inventory = new List<CollectableSprite>();
     this.spawn_position = FlxPoint.weak(x, y);
-    this.base_speed = DEFAULT_SPEED;
-    this.speed = DEFAULT_SPEED;
+    this.base_speed = Settings.hero.default_speed;
+    this.speed = Settings.hero.default_speed;
     this.drag = FlxPoint.weak(this.speed*10, this.speed*10);
     this.walkRot = 0;
     this.walkHopY = 0;
@@ -114,39 +122,52 @@ class Player extends FlxSprite{
     }
   }
 
+  public inline function hit(?damage:Int = 1):Void
+  {
+    Spawn.enqueue(function(){
+      this.flicker(.2);
+      this.state.hud_cam.shake(0.04, 0.2);
+      this.life -= damage;
+    });
+  }
+
   public inline function equipWeapon(item:Weapon):Void
   {
-    if(this.weapon != null){
-      drop(this.weapon);
-    }
+    Spawn.enqueue(function(){
+      if(this.weapon != null){
+        drop(this.weapon);
+      }
 
-    // overwrite any onCollect callbacks after the first call
-    item.onCollect = function(){ return true; };
+      // overwrite any onCollect callbacks after the first call
+      item.onCollect = function(){ return true; };
 
-    this.weapon = item;
-    this.state.collectables.remove(item);
+      this.weapon = item;
+      this.state.collectables.remove(item);
+    });
   }
 
   public inline function drop(item:CollectableSprite):Void
   {
-    if(this.hasItem(item)){
-      this.state.hud.removeInventoryItem(item);
-      item.immovable = false;
-      this.inventory.remove(item);
-      this.state.collectables.add(item);
-      this.state.add(item);
-      item.x = this.x;
-      item.y = this.y;
-    } else if( this.hasEquipped(item) ){
-      if(this.weapon == item){
-        this.weapon = null;
+    Spawn.enqueue(function(){
+      if(this.hasItem(item)){
+        this.state.hud.removeInventoryItem(item);
+        item.immovable = false;
+        this.inventory.remove(item);
+        this.state.collectables.add(item);
+        this.state.add(item);
+        item.x = this.x;
+        item.y = this.y;
+      } else if( this.hasEquipped(item) ){
+        if(this.weapon == item){
+          this.weapon = null;
+        }
+        item.x = this.x;
+        item.y = this.y;
+        item.immovable = false;
+        this.state.collectables.add(item);
+        this.state.add(item);
       }
-      item.x = this.x;
-      item.y = this.y;
-      item.immovable = false;
-      this.state.collectables.add(item);
-      this.state.add(item);
-    }
+    });
   }
 
   public inline function collect_item():Void
@@ -192,7 +213,11 @@ class Player extends FlxSprite{
   {
     if(FlxG.keys.anyJustPressed([PlayerInput.attack])){
       this.attacking = true;
-      }
+      var time:FlxTimer = new FlxTimer();
+      time.start(0.5,function(timer){
+        this.attacking = false;
+      },1);
+    }
     if(FlxG.keys.anyJustReleased([PlayerInput.attack])){
       this.attacking = false;
     }
@@ -230,9 +255,11 @@ Bool
   public inline function giveItem( inventory_item:CollectableSprite, receiver:InteractableSprite):Bool
   {
     if(this.hasItem(inventory_item)){
-      this.state.hud.removeInventoryItem(inventory_item);
-      this.inventory.remove(inventory_item);
-      receiver.receiveItem(inventory_item);
+      Spawn.enqueue(function(){
+        this.state.hud.removeInventoryItem(inventory_item);
+        this.inventory.remove(inventory_item);
+        receiver.receiveItem(inventory_item);
+      });
       return true;
     } else {
       trace("WARNING: Player cannot giveItem that is not in player's inventory.");
@@ -333,8 +360,12 @@ Bool
   public inline function die():Void
   {
     this.alive = false;
-    Spawn.gameOver();
-    this.destroy();
+    Spawn.enqueue(function(){
+      new flixel.util.FlxTimer().start(1.5, function(t){
+        Spawn.gameOver();
+        this.destroy();
+      });
+    });
   }
 }
 

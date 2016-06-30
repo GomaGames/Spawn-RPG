@@ -8,8 +8,9 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   private var state:PlayState;
   private var inventory:List<CollectableSprite>;
+  public static inline var DEFAULT_SKIN = "assets/images/item-sign-brown.png";
 
-  public function new(state:PlayState, x:Int, y:Int, graphic:String) {
+  public function new(state:PlayState, x:Int, y:Int, ?graphic:String = DEFAULT_SKIN) {
     super(x, y, graphic);
     this.state = state;
     this.inventory = new List<CollectableSprite>();
@@ -22,12 +23,16 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
 
   public function talk(message:String):Void
   {
-    this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x + 25), Std.int(this.y + 15));
+    Spawn.enqueue(function(){
+      this.state.queue_dialogue(message, DialogueBox.TYPE.STAGE, Std.int(this.x + 25), Std.int(this.y + 15));
+    });
   }
 
   public inline function receiveItem(item:CollectableSprite):Void
   {
-    this.inventory.add(item);
+    Spawn.enqueue(function(){
+      this.inventory.add(item);
+    });
   }
 
   public inline function hasItem(inventory_item:CollectableSprite):Bool
@@ -36,7 +41,10 @@ class InteractableSprite extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.interactableSprites.remove(this);
-    this.destroy();
+    this.interact = function(){};
+    Spawn.enqueue(function(){
+      this.state.interactableSprites.remove(this);
+      this.destroy();
+    });
   }
 }

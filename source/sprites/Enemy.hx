@@ -1,11 +1,14 @@
 package sprites;
 
 import flixel.FlxSprite;
+import flixel.effects.particles.FlxEmitter;
+
 using flixel.util.FlxSpriteUtil;
+using flixel.effects.FlxFlicker;
 
 class Enemy extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex-red.png";
+  public static inline var DEFAULT_SKIN = "assets/images/creature-robot-grey.png";
   public static inline var DEFAULT_SPEED = 100;
   public static inline var DEFAULT_HEALTH = 1;
   public static inline var UP = "up";
@@ -15,15 +18,16 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
   public var speed:Int;
   private var state:PlayState;
 
-  public function new(state:PlayState, x:Int, y:Int, speed:Int, ?skin:String = DEFAULT_SKIN, ?direction:String, ?health:Int = 1){
+  public function new(state:PlayState, x:Int, y:Int, ?skin:String = DEFAULT_SKIN, ?health:Int = 1, ?direction:String, speed:Int){
     this.speed = speed;
     this.state = state;
     super(x, y, skin);
     this.scale.set(.5,.5);
-    this.height /= 2;
-    this.width /= 2;
+    this.height -= 10;
+    this.width -= 10;
     this.centerOffsets();
     this.centerOrigin();
+    this.solid = true;
     this.updateHitbox();
     this.elasticity = 1;
     this.health = health;
@@ -38,8 +42,10 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.enemies.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.enemies.remove(this);
+      this.destroy();
+    });
   }
 
   public override function update(_:Float):Void
@@ -61,20 +67,57 @@ class Enemy extends FlxSprite implements IDespawnableSprite{
 
   public dynamic function hit(?weapon:Weapon):Void
   {
-    hurt(
-      if( weapon != null ){
+    var damage = if( weapon != null ){
         weapon.power;
       } else if( state.player.weapon != null ){
         state.player.weapon.power;
       } else {
         1;
       }
-    );
+    hitEffect(damage);
+    hurt(damage);
+  }
+
+  public dynamic function onDeath():Void{};
+
+  private inline function hitEffect(?damage:Int = 1):Void
+  {
+    var num_particles =
+#if html5
+      1;
+#else
+      10;
+#end
+
+    var total_particles = Std.int(this.health * damage * num_particles);
+
+#if html5
+    if(total_particles > 5) total_particles = 5;
+#end
+    // trace(total_particles);
+    var emitter = new FlxEmitter( this.getMidpoint().x-30, this.getMidpoint().y-30, total_particles  );
+    emitter.makeParticles();
+#if html5
+    emitter.lifespan.set(0, 1);
+#else
+    emitter.alpha.set(.1, .5, 0, 0);
+#end
+    emitter.setSize(30, 30);
+    emitter.acceleration.set(.1, .1, 1, 1, .1, .1, 0, 0);
+    var angleDiff = state.player.getMidpoint().angleBetween(this.getMidpoint());
+    emitter.launchAngle.set(angleDiff-60, angleDiff-130);
+    emitter.start(true);
+    this.state.add(emitter);
+
+    this.flicker(.2);
   }
 
   public override function kill():Void
   {
-    this.centerOffsets(); // for spinning
-    this.alive = false;
+    Spawn.enqueue(function(){
+      this.onDeath();
+      this.centerOffsets(); // for spinning
+      this.alive = false;
+    });
   }
 }

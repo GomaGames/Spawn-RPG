@@ -4,7 +4,7 @@ import flixel.FlxSprite;
 
 class Object extends FlxSprite implements IDespawnableSprite{
 
-  public static inline var DEFAULT_SKIN = "assets/images/abstract-circlex.blue.png";
+  public static inline var DEFAULT_SKIN = "assets/images/wall-stone.png";
 
   private var state:PlayState;
 
@@ -17,8 +17,10 @@ class Object extends FlxSprite implements IDespawnableSprite{
   }
 
   public function despawn(){
-    this.state.objects.remove(this);
-    this.destroy();
+    Spawn.enqueue(function(){
+      this.state.objects.remove(this);
+      this.destroy();
+    });
   }
 
 }
