@@ -48,25 +48,25 @@ class HUD extends FlxSpriteGroup
     background.makeGraphic(Main.VIEWPORT_WIDTH, Main.VIEWPORT_HEIGHT, FlxColor.TRANSPARENT);
 
     top_bar_bg = new FlxSprite(0, 0);
-    top_bar_bg.makeGraphic(Main.VIEWPORT_WIDTH, HUD_HEIGHT, FlxColor.BLACK);
+    top_bar_bg.makeGraphic(Main.VIEWPORT_WIDTH, HUD_HEIGHT, FlxColor.fromString('#222222'));
 
-    var inventoryText = new FlxText(10,0,"Inventory");
-    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
-    inventoryDisplay = new FlxSpriteGroup(600, 350);
+    var inventoryText = new FlxText(15,10,"Inventory");
+    inventoryText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.fromString('#808080'), FlxTextAlign.LEFT, null, null, true);
+    inventoryDisplay = new FlxSpriteGroup(590, 350);
 
     lifeDisplay = new FlxSpriteGroup(760, 0);
-    lifeText = new FlxText(60,28);
-    lifeText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
-    var heart = new FlxSprite(30,30,'assets/images/item-heart-red.png');
+    lifeText = new FlxText(60,10);
+    lifeText.setFormat( AssetPaths.CHUNKY_FONT, 18, FlxColor.fromString('#808080'), FlxTextAlign.LEFT, null, null, true);
+    var heart = new FlxSprite(30,10,'assets/images/item-heart-red.png');
     heart.scale.set(0.25,0.25);
     heart.updateHitbox();
     lifeDisplay.add(heart);
     lifeDisplay.add(lifeText);
 
     coinsDisplay = new FlxSpriteGroup(680, 0);
-    coinsText = new FlxText(34,28);
-    coinsText.setFormat( null, 18, FlxColor.WHITE, FlxTextAlign.LEFT, null, null, true);
-    var coin = new FlxSprite(0,30,'assets/images/item-gem-yellow.png');
+    coinsText = new FlxText(34,8);
+    coinsText.setFormat( null, 18, FlxColor.fromString('#808080'), FlxTextAlign.LEFT, null, null, true);
+    var coin = new FlxSprite(0,10,'assets/images/item-gem-yellow.png');
     coin.scale.set(0.25,0.25);
     coin.updateHitbox();
     coinsDisplay.add(coin);
